@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>KKLL</Authors>
+    <Company>TianCheng</Company>
+    <Description>部门、用户、角色、功能点、菜单的通用处理</Description>
+    <Version>1.0.2.2</Version>
+    <AssemblyVersion>1.0.2.2</AssemblyVersion>
+    <FileVersion>1.0.2.2</FileVersion>
+    <PackageProjectUrl>https://github.com/chengkkll/TianCheng.SystemCommon</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp1.1\TianCheng.SystemCommon.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Model\TokenLogonInfo.cs" />
+    <Compile Remove="Services\Auth\DateTimeExtension.cs" />
+    <Compile Remove="Services\Auth\Jwt.cs" />
+    <Compile Remove="Services\Auth\TokenLogonInfo.cs" />
+    <Compile Remove="Services\Auth\TokenProviderOption.cs" />
+    <Compile Remove="Services\CommonExt\IServiceExtOption.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="TianCheng.BaseService" Version="1.0.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Model\Message\" />
+  </ItemGroup>
+
+</Project>

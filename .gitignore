@@ -1,0 +1,9 @@
+.git
+.vs
+src/bin
+src/obj
+*.log
+*.user
+samples/SamplesWebApi/bin
+samples/SamplesWebApi/obj
+samples/SamplesWebApi/Logs
