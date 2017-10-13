@@ -46,5 +46,11 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         [JsonProperty("update_user")]
         public string UpdaterName { get; set; }
+
+        /// <summary>
+        /// 是否为系统级别数据
+        /// </summary>
+        [JsonProperty("is_system")]
+        public bool IsSystem { get; set; }
     }
 }

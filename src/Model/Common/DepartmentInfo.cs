@@ -15,6 +15,7 @@ namespace TianCheng.SystemCommon.Model
     [CollectionMapping("System_DepartmentInfo")]
     public class DepartmentInfo : BusinessMongoModel
     {
+        #region 部门基本信息
         /// <summary>
         /// 部门编码
         /// </summary>
@@ -35,6 +36,9 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         public string Desc { get; set; }
 
+        #endregion
+
+        #region 上级信息
         /// <summary>
         /// 上级部门Id
         /// </summary>
@@ -44,7 +48,9 @@ namespace TianCheng.SystemCommon.Model
         /// 上级部门名称
         /// </summary>
         public string ParentName { get; set; }
+        #endregion
 
+        #region 主管信息
         /// <summary>
         /// 部门主管ID
         /// </summary>
@@ -53,8 +59,12 @@ namespace TianCheng.SystemCommon.Model
         /// 部门主管名称
         /// </summary>
         public string ManageName { get; set; }
+        #endregion
 
-
+        #region 子部门信息
+        /// <summary>
+        /// 子部门列表
+        /// </summary>
         private List<BaseViewModel> _SubList = new List<BaseViewModel>();
         /// <summary>
         /// 子部门列表
@@ -70,28 +80,30 @@ namespace TianCheng.SystemCommon.Model
                     _SubList = value;
             }
         }
+        #endregion
 
+        #region 行业信息
+        /// <summary>
+        /// 部门内的行业列表
+        /// </summary>
+        private List<BaseViewModel> _Industries = new List<BaseViewModel>();
+        /// <summary>
+        /// 部门内的行业列表
+        /// </summary>
+        public List<BaseViewModel> Industries
+        {
+            get { return _Industries; }
+            set
+            {
+                if (value == null)
+                    _Industries = new List<BaseViewModel>();
+                else
+                    _Industries = value;
+            }
+        }
+        #endregion
 
-        ////行业信息、人员信息、部门管理员
-        ///// <summary>
-        ///// 部门内的行业列表
-        ///// </summary>
-        //private List<BaseViewModel> _Industries = new List<BaseViewModel>();
-        ///// <summary>
-        ///// 部门内的行业列表
-        ///// </summary>
-        //public List<BaseViewModel> Industries
-        //{
-        //    get { return _Industries; }
-        //    set
-        //    {
-        //        if (value == null)
-        //            _Industries = new List<BaseViewModel>();
-        //        else
-        //            _Industries = value;
-        //    }
-        //}
-
+        #region 部门内员工信息
         private List<SelectView> _Employees = new List<SelectView>();
         /// <summary>
         /// 部门内的员工信息
@@ -108,5 +120,13 @@ namespace TianCheng.SystemCommon.Model
                     _Employees = value;
             }
         }
+        #endregion
+
+        #region 扩展
+        /// <summary>
+        /// 扩展ID 用于部门信息的扩展
+        /// </summary>
+        public string ExtId { get; set; }
+        #endregion
     }
 }

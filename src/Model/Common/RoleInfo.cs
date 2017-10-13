@@ -44,5 +44,9 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         public List<FunctionView> FunctionPower { get { return _FunctionPower; } set { _FunctionPower = value; } }
 
+        /// <summary>
+        /// 是否为系统级别数据
+        /// </summary>
+        public bool IsSystem { get; set; }
     }
 }

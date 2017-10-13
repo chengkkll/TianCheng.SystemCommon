@@ -154,6 +154,11 @@ namespace TianCheng.SystemCommon.Model
         [JsonProperty("state")]
         public UserState State { get; set; }
 
+        /// <summary>
+        /// 是否为系统级别数据
+        /// </summary>
+        [JsonProperty("is_system")]
+        public bool IsSystem { get; set; }
         #endregion
 
         /// <summary>

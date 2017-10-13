@@ -54,7 +54,7 @@ namespace TianCheng.SystemCommon.Services
             int moduleIndex = 1;
             foreach (string key in ModuleConfig.ModuleDict.Keys)
             {
-                if(moduleDict.ContainsKey(key))
+                if (moduleDict.ContainsKey(key))
                 {
                     continue;
                 }
@@ -62,7 +62,7 @@ namespace TianCheng.SystemCommon.Services
                 module.Index = moduleIndex++;
                 module.Name = ModuleConfig.ModuleDict[key];
                 module.Code = key;
-                
+
                 if (!String.IsNullOrEmpty(module.Code) && !moduleDict.ContainsKey(module.Code))
                 {
                     moduleDict.Add(module.Code, module);
@@ -137,9 +137,9 @@ namespace TianCheng.SystemCommon.Services
                 }
             }
             List<FunctionModuleInfo> moduleList = moduleDict.Values.ToList();
-            for (int i=0; i< moduleList.Count; i++)
+            for (int i = 0; i < moduleList.Count; i++)
             {
-                if(moduleList[i].FunctionGroups.Count == 0)
+                if (moduleList[i].FunctionGroups.Count == 0)
                 {
                     moduleList.RemoveAt(i);
                     i--;
@@ -162,7 +162,7 @@ namespace TianCheng.SystemCommon.Services
         {
             get
             {
-                if(docList == null)
+                if (docList == null)
                 {
                     docList = new List<XDocument>();
 
@@ -171,6 +171,36 @@ namespace TianCheng.SystemCommon.Services
                     foreach (string file in System.IO.Directory.GetFiles(basePath, "*.xml"))
                     {
                         docList.Add(XDocument.Load(file));
+                    }
+
+                    foreach (Microsoft.Extensions.DependencyModel.CompilationLibrary library in Microsoft.Extensions.DependencyModel.DependencyContext.Default.CompileLibraries)
+                    {
+                        if (!library.Name.Contains("TianCheng"))
+                        {
+                            if (library.Serviceable) continue;
+                            if (library.Type == "package") continue;
+                        }
+
+                        try
+                        {
+                            Assembly assembly = Assembly.Load(new AssemblyName(library.Name));
+                            if (assembly != null)
+                            {
+                                string assemblyPath = System.IO.Path.GetDirectoryName(assembly.Location);
+                                if(!String.IsNullOrWhiteSpace(assemblyPath))
+                                {
+                                    foreach (string file in System.IO.Directory.GetFiles(assemblyPath, "*.xml"))
+                                    {
+                                        docList.Add(XDocument.Load(file));
+                                    }
+                                }
+                                
+                            }
+                        }
+                        catch
+                        {
+                            //程序集无法反射时跳过
+                        }
                     }
                 }
                 return docList;
@@ -185,16 +215,16 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         private string GetSummary(string method)
         {
-            foreach(var doc in DocList)
-            foreach (var ele in doc.Root.Element("members").Elements("member"))
-            {
-                //获取control信息
-                var member = ele.Attribute("name").Value.ToString();
-                if (member.Contains(method))
+            foreach (var doc in DocList)
+                foreach (var ele in doc.Root.Element("members").Elements("member"))
                 {
-                    return ele.Element("summary")?.Value?.ToString().Replace("\n", "").Replace("\r", "").Trim();
+                    //获取control信息
+                    var member = ele.Attribute("name").Value.ToString();
+                    if (member.Contains(method))
+                    {
+                        return ele.Element("summary")?.Value?.ToString().Replace("\n", "").Replace("\r", "").Trim();
+                    }
                 }
-            }
             return String.Empty;
         }
         #endregion

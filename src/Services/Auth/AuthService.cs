@@ -26,6 +26,7 @@ namespace TianCheng.SystemCommon.Services
         EmployeeService _EmployeeService;
         RoleService _RoleService;
         MenuService _MenuService;
+        FunctionService _FunctionService;
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -35,8 +36,9 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="employeeService"></param>
         /// <param name="roleService"></param>
         /// <param name="menuService"></param>
+        /// <param name="functionService"></param>
         public AuthService(EmployeeDAL employeeDal, ILogger<AuthService> logger, IOptions<TokenProviderOptions> tokenOptions,
-            EmployeeService employeeService, RoleService roleService, MenuService menuService)
+            EmployeeService employeeService, RoleService roleService, MenuService menuService,FunctionService functionService)
         {
             _employeeDal = employeeDal;
             _logger = logger;
@@ -44,6 +46,7 @@ namespace TianCheng.SystemCommon.Services
             _EmployeeService = employeeService;
             _RoleService = roleService;
             _MenuService = menuService;
+            _FunctionService = functionService;
         }
         #endregion
 
@@ -65,6 +68,25 @@ namespace TianCheng.SystemCommon.Services
             }
             // 添加权限声明
             RoleView role = _RoleService.SearchById(employee.Role.Id);
+            if(role == null)
+            {
+                throw ApiException.BadRequest("无法根据用户获取角色信息");
+            }
+            if(role.FunctionPower == null)
+            {
+                //如果功能点为空，初始化功能点
+                if (_FunctionService.SearchQueryable().Count() == 0)
+                {
+                    //初始化系统菜单
+                    _MenuService.Init();
+                    //初始化系统功能点列表
+                    _FunctionService.Init();
+                    //初始化角色信息
+                    _RoleService.InitAdmin();
+                    //初始化用户信息
+                    _EmployeeService.UpdateAdmin();
+                }
+            }
             if (role.FunctionPower.Count == 0)
             {
                 _logger.LogInformation($"{employee.Name}用户无任何功能点权限。所属角色为：{role.Name}({role.Id.ToString()})");

@@ -45,7 +45,7 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<MenuMainView> Tree()
         {
-            return _Service.ManageMultipleTree();
+            return _Service.AllTree();
         }
         /// <summary>
         /// 查询所有的菜单信息，以树形结构显示，无分页信息

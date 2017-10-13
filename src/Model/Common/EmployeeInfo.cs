@@ -181,49 +181,16 @@ namespace TianCheng.SystemCommon.Model
                 }
             }
         }
+
+        /// <summary>
+        /// 是否为系统级别数据
+        /// </summary>
+        public bool IsSystem { get; set; }
         #endregion
 
         /// <summary>
         /// 扩展ID 用于员工信息的扩展
         /// </summary>
         public string ExtId { get; set; }
-    }
-    
-    /// <summary>
-    /// 用户性别枚举
-    /// </summary>
-    public enum UserGender
-    {
-        /// <summary>
-        /// 未定义
-        /// </summary>
-        None = 0,
-        /// <summary>
-        /// 男性
-        /// </summary>
-        Male = 1,
-        /// <summary>
-        /// 女性
-        /// </summary>
-        Female = 2
-    }
-
-    /// <summary>
-    /// 用户状态
-    /// </summary>
-    public enum UserState
-    {
-        /// <summary>
-        /// 正常可用状态
-        /// </summary>
-        Enable = 1,
-        /// <summary>
-        /// 登录锁住
-        /// </summary>
-        LogonLock = 3,
-        /// <summary>
-        /// 禁用
-        /// </summary>
-        Disable = 5
     }
 }

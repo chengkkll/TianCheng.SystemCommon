@@ -58,11 +58,11 @@ namespace TianCheng.SystemCommon.Model
         [JsonProperty("sub")]
         public List<BaseViewModel> SubList { get; set; }
 
-        ///// <summary>
-        ///// 包含的行业列表
-        ///// </summary>
-        //[JsonProperty("industries")]
-        //public List<BaseViewModel> Industries { get; set; }
+        /// <summary>
+        /// 包含的行业列表
+        /// </summary>
+        [JsonProperty("industries")]
+        public List<BaseViewModel> Industries { get; set; }
 
         /// <summary>
         /// 包含的员工列表 仅用于查询时方便（查询单条部门时会有数据），新增修改时不需要传递
@@ -80,5 +80,11 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         [JsonProperty("update_user")]
         public string UpdaterName { get; set; }
+
+        /// <summary>
+        /// 扩展ID 用于部门信息的扩展
+        /// </summary>
+        [JsonProperty("ext_id")]
+        public string ExtId { get; set; }
     }
 }

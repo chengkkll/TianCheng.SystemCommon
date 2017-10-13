@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp1.1\SamplesWebApi.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
@@ -13,8 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.2" />
-    <PackageReference Include="TianCheng.BaseService" Version="1.0.2.2" />
-    <PackageReference Include="TianCheng.SystemCommon" Version="1.0.2.1" />
+    <PackageReference Include="TianCheng.SystemCommon" Version="1.0.2.6" />
   </ItemGroup>
 
   <ItemGroup>
