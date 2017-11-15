@@ -18,7 +18,7 @@ namespace TianCheng.SystemCommon.Services
     {
         #region 构造方法
         private DepartmentDAL _DepDal;
-        private RoleDAL _RoleDal;       
+        private RoleDAL _RoleDal;
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -57,7 +57,7 @@ namespace TianCheng.SystemCommon.Services
         public override IQueryable<EmployeeInfo> _Filter(EmployeeQuery input)
         {
             //_logger.LogInformation("this is a log test: input.code:{0}, input.key:{1}", input.Name, input.State);
-            var query = _Dal.SearchQueryable();
+            var query = _Dal.Queryable();
 
             #region 查询条件
             // 逻辑删除的过滤 0-不显示逻辑删除的数据 1-显示所有数据，包含逻辑删除的   2-只显示逻辑删除的数据
@@ -104,20 +104,31 @@ namespace TianCheng.SystemCommon.Services
 
             #region 设置排序规则
             //设置排序方式
-            switch (input.OrderBy)
+            //switch (input.OrderBy)
+            //{
+            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
+            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
+            //    case "depNameAsc": { query = query.OrderBy(e => e.Department.Name); break; }
+            //    case "depNameDesc": { query = query.OrderByDescending(e => e.Department.Name); break; }
+            //    case "roleNameAsc": { query = query.OrderBy(e => e.Role.Name); break; }
+            //    case "roleNameDesc": { query = query.OrderByDescending(e => e.Role.Name); break; }
+            //    case "stateAsc": { query = query.OrderBy(e => e.State); break; }
+            //    case "stateDesc": { query = query.OrderByDescending(e => e.State); break; }
+            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
+            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //    default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //}
+            switch (input.Sort.Property)
             {
-                case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-                case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-                case "depNameAsc": { query = query.OrderBy(e => e.Department.Name); break; }
-                case "depNameDesc": { query = query.OrderByDescending(e => e.Department.Name); break; }
-                case "roleNameAsc": { query = query.OrderBy(e => e.Role.Name); break; }
-                case "roleNameDesc": { query = query.OrderByDescending(e => e.Role.Name); break; }
-                case "stateAsc": { query = query.OrderBy(e => e.State); break; }
-                case "stateDesc": { query = query.OrderByDescending(e => e.State); break; }
-                case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-                case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+                case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
+                case "depName": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Department.Name) : query.OrderByDescending(e => e.Department.Name); break; }
+                case "roleName": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Role.Name) : query.OrderByDescending(e => e.Role.Name); break; }
+                case "state": { query = input.Sort.IsAsc ? query.OrderBy(e => e.State) : query.OrderByDescending(e => e.State); break; }
+                case "date": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
                 default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
+
+
             #endregion
 
             //返回查询结果
@@ -131,7 +142,7 @@ namespace TianCheng.SystemCommon.Services
         internal List<string> GetSubDepartment(string id)
         {
             List<string> subIds = new List<string>();
-            var list = _DepDal.SearchQueryable().Where(e => e.ParentId == id).ToList();
+            var list = _DepDal.Queryable().Where(e => e.ParentId == id).ToList();
             foreach (var item in list)
             {
                 string itemId = item.Id.ToString();
@@ -192,22 +203,22 @@ namespace TianCheng.SystemCommon.Services
 
             if (info.IsEmpty())
             {
-                if (_Dal.SearchQueryable().Where(e => e.LogonAccount == info.LogonAccount).Count() > 0)
+                if (_Dal.Queryable().Where(e => e.LogonAccount == info.LogonAccount).Count() > 0)
                 {
                     throw ApiException.BadRequest("登陆账号已存在，无法新增用户");
                 }
             }
             else
             {
-                foreach(var item in _Dal.SearchQueryable().Where(e => e.LogonAccount == info.LogonAccount))
+                foreach (var item in _Dal.Queryable().Where(e => e.LogonAccount == info.LogonAccount))
                 {
-                    if(item.Id.ToString() != info.Id.ToString())
+                    if (item.Id.ToString() != info.Id.ToString())
                     {
                         throw ApiException.BadRequest("登陆账号已存在，无法修改");
                     }
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -292,7 +303,7 @@ namespace TianCheng.SystemCommon.Services
         internal void OnDepartmentChanged(DepartmentInfo department)
         {
             string depId = department.Id.ToString();
-            var empList = _Dal.SearchQueryable().Where(e => e.Department != null && e.Department.Id == depId).ToList();
+            var empList = _Dal.Queryable().Where(e => e.Department != null && e.Department.Id == depId).ToList();
             foreach (var info in empList)
             {
                 info.Department.Name = department.Name;
@@ -306,7 +317,7 @@ namespace TianCheng.SystemCommon.Services
         internal void OnRoleChanged(RoleInfo role)
         {
             string roleId = role.Id.ToString();
-            var empList = _Dal.SearchQueryable().Where(e => e.Role != null && e.Role.Id == roleId).ToList();
+            var empList = _Dal.Queryable().Where(e => e.Role != null && e.Role.Id == roleId).ToList();
             foreach (var info in empList)
             {
                 info.Role.Name = role.Name;
@@ -334,7 +345,7 @@ namespace TianCheng.SystemCommon.Services
         public void Init()
         {
             //删除已有用户
-            _Dal.Remove(_Dal.Search());
+            _Dal.Drop();
             EmployeeInfo emp = new EmployeeInfo();
             emp.LogonAccount = "a";
             emp.LogonPassword = "a";
@@ -348,17 +359,17 @@ namespace TianCheng.SystemCommon.Services
             emp.UpdaterId = "";
             emp.UpdaterName = "系统初始化";
             emp.IsDelete = false;
-            var role = _RoleDal.SearchQueryable().FirstOrDefault();//初始化时，选择默认的第一个角色
+            var role = _RoleDal.Queryable().FirstOrDefault();//初始化时，选择默认的第一个角色
             emp.Role = AutoMapper.Mapper.Map<SelectView>(role);
 
-            _Dal.Save(emp);
+            _Dal.Insert(emp);
         }
         /// <summary>
         /// 更新预制管理员的配置信息
         /// </summary>
         public void UpdateAdmin()
         {
-            var admin = _Dal.SearchQueryable().Where(e => e.Name == "预制管理员").FirstOrDefault();
+            var admin = _Dal.Queryable().Where(e => e.Name == "预制管理员").FirstOrDefault();
             if (admin == null)
             {
                 admin = new EmployeeInfo();
@@ -376,10 +387,17 @@ namespace TianCheng.SystemCommon.Services
                 admin.IsDelete = false;
             }
             //设置角色信息
-            var role = _RoleDal.SearchQueryable().Where(e => e.Name == "系统管理员").FirstOrDefault();//初始化时，选择默认的第一个角色
+            var role = _RoleDal.Queryable().Where(e => e.Name == "系统管理员").FirstOrDefault();//初始化时，选择默认的第一个角色
             admin.Role = AutoMapper.Mapper.Map<SelectView>(role);
             //保存管理员用户信息
-            _Dal.Save(admin);
+            if (admin.IsEmpty())
+            {
+                _Dal.Insert(admin);
+            }
+            else
+            {
+                _Dal.Update(admin);
+            }
         }
         #endregion
 
@@ -404,7 +422,7 @@ namespace TianCheng.SystemCommon.Services
                 throw ApiException.BadRequest("原密码输入错误");
             }
             emp.LogonPassword = newPwd;
-            _Dal.Save(emp);
+            _Dal.Update(emp);
             return ResultView.Success(emp.Id);
         }
         #endregion
@@ -420,7 +438,7 @@ namespace TianCheng.SystemCommon.Services
             var emp = _SearchById(id);
             emp.State = UserState.Disable;
             emp.ProcessState = ProcessState.Disable;
-            _Dal.Save(emp);
+            _Dal.Update(emp);
             return ResultView.Success(id);
         }
 
@@ -434,7 +452,7 @@ namespace TianCheng.SystemCommon.Services
             var emp = _SearchById(id);
             emp.State = UserState.Enable;
             emp.ProcessState = ProcessState.Enable;
-            _Dal.Save(emp);
+            _Dal.Update(emp);
             return ResultView.Success(id);
         }
         /// <summary>
@@ -447,7 +465,7 @@ namespace TianCheng.SystemCommon.Services
             var emp = _SearchById(id);
             emp.State = UserState.Enable;
             emp.ProcessState = ProcessState.Enable;
-            _Dal.Save(emp);
+            _Dal.Update(emp);
             return ResultView.Success(id);
         }
         #endregion
@@ -459,7 +477,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         internal int CountByRoleId(string roleId)
         {
-            return _Dal.SearchQueryable().Where(e => e.Role != null && String.IsNullOrEmpty(e.Role.Id) && e.Role.Id == roleId && e.IsDelete == false && e.State == UserState.Enable).Count();
+            return _Dal.Queryable().Where(e => e.Role != null && String.IsNullOrEmpty(e.Role.Id) && e.Role.Id == roleId && e.IsDelete == false && e.State == UserState.Enable).Count();
         }
         /// <summary>
         /// 查看某部门下的可用员工的个数
@@ -468,7 +486,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         internal int CountByDepartmentId(string departmentId)
         {
-            return _Dal.SearchQueryable().Where(e => e.Department != null && String.IsNullOrEmpty(e.Department.Id) && e.Department.Id == departmentId && e.IsDelete == false && e.State == UserState.Enable).Count();
+            return _Dal.Queryable().Where(e => e.Department != null && String.IsNullOrEmpty(e.Department.Id) && e.Department.Id == departmentId && e.IsDelete == false && e.State == UserState.Enable).Count();
         }
     }
 }

@@ -19,11 +19,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static void TianChengCommonInit(this IServiceCollection services, IConfigurationRoot configuration)
+        public static void TianChengCommonInit(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient(typeof(TianCheng.BaseService.PlugIn.IAuthService), typeof(TianCheng.SystemCommon.Services.AuthService));
             services.TianChengInit(configuration);
+
             //读取配置信息
-            services.Configure<FunctionModuleConfig>(configuration.GetSection("FunctionModule"));
+            //services.Configure<FunctionModuleConfig>(configuration.GetSection("FunctionModule"));
         }
     }
 }

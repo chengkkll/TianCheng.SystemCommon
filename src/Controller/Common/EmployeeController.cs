@@ -286,7 +286,8 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<SelectView> Select()
         {
-            EmployeeQuery query = new EmployeeQuery() { OrderBy = "nameAsc", Pagination = QueryPagination.DefaultObject };
+            EmployeeQuery query = new EmployeeQuery() { Pagination = QueryPagination.DefaultObject };
+            query.Sort.Property = "name";
             return _Service.Select(query);
         }
         /// <summary>
@@ -299,7 +300,8 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<SelectView> SelectByDepartment(string depId)
         {
-            EmployeeQuery query = new EmployeeQuery() { OrderBy = "nameAsc", DepartmentId = depId, Pagination = QueryPagination.DefaultObject };
+            EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject };
+            query.Sort.Property = "name";
             return _Service.Select(query);
         }
         #endregion
@@ -314,7 +316,7 @@ namespace TianCheng.SystemCommon.Controller
         [Route("UpPwd/Other")]
         [HttpPatch]
         public ResultView UpdatePasswordOther([FromBody]UpdatePasswordView view)
-        {            
+        {
             return _Service.UpdatePassword(view.Id, view.OldPwd, view.NewPwd);
         }
 

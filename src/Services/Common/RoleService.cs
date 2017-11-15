@@ -46,7 +46,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<RoleInfo> _Filter(RoleQuery input)
         {
-            var query = _Dal.SearchQueryable();
+            var query = _Dal.Queryable();
 
             #region 查询条件
             //不显示删除的数据
@@ -62,12 +62,18 @@ namespace TianCheng.SystemCommon.Services
 
             #region 设置排序规则
             //设置排序方式
-            switch (input.OrderBy)
+            //switch (input.OrderBy)
+            //{
+            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
+            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
+            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
+            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //    default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //}
+            switch (input.Sort.Property)
             {
-                case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-                case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-                case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-                case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+                case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
+                case "date": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
                 default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
             #endregion
@@ -83,7 +89,7 @@ namespace TianCheng.SystemCommon.Services
         public Dictionary<string, RoleInfo> GetNameDict()
         {
             Dictionary<string, RoleInfo> dict = new Dictionary<string, RoleInfo>();
-            foreach (RoleInfo info in _Dal.SearchQueryable().Where(e => e.IsDelete == false))
+            foreach (RoleInfo info in _Dal.Queryable().Where(e => e.IsDelete == false))
             {
                 if (!dict.ContainsKey(info.Name))
                 {
@@ -135,7 +141,7 @@ namespace TianCheng.SystemCommon.Services
         public void InitAdmin()
         {
             //删除已有的角色信息
-            List<RoleInfo> roleList = _Dal.SearchQueryable().Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains("管理员")).ToList();
+            List<RoleInfo> roleList = _Dal.Queryable().Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains("管理员")).ToList();
             if (roleList == null || roleList.Count == 0)
             {
                 roleList = new List<RoleInfo>();
@@ -149,7 +155,7 @@ namespace TianCheng.SystemCommon.Services
                 admin.CreateDate = DateTime.Now;
                 admin.CreaterId = "";
                 admin.CreaterName = "系统初始化";
-                _Dal.Save(admin);
+                _Dal.Update(admin);
             }
         }
         /// <summary>
@@ -157,7 +163,7 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         public void UpdateAdminRole()
         {
-            RoleInfo admin = _Dal.SearchQueryable().Where(e => e.Name == "系统管理员").FirstOrDefault();
+            RoleInfo admin = _Dal.Queryable().Where(e => e.Name == "系统管理员").FirstOrDefault();
             if (admin == null)
             {
                 admin = new RoleInfo() { Name = "系统管理员", Desc = "系统默认系统管理员" };
@@ -176,7 +182,14 @@ namespace TianCheng.SystemCommon.Services
             admin.IsDelete = false;
 
             //保存管理员角色信息
-            _Dal.Save(admin);
+            if (admin.IsEmpty())
+            {
+                _Dal.Insert(admin);
+            }
+            else
+            {
+                _Dal.Update(admin);
+            }
         }
         #endregion
 

@@ -40,6 +40,7 @@ namespace SamplesWebApi.Service
 
             // 设置部门更新的后置处理
             DepartmentServiceOption.Option.Updated = OnUpdated;
+
         }
 
         /// <summary>

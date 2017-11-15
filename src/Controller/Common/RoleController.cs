@@ -128,7 +128,7 @@ namespace TianCheng.SystemCommon.Controller
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.RoleController.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-角色管理" })]
         [Route("Select")]
-        [HttpPost]
+        [HttpGet]
         public List<SelectView> Select()
         {
             RoleQuery queryInfo = new RoleQuery();

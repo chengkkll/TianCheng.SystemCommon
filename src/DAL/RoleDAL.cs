@@ -9,7 +9,8 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 角色信息 [数据持久化]
     /// </summary>
-    public class RoleDAL : DALCommon<RoleInfo>
+    [DBMapping("System_RoleInfo")]
+    public class RoleDAL : MongoOperation<RoleInfo>
     {
     }
 }

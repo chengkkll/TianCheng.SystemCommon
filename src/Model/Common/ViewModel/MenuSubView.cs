@@ -28,15 +28,27 @@ namespace TianCheng.SystemCommon.Model
         public string Title { get; set; }
 
         /// <summary>
-        /// 菜单的定位
+        /// 菜单的定位 废弃，以后不用了。
         /// </summary>
         [JsonProperty("sref")]
         public string Sref { get; set; }
+
+        /// <summary>
+        /// 菜单的定位
+        /// </summary>
+        [JsonProperty("link")]
+        public string Link { get { return Sref; } set { Sref = value; } }
 
         /// <summary>
         /// 字体图标
         /// </summary>
         [JsonProperty("font_awesome")]
         public string FontAwesome { get; set; }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        [JsonProperty("icon")]
+        public string Icon { get; set; }
     }
 }

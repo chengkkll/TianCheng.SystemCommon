@@ -12,6 +12,9 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.XPath;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace TianCheng.SystemCommon.Services
 {
@@ -25,19 +28,43 @@ namespace TianCheng.SystemCommon.Services
         /// 模块配置信息
         /// </summary>
         FunctionModuleConfig ModuleConfig;
+        IHostingEnvironment _host;
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
-        /// <param name="moduleConfig"></param>
-        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, IOptions<FunctionModuleConfig> moduleConfig)
+        /// <param name="configuration"></param>
+        /// <param name="host"></param>
+        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, 
+            IConfiguration configuration,
+            IHostingEnvironment host)
             : base(dal, logger)
         {
-            if (moduleConfig.Value != null)
+            var node = configuration.GetSection("FunctionModule:ModuleDict");
+
+            ModuleConfig = new FunctionModuleConfig();
+            ModuleConfig.ModuleDict = new Dictionary<string, string>();
+
+
+            for (int i=0; true ;i++)
             {
-                ModuleConfig = moduleConfig.Value;
+                string code = configuration.GetSection($"FunctionModule:ModuleDict:{i}:Code").Value;
+                if(String.IsNullOrWhiteSpace(code))
+                {
+                    break;
+                }
+                string name = configuration.GetSection($"FunctionModule:ModuleDict:{i}:Name").Value;
+                ModuleConfig.ModuleDict.Add(code, name);
             }
+
+            
+
+            //if (moduleConfig.Value != null)
+            //{
+            //    ModuleConfig = moduleConfig.Value;
+            //}
+            _host = host;
         }
         #endregion
 
@@ -147,7 +174,7 @@ namespace TianCheng.SystemCommon.Services
             }
             //保存数据
             _Dal.Drop();
-            _Dal.Save(moduleList);
+            _Dal.Insert(moduleList);
         }
 
         #region 注释文档操作
@@ -167,7 +194,8 @@ namespace TianCheng.SystemCommon.Services
                     docList = new List<XDocument>();
 
                     //获取注释文件所在路径
-                    var basePath = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath;
+                    var basePath = _host.ContentRootPath;
+                    //var basePath = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath;
                     foreach (string file in System.IO.Directory.GetFiles(basePath, "*.xml"))
                     {
                         docList.Add(XDocument.Load(file));
@@ -187,14 +215,14 @@ namespace TianCheng.SystemCommon.Services
                             if (assembly != null)
                             {
                                 string assemblyPath = System.IO.Path.GetDirectoryName(assembly.Location);
-                                if(!String.IsNullOrWhiteSpace(assemblyPath))
+                                if (!String.IsNullOrWhiteSpace(assemblyPath))
                                 {
                                     foreach (string file in System.IO.Directory.GetFiles(assemblyPath, "*.xml"))
                                     {
                                         docList.Add(XDocument.Load(file));
                                     }
                                 }
-                                
+
                             }
                         }
                         catch
@@ -237,7 +265,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<FunctionModuleView> LoadTree()
         {
-            var list = _Dal.SearchQueryable().ToList();
+            var list = _Dal.Queryable().ToList();
             return AutoMapper.Mapper.Map<List<FunctionModuleView>>(list);
         }
         /// <summary>
@@ -247,7 +275,7 @@ namespace TianCheng.SystemCommon.Services
         public List<FunctionView> SearchFunction()
         {
             List<FunctionView> list = new List<FunctionView>();
-            var query = _Dal.SearchQueryable().ToList();
+            var query = _Dal.Queryable().ToList();
             foreach (var module in query)
             {
                 foreach (var group in module.FunctionGroups)
@@ -268,7 +296,7 @@ namespace TianCheng.SystemCommon.Services
         {
             List<FunctionView> list = new List<FunctionView>();
             FunctionDAL _Dal = new FunctionDAL();
-            var query = _Dal.SearchQueryable().ToList();
+            var query = _Dal.Queryable().ToList();
             foreach (var module in query)
             {
                 foreach (var group in module.FunctionGroups)

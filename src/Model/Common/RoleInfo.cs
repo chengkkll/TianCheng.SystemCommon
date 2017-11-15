@@ -12,7 +12,6 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 角色信息
     /// </summary>
-    [CollectionMapping("System_RoleInfo")]
     public class RoleInfo : BusinessMongoModel
     {
         /// <summary>

@@ -404,7 +404,7 @@ namespace TianCheng.SystemCommon.Services
 
 
             _Dal.Drop();
-            _Dal.Save(areaList);
+            _Dal.Insert(areaList);
         }
         #endregion
 
@@ -416,7 +416,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<AreaInfo> _Filter(AreaQuery input)
         {
-            var query = _Dal.SearchQueryable();
+            var query = _Dal.Queryable();
 
             #region 查询条件
 
@@ -454,16 +454,24 @@ namespace TianCheng.SystemCommon.Services
 
             #region 设置排序规则
             //设置排序方式
-            switch (input.OrderBy)
+            //switch (input.OrderBy)
+            //{
+            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
+            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
+            //    case "codeAsc": { query = query.OrderBy(e => e.Code); break; }
+            //    case "codeDesc": { query = query.OrderByDescending(e => e.Code); break; }
+            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
+            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //    default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //}
+            switch (input.Sort.Property)
             {
-                case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-                case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-                case "codeAsc": { query = query.OrderBy(e => e.Code); break; }
-                case "codeDesc": { query = query.OrderByDescending(e => e.Code); break; }
-                case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-                case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+                case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
+                case "code": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Code) : query.OrderByDescending(e => e.Code); break; }
+                case "date": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
                 default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
+
             #endregion
 
             //返回查询结果
@@ -481,7 +489,7 @@ namespace TianCheng.SystemCommon.Services
             {
                 return new List<AreaInfo>();
             }
-            return _Dal.SearchQueryable().Where(e => (!String.IsNullOrEmpty(e.Code) && e.Code.Contains(key)) ||
+            return _Dal.Queryable().Where(e => (!String.IsNullOrEmpty(e.Code) && e.Code.Contains(key)) ||
                 (!String.IsNullOrEmpty(e.Name) && e.Name.Contains(key)) ||
                 (!String.IsNullOrEmpty(e.NameEn) && e.NameEn.Contains(key)) ||
                 (!String.IsNullOrEmpty(e.TelephoneCode) && e.TelephoneCode.Contains(key)));
@@ -500,7 +508,7 @@ namespace TianCheng.SystemCommon.Services
             }
 
             List<AreaInfo> areaList = new List<AreaInfo>();
-            foreach (var area in _Dal.SearchQueryable().ToList())
+            foreach (var area in _Dal.Queryable().ToList())
             {
                 if (!String.IsNullOrEmpty(area.Name) && address.Contains(area.Name))
                 {

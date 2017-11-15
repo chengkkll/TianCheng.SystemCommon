@@ -9,7 +9,8 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 区域信息 [数据持久化]
     /// </summary>
-    public class AreaDAL : DALCommon<AreaInfo>
+    [DBMapping("System_Area")]
+    public class AreaDAL : MongoOperation<AreaInfo>
     {
     }
 }

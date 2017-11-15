@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,14 @@ using TianCheng.BaseService.PlugIn;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace TianCheng.SystemCommon.Services
 {
     /// <summary>
     /// 登录处理
     /// </summary>
-    public class AuthService : IServiceRegister, IAuthService
+    public class AuthService : IAuthService
     {
         #region 构造方法
         private readonly EmployeeDAL _employeeDal;
@@ -32,31 +34,42 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="employeeDal"></param>
         /// <param name="logger"></param>
-        /// <param name="tokenOptions"></param>
+        /// <param name="configuration"></param>
         /// <param name="employeeService"></param>
         /// <param name="roleService"></param>
         /// <param name="menuService"></param>
         /// <param name="functionService"></param>
-        public AuthService(EmployeeDAL employeeDal, ILogger<AuthService> logger, IOptions<TokenProviderOptions> tokenOptions,
-            EmployeeService employeeService, RoleService roleService, MenuService menuService,FunctionService functionService)
+        public AuthService(EmployeeDAL employeeDal, ILogger<AuthService> logger, 
+            Microsoft.Extensions.Configuration.IConfiguration configuration,
+            EmployeeService employeeService, RoleService roleService, MenuService menuService, FunctionService functionService)
         {
             _employeeDal = employeeDal;
             _logger = logger;
-            _tokenOptions = tokenOptions.Value;
             _EmployeeService = employeeService;
             _RoleService = roleService;
             _MenuService = menuService;
             _FunctionService = functionService;
+            _tokenOptions = TokenProviderOptions.Load(configuration);
         }
         #endregion
 
         /// <summary>
         /// 每次请求接口时，加载用户的权限信息
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="identity"></param>
-        public void FillFunctionPolicy(string userId, ClaimsIdentity identity)
+        public void FillFunctionPolicy( ClaimsIdentity identity)
         {
+            string userId = "";
+            foreach(var item in identity.Claims)
+            {
+                if(item.Type == "id")
+                {
+                    userId = item.Value;
+                    break;
+                }
+            }
+
+
             EmployeeView employee = _EmployeeService.SearchById(userId);
 
             // 添加角色声明
@@ -68,11 +81,11 @@ namespace TianCheng.SystemCommon.Services
             }
             // 添加权限声明
             RoleView role = _RoleService.SearchById(employee.Role.Id);
-            if(role == null)
+            if (role == null)
             {
                 throw ApiException.BadRequest("无法根据用户获取角色信息");
             }
-            if(role.FunctionPower == null)
+            if (role.FunctionPower == null)
             {
                 //如果功能点为空，初始化功能点
                 if (_FunctionService.SearchQueryable().Count() == 0)
@@ -98,6 +111,15 @@ namespace TianCheng.SystemCommon.Services
         }
 
         /// <summary>
+        /// 登录时的事件处理
+        /// </summary>
+        static public Action<EmployeeInfo> OnLogin;
+        /// <summary>
+        /// 退出时的事件处理
+        /// </summary>
+        static public Action<TokenLogonInfo> OnLogout;
+
+        /// <summary>
         /// 登录
         /// </summary>
         /// <param name="account"></param>
@@ -107,12 +129,24 @@ namespace TianCheng.SystemCommon.Services
         {
             account = account.Trim();
             password = password.Trim();
-
-            var employeeList = _employeeDal.SearchQueryable()
-                .Where(e => e.LogonAccount == account && e.LogonPassword == password && e.IsDelete == false);
+            //查询密码正确的可用用户列表
+            var pwdQuery = _employeeDal.Queryable().Where(e => e.LogonPassword == password && e.IsDelete == false).ToList();
+            
+            // 通过账号和密码验证登录
+            var employeeList = pwdQuery.Where(e => e.LogonAccount == account);
             if (employeeList.Count() > 1)
             {
                 throw ApiException.BadRequest("有多个满足条件的用户，无法登陆。");
+            }
+
+            // 如果查找不到用户信息，并且允许用电话登录，尝试电话号码+登录密码登录
+            if (employeeList.Count() == 0 && AuthServiceOption.Option.IsLogonByTelephone)
+            {
+                employeeList = pwdQuery.Where(e => e.Telephone == account || e.Mobile == account);
+                if (employeeList.Count() > 1)
+                {
+                    throw ApiException.BadRequest("有多个满足条件的用户，无法通过电话登陆。");
+                }
             }
 
             var employee = employeeList.FirstOrDefault();
@@ -131,17 +165,39 @@ namespace TianCheng.SystemCommon.Services
                 throw ApiException.BadRequest("多次登陆失败，登陆已被锁住，请与管理员联系。");
             }
 
+            if(OnLogin != null)
+            {
+                OnLogin(employee);
+            }
+
+
             List<Claim> claims = new List<Claim>
             {
                 new Claim("id",employee.Id.ToString()),
                 new Claim("name", employee.Name ?? ""),
                 new Claim("roleId",employee.Role?.Id ?? ""),
-                new Claim("depId",employee.Department?.Id ?? "")
+                new Claim("depId",employee.Department?.Id ?? ""),
+                new Claim("depName",employee.Department?.Name ?? "")
             };
+
 
             var identity = new ClaimsIdentity(new GenericIdentity(account, "Token"), claims);
             string token = Jwt.GenerateJwtToken(employee.Id.ToString(), identity, _tokenOptions);
             return token;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logonInfo"></param>
+        /// <returns></returns>
+        public void Logout(TokenLogonInfo logonInfo)
+        {
+            if (OnLogout != null)
+            {
+                OnLogout(logonInfo);
+            }
         }
     }
 

@@ -12,7 +12,6 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 菜单信息
     /// </summary>
-    [CollectionMapping("System_MenuInfo")]
     public class MenuMainInfo : BusinessMongoModel
     {
         /// <summary>
@@ -39,6 +38,11 @@ namespace TianCheng.SystemCommon.Model
         /// 字体图标
         /// </summary>
         public string FontAwesome { get; set; }
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        public string Icon { get; set; }
 
         private List<MenuSubInfo> _SubMenu = new List<MenuSubInfo>();
         /// <summary>

@@ -12,7 +12,6 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 部门信息
     /// </summary>
-    [CollectionMapping("System_DepartmentInfo")]
     public class DepartmentInfo : BusinessMongoModel
     {
         #region 部门基本信息

@@ -35,7 +35,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> ManageMultipleTree()
         {
-            var list = _Dal.SearchQueryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e=>e.Index).ToList();
+            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e=>e.Index).ToList();
             return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
         }
         /// <summary>
@@ -44,7 +44,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> ManageSingleTree()
         {
-            var list = _Dal.SearchQueryable().Where(e => e.Type == MenuType.ManageSingle).OrderBy(e => e.Index).ToList();
+            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageSingle).OrderBy(e => e.Index).ToList();
             return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
         }
 
@@ -54,7 +54,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> AllTree()
         {
-            var list = _Dal.SearchQueryable().OrderBy(e => e.Index).ToList();
+            var list = _Dal.Queryable().OrderBy(e => e.Index).ToList();
             return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
         }
         #endregion
@@ -79,7 +79,7 @@ namespace TianCheng.SystemCommon.Services
                 MenuServiceOption.Option.InitMenuData(mainList);
             }
             _Dal.Drop();
-            _Dal.Save(mainList);
+            _Dal.Insert(mainList);
         }
         #endregion
 

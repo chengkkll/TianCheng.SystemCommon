@@ -9,7 +9,8 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 部门信息 [数据持久化]
     /// </summary>
-    public class DepartmentDAL : DALCommon<DepartmentInfo>
+    [DBMapping("System_DepartmentInfo")]
+    public class DepartmentDAL : MongoOperation<DepartmentInfo>
     {
     }
 }

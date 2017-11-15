@@ -8,6 +8,7 @@ using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Services;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using TianCheng.BaseService.PlugIn;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -15,16 +16,16 @@ namespace TianCheng.SystemCommon.Controller
     /// 登录处理Controller
     /// </summary>
     [Produces("application/json")]
-    [Route("api/Auth")]
-    public class AuthController : Microsoft.AspNetCore.Mvc.Controller
+    [Route("api/auth")]
+    public class AuthController : DataController
     {
         #region 构造方法
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="authService"></param>
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
@@ -36,12 +37,25 @@ namespace TianCheng.SystemCommon.Controller
         /// <param name="loginView"></param>
         /// <response code="200">登录成功返回token</response>
         /// <returns></returns>
-        [HttpPost("Login")]
+        [HttpPost("login")]
         [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
         public LoginResult Login([FromBody]LoginView loginView)
         {
             string token = _authService.Login(loginView.Account, loginView.Password);
             return new LoginResult { Token = token };
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Power")]
+        [HttpPost("logout")]
+        [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
+        public ResultView Logout()
+        {
+            _authService.Logout(LogonInfo);
+            return ResultView.Success();
         }
     }
 }

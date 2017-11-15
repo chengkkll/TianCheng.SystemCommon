@@ -18,12 +18,9 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app"></param>
         /// <param name="configuration"></param>
-        /// <param name="loggerFactory"></param>
-        /// <param name="authService"></param>
-        public static void TianChengCommonInit(this IApplicationBuilder app, IConfigurationRoot configuration,
-            ILoggerFactory loggerFactory, IAuthService authService)
+        public static void TianChengCommonInit(this IApplicationBuilder app, IConfiguration configuration)
         {
-            app.TianChengInit(configuration, loggerFactory, authService);
+            app.TianChengInit(configuration);
         }
     }
 }

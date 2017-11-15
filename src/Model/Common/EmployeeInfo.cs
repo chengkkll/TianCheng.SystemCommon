@@ -12,7 +12,6 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 员工信息
     /// </summary>
-    [CollectionMapping("System_EmployeeInfo")]
     public class EmployeeInfo : BusinessMongoModel
     {
         /// <summary>

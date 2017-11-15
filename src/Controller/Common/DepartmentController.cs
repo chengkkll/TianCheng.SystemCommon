@@ -169,6 +169,26 @@ namespace TianCheng.SystemCommon.Controller
             DepartmentQuery query = new DepartmentQuery() { ParentId = id };
             return _Service.Select(query);
         }
+
+        /// <summary>
+        /// 查询当前用户的所有下级部门 下拉列表显示
+        /// </summary>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Sub")]
+        [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
+        [Route("My/Sub")]
+        [HttpGet]
+        public List<SelectView> MySub()
+        {
+            if (String.IsNullOrWhiteSpace(LogonInfo.DepartmentId))
+            {
+                ApiException.ThrowBadRequest("您需要先有所属部门才可执行此操作");
+            }
+
+            DepartmentQuery query = new DepartmentQuery() { ParentId = LogonInfo.DepartmentId };
+            List<SelectView> subList = _Service.Select(query);
+            subList.Insert(0, new SelectView() { Id = LogonInfo.DepartmentId, Name = LogonInfo.DepartmentName });
+            return subList;
+        }
         #endregion
 
     }

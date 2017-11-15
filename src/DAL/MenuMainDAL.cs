@@ -9,7 +9,8 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 菜单信息 [数据持久化]
     /// </summary>
-    public class MenuMainDAL : DALCommon<MenuMainInfo>
+    [DBMapping("System_MenuInfo")]
+    public class MenuMainDAL : MongoOperation<MenuMainInfo>
     {
     }
 }

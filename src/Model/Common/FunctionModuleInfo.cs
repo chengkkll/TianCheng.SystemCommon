@@ -9,7 +9,6 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 功能模块
     /// </summary>
-    [CollectionMapping("System_FunctionInfo")]
     public class FunctionModuleInfo : BusinessMongoModel
     {
         /// <summary>

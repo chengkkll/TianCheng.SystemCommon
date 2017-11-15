@@ -9,7 +9,8 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 员工信息 [数据持久化]
     /// </summary>
-    public class EmployeeDAL : DALCommon<EmployeeInfo>
+    [DBMapping("System_EmployeeInfo")]
+    public class EmployeeDAL : MongoOperation<EmployeeInfo>
     {
     }
 }

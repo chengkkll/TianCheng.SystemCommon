@@ -58,7 +58,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<DepartmentInfo> _Filter(DepartmentQuery input)
         {
-            var query = _Dal.SearchQueryable();
+            var query = _Dal.Queryable();
 
             #region 查询条件
             //不显示删除的数据
@@ -95,21 +95,31 @@ namespace TianCheng.SystemCommon.Services
             #region 设置排序规则
 
             //设置排序方式
-            switch (input.OrderBy)
+            //switch (input.OrderBy)
+            //{
+            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
+            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
+            //    case "codeAsc": { query = query.OrderBy(e => e.Code); break; }
+            //    case "codeDesc": { query = query.OrderByDescending(e => e.Code); break; }
+            //    case "parentAsc": { query = query.OrderBy(e => e.ParentName); break; }
+            //    case "parentDesc": { query = query.OrderByDescending(e => e.ParentName); break; }
+            //    case "manageAsc": { query = query.OrderBy(e => e.ManageName); break; }
+            //    case "manageDesc": { query = query.OrderByDescending(e => e.ManageName); break; }
+            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
+            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
+            //    case "indexAsc": { query = query.OrderBy(e => e.Index); break; }
+            //    case "indexDesc": { query = query.OrderByDescending(e => e.Index); break; }
+            //    default: { query = query.OrderBy(e => e.Index); break; }
+            //}
+            switch (input.Sort.Property)
             {
-                case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-                case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-                case "codeAsc": { query = query.OrderBy(e => e.Code); break; }
-                case "codeDesc": { query = query.OrderByDescending(e => e.Code); break; }
-                case "parentAsc": { query = query.OrderBy(e => e.ParentName); break; }
-                case "parentDesc": { query = query.OrderByDescending(e => e.ParentName); break; }
-                case "manageAsc": { query = query.OrderBy(e => e.ManageName); break; }
-                case "manageDesc": { query = query.OrderByDescending(e => e.ManageName); break; }
-                case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-                case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
-                case "indexAsc": { query = query.OrderBy(e => e.Index); break; }
-                case "indexDesc": { query = query.OrderByDescending(e => e.Index); break; }
-                default: { query = query.OrderBy(e => e.Index); break; }
+                case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
+                case "code": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Code) : query.OrderByDescending(e => e.Code); break; }
+                case "parent": { query = input.Sort.IsAsc ? query.OrderBy(e => e.ParentName) : query.OrderByDescending(e => e.ParentName); break; }
+                case "manage": { query = input.Sort.IsAsc ? query.OrderBy(e => e.ManageName) : query.OrderByDescending(e => e.ManageName); break; }
+                case "index": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Index) : query.OrderByDescending(e => e.Index); break; }
+                case "date": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
+                default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
             #endregion
 
@@ -124,7 +134,7 @@ namespace TianCheng.SystemCommon.Services
         public Dictionary<string, DepartmentInfo> GetNameDict()
         {
             Dictionary<string, DepartmentInfo> dict = new Dictionary<string, DepartmentInfo>();
-            foreach (DepartmentInfo info in _Dal.SearchQueryable().Where(e => e.IsDelete == false))
+            foreach (DepartmentInfo info in _Dal.Queryable().Where(e => e.IsDelete == false))
             {
                 if (!dict.ContainsKey(info.Name))
                 {
@@ -142,7 +152,7 @@ namespace TianCheng.SystemCommon.Services
         public List<string> GetSubDepartmentId(string id)
         {
             List<string> subIds = new List<string>();
-            var list = _Dal.SearchQueryable().Where(e => e.ParentId == id).ToList();
+            var list = _Dal.Queryable().Where(e => e.ParentId == id).ToList();
             foreach (var item in list)
             {
                 string itemId = item.Id.ToString();
@@ -159,7 +169,7 @@ namespace TianCheng.SystemCommon.Services
         public List<BaseViewModel> GetSubDepartmentView(string id)
         {
             List<BaseViewModel> subView = new List<BaseViewModel>();
-            var list = _Dal.SearchQueryable().Where(e => e.ParentId == id).ToList();
+            var list = _Dal.Queryable().Where(e => e.ParentId == id).ToList();
             foreach (var item in list)
             {
                 string itemId = item.Id.ToString();
@@ -237,14 +247,14 @@ namespace TianCheng.SystemCommon.Services
                 //如果当前部门名称改变，会同时修改其子部门下的关联上级部门名称
                 string id = info.Id.ToString();
                 string name = info.Name;
-                var query = _Dal.SearchQueryable().Where(e => e.ParentId == id).ToList();
+                var query = _Dal.Queryable().Where(e => e.ParentId == id).ToList();
                 if (query != null && query.Count != 0)
                 {
                     foreach (var item in query)
                     {
                         item.ParentName = name;
                     }
-                    _Dal.Save(query);
+                    _Dal.Update(query);
                 }
                 //当前部门名称改变，查询员工信息中的部门信息，并改变。
                 _EmployeeService.OnDepartmentChanged(info);
@@ -266,7 +276,7 @@ namespace TianCheng.SystemCommon.Services
         {
             string depId = info.Id.ToString();
             //如果有下级部门不允许删除
-            if (_Dal.SearchQueryable().Where(e => e.ParentId == depId).Count() > 0)
+            if (_Dal.Queryable().Where(e => e.ParentId == depId).Count() > 0)
             {
                 throw ApiException.RemoveUsed("删除的部门下有子部门信息，不允许删除。");
             }
@@ -287,7 +297,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns>如果为管理员，返回部门信息，否则返回空对象</returns>
         public DepartmentInfo IsManager(string employeeId)
         {
-            return _Dal.SearchQueryable().Where(e => e.ManageId == employeeId).FirstOrDefault();
+            return _Dal.Queryable().Where(e => e.ManageId == employeeId).FirstOrDefault();
         }
 
         /// <summary>

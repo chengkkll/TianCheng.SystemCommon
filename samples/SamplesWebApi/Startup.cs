@@ -9,70 +9,50 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyModel;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
 
 namespace SamplesWebApi
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public IConfiguration Configuration { get; }
 
-        public IConfigurationRoot Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            //services.AddMvc();
-
-            //string xmlPath = $"{AppContext.BaseDirectory}\\LibraryComments";
-            //if (!System.IO.Directory.Exists(xmlPath))
-            //{
-            //    System.IO.Directory.CreateDirectory(xmlPath);
-            //}
-
-            //foreach (CompilationLibrary library in DependencyContext.Default.CompileLibraries)
-            //{
-            //    if (library.Name.Contains("TianCheng"))
-            //    {
-
-
-            //        Assembly assembly = Assembly.Load(new AssemblyName(library.Name));
-            //        if (assembly != null && !String.IsNullOrWhiteSpace(assembly.Location))
-            //        {
-            //            string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            //            foreach (string file in System.IO.Directory.GetFiles(path, "*.xml"))
-            //            {
-            //                //将xml文件拷贝到运行目录
-            //                string desc = $"{xmlPath}\\{System.IO.Path.GetFileName(file)}";
-            //                System.IO.File.Copy(file, desc);
-            //            }
-            //        }
-            //    }
-            //}
-
             services.TianChengCommonInit(Configuration);
-
-
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-            TianCheng.SystemCommon.Services.AuthService authService)
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            //loggerFactory.AddDebug();
-
-            //app.UseMvc();
-
-            app.TianChengCommonInit(Configuration, loggerFactory, authService);
-        }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+           
+            app.TianChengCommonInit(Configuration);
+        }        
     }
 }

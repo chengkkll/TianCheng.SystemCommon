@@ -44,26 +44,19 @@ namespace SamplesWebApi.Service
         /// <param name="mainList">已设置的菜单信息</param>
         public void InitMenuData(List<MenuMainInfo> mainList)
         {
-            MenuMainInfo main1 = new MenuMainInfo() { Name = "基础数据", Index = 1 };
-            main1.SubMenu.Add(new MenuSubInfo() { Name = "拒绝原因", Sref = "app.basic.disagreed", Index = 1 });
-            main1.SubMenu.Add(new MenuSubInfo() { Name = "客户信息", Sref = "app.basic.client", Index = 1 });
 
-            MenuMainInfo main2 = new MenuMainInfo() { Name = "录音管理", Index = 2 };
-            main2.SubMenu.Add(new MenuSubInfo() { Name = "接单管理", Sref = "app.recording.takers", Index = 1 });
-            main2.SubMenu.Add(new MenuSubInfo() { Name = "我的录音", Sref = "app.recording.edit", Index = 2 });
-            main2.SubMenu.Add(new MenuSubInfo() { Name = "审核录音", Sref = "app.recording.check", Index = 3 });
 
-            MenuMainInfo mainSystem = new MenuMainInfo() { Name = "系统管理", Index = 6 };
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Sref = "app.system.department", Index = 1 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Sref = "app.system.auth_management", Index = 3 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Sref = "app.system.roles", Index = 5 });
+            MenuMainInfo mainSystem = new MenuMainInfo() { Name = "系统管理", Sref = "System", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 6 };
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Sref = "System.Departments", Type = MenuType.ManageSingle, Index = 1 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "菜单管理", Sref = "System.Menus", Type = MenuType.ManageSingle, Index = 3 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Sref = "System.Employees", Type = MenuType.ManageSingle, Index = 5 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Sref = "System.Roles", Type = MenuType.ManageSingle, Index = 7 });
 
-            MenuMainInfo mainPersonal = new MenuMainInfo() { Name = "个人信息", Index = 5 };
-            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Sref = "app.personal.change_my_login_password", Index = 4 });
+            MenuMainInfo mainPersonal = new MenuMainInfo() { Name = "个人中心", Sref = "PersonalCenter", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 5 };
+            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "基本信息", Sref = "PersonalCenter.Common", Type = MenuType.ManageSingle, Index = 2 });
+            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Sref = "PersonalCenter.ChangePwd", Type = MenuType.ManageSingle, Index = 4 });
 
             mainList.Clear();
-            mainList.Add(main1);
-            mainList.Add(main2);
             mainList.Add(mainSystem);
             mainList.Add(mainPersonal);
         }
