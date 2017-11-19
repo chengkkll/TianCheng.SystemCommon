@@ -196,10 +196,7 @@ namespace TianCheng.SystemCommon.Services
                 }
             }
             //扩展的验证处理
-            if (EmployeeServiceOption.Option.SavingCheck != null)
-            {
-                EmployeeServiceOption.Option.SavingCheck(info, logonInfo);
-            }
+            EmployeeServiceOption.Option.SavingCheck?.Invoke(info, logonInfo);
 
             if (info.IsEmpty())
             {
@@ -263,10 +260,7 @@ namespace TianCheng.SystemCommon.Services
             }
 
             // 保存的前置验证
-            if (EmployeeServiceOption.Option.Saving != null)
-            {
-                EmployeeServiceOption.Option.Saving(info, logonInfo);
-            }
+            EmployeeServiceOption.Option.Saving?.Invoke(info, logonInfo);
         }
 
         /// <summary>
@@ -277,10 +271,7 @@ namespace TianCheng.SystemCommon.Services
         protected override void Saved(EmployeeInfo info, TokenLogonInfo logonInfo)
         {
             // 保存的前置验证
-            if (EmployeeServiceOption.Option.Saved != null)
-            {
-                EmployeeServiceOption.Option.Saved(info, logonInfo);
-            }
+            EmployeeServiceOption.Option.Saved?.Invoke(info, logonInfo);
         }
 
         /// <summary>
@@ -291,10 +282,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logonInfo"></param>
         protected override void Updated(EmployeeInfo info, EmployeeInfo old, TokenLogonInfo logonInfo)
         {
-            if (EmployeeServiceOption.Option.Updated != null)
-            {
-                EmployeeServiceOption.Option.Updated(info, old, logonInfo);
-            }
+            EmployeeServiceOption.Option.Updated?.Invoke(info, old, logonInfo);
         }
         /// <summary>
         /// 部门信息改变时，修改用户信息
@@ -346,22 +334,23 @@ namespace TianCheng.SystemCommon.Services
         {
             //删除已有用户
             _Dal.Drop();
-            EmployeeInfo emp = new EmployeeInfo();
-            emp.LogonAccount = "a";
-            emp.LogonPassword = "a";
-            emp.Name = "预制管理员";
-            emp.ProcessState = ProcessState.Edit;
-            emp.State = UserState.Enable;
-            emp.CreateDate = DateTime.Now;
-            emp.CreaterId = "";
-            emp.CreaterName = "系统初始化";
-            emp.UpdateDate = DateTime.Now;
-            emp.UpdaterId = "";
-            emp.UpdaterName = "系统初始化";
-            emp.IsDelete = false;
+            EmployeeInfo emp = new EmployeeInfo()
+            {
+                LogonAccount = "a",
+                LogonPassword = "a",
+                Name = "预制管理员",
+                ProcessState = ProcessState.Edit,
+                State = UserState.Enable,
+                CreateDate = DateTime.Now,
+                CreaterId = "",
+                CreaterName = "系统初始化",
+                UpdateDate = DateTime.Now,
+                UpdaterId = "",
+                UpdaterName = "系统初始化",
+                IsDelete = false
+            };
             var role = _RoleDal.Queryable().FirstOrDefault();//初始化时，选择默认的第一个角色
             emp.Role = AutoMapper.Mapper.Map<SelectView>(role);
-
             _Dal.Insert(emp);
         }
         /// <summary>
@@ -372,23 +361,27 @@ namespace TianCheng.SystemCommon.Services
             var admin = _Dal.Queryable().Where(e => e.Name == "预制管理员").FirstOrDefault();
             if (admin == null)
             {
-                admin = new EmployeeInfo();
-                admin.LogonAccount = "a";
-                admin.LogonPassword = "a";
-                admin.Name = "预制管理员";
-                admin.ProcessState = ProcessState.Edit;
-                admin.State = UserState.Enable;
-                admin.CreateDate = DateTime.Now;
-                admin.CreaterId = "";
-                admin.CreaterName = "系统初始化";
-                admin.UpdateDate = DateTime.Now;
-                admin.UpdaterId = "";
-                admin.UpdaterName = "系统初始化";
-                admin.IsDelete = false;
+                admin = new EmployeeInfo()
+                {
+                    LogonAccount = "a",
+                    LogonPassword = "a",
+                    Name = "预制管理员" + Guid.NewGuid().ToString(),
+                    ProcessState = ProcessState.Edit,
+                    State = UserState.Enable,
+                    CreateDate = DateTime.Now,
+                    CreaterId = "",
+                    CreaterName = "系统初始化",
+                    UpdateDate = DateTime.Now,
+                    UpdaterId = "",
+                    UpdaterName = "系统初始化",
+                    IsDelete = false,
+                    Department = new SelectView() { Code = "", Name = "", Id = "" }
+                };
             }
             //设置角色信息
             var role = _RoleDal.Queryable().Where(e => e.Name == "系统管理员").FirstOrDefault();//初始化时，选择默认的第一个角色
             admin.Role = AutoMapper.Mapper.Map<SelectView>(role);
+            //admin.UpdateDate = DateTime.Now;
             //保存管理员用户信息
             if (admin.IsEmpty())
             {

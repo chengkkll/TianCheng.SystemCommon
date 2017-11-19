@@ -155,7 +155,7 @@ namespace TianCheng.SystemCommon.Services
                 admin.CreateDate = DateTime.Now;
                 admin.CreaterId = "";
                 admin.CreaterName = "系统初始化";
-                _Dal.Update(admin);
+                _Dal.Save(admin);
             }
         }
         /// <summary>

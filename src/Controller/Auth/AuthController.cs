@@ -13,7 +13,7 @@ using TianCheng.BaseService.PlugIn;
 namespace TianCheng.SystemCommon.Controller
 {
     /// <summary>
-    /// 登录处理Controller
+    /// 系统控制
     /// </summary>
     [Produces("application/json")]
     [Route("api/auth")]
@@ -49,7 +49,7 @@ namespace TianCheng.SystemCommon.Controller
         /// 退出登录
         /// </summary>
         /// <returns></returns>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Power")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.SystemController.Power")]
         [HttpPost("logout")]
         [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
         public ResultView Logout()

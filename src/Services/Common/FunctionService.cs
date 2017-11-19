@@ -36,21 +36,20 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logger"></param>
         /// <param name="configuration"></param>
         /// <param name="host"></param>
-        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, 
+        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger,
             IConfiguration configuration,
             IHostingEnvironment host)
             : base(dal, logger)
         {
             var node = configuration.GetSection("FunctionModule:ModuleDict");
 
-            ModuleConfig = new FunctionModuleConfig();
-            ModuleConfig.ModuleDict = new Dictionary<string, string>();
+            ModuleConfig = new FunctionModuleConfig() { ModuleDict = new Dictionary<string, string>() };
 
 
-            for (int i=0; true ;i++)
+            for (int i = 0; true; i++)
             {
                 string code = configuration.GetSection($"FunctionModule:ModuleDict:{i}:Code").Value;
-                if(String.IsNullOrWhiteSpace(code))
+                if (String.IsNullOrWhiteSpace(code))
                 {
                     break;
                 }
@@ -58,7 +57,7 @@ namespace TianCheng.SystemCommon.Services
                 ModuleConfig.ModuleDict.Add(code, name);
             }
 
-            
+
 
             //if (moduleConfig.Value != null)
             //{
@@ -85,11 +84,12 @@ namespace TianCheng.SystemCommon.Services
                 {
                     continue;
                 }
-                FunctionModuleInfo module = new FunctionModuleInfo();
-                module.Index = moduleIndex++;
-                module.Name = ModuleConfig.ModuleDict[key];
-                module.Code = key;
-
+                FunctionModuleInfo module = new FunctionModuleInfo()
+                {
+                    Index = moduleIndex++,
+                    Name = ModuleConfig.ModuleDict[key],
+                    Code = key
+                };
                 if (!String.IsNullOrEmpty(module.Code) && !moduleDict.ContainsKey(module.Code))
                 {
                     moduleDict.Add(module.Code, module);
@@ -106,10 +106,12 @@ namespace TianCheng.SystemCommon.Services
                     {
                         continue;
                     }
-                    FunctionGroupInfo group = new FunctionGroupInfo();
-                    group.Code = type.Name;
-                    group.Name = GetSummary($"T:{type.FullName}");
-                    group.ModeuleCode = type.FullName.Replace("." + type.Name, "");
+                    FunctionGroupInfo group = new FunctionGroupInfo()
+                    {
+                        Code = type.Name,
+                        Name = GetSummary($"T:{type.FullName}"),
+                        ModeuleCode = type.FullName.Replace("." + type.Name, "")
+                    };
                     if (!String.IsNullOrEmpty(group.Name) && !groupDict.ContainsKey(group.Name))
                     {
                         groupDict.Add(group.Name, group);
@@ -128,14 +130,15 @@ namespace TianCheng.SystemCommon.Services
                         if (attribute == null)
                         {
                             continue;
-                        }
-                        FunctionInfo fun = new FunctionInfo();
-                        fun.Policy = attribute.Policy;
-                        fun.Code = method.Name;
-                        fun.GroupCode = GetSummary($"T:{type.FullName}");//type.Name;
-                        fun.ModeuleCode = type.FullName.Replace("." + type.Name, "");
-                        fun.Name = GetSummary($"M:{ type.FullName}.{ method.Name}");
-                        funList.Add(fun);
+                        }                        
+                        funList.Add(new FunctionInfo()
+                        {
+                            Policy = attribute.Policy,
+                            Code = method.Name,
+                            GroupCode = GetSummary($"T:{type.FullName}"),
+                            ModeuleCode = type.FullName.Replace("." + type.Name, ""),
+                            Name = GetSummary($"M:{ type.FullName}.{ method.Name}")
+                        });
                     }
                 }
             }
@@ -250,6 +253,10 @@ namespace TianCheng.SystemCommon.Services
                     var member = ele.Attribute("name").Value.ToString();
                     if (member.Contains(method))
                     {
+                        if (ele.Element("power") != null)
+                        {
+                            return ele.Element("power").Value?.ToString().Replace("\n", "").Replace("\r", "").Trim();
+                        }
                         return ele.Element("summary")?.Value?.ToString().Replace("\n", "").Replace("\r", "").Trim();
                     }
                 }

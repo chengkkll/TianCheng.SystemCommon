@@ -48,9 +48,10 @@ namespace TianCheng.SystemCommon.Controller
 
         #region 获取当前用户权限信息
         /// <summary>
-        /// 获取当前用户权限信息 没有此功能无法登陆
+        /// 获取当前用户权限信息
         /// </summary>
         /// <returns></returns>
+        /// <power>登录登出</power>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Power")]
         [HttpGet("Power")]
         [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
@@ -78,11 +79,12 @@ namespace TianCheng.SystemCommon.Controller
         /// <returns></returns>
         private LogonPowerView Power(bool isSpa)
         {
-            LogonPowerView view = new LogonPowerView();
-            view.Id = LogonInfo.Id;
-            view.Name = LogonInfo.Name;
-            view.Role = new RoleSimpleView();
-            view.Role.Id = LogonInfo.RoleId;
+            LogonPowerView view = new LogonPowerView()
+            {
+                Id = LogonInfo.Id,
+                Name = LogonInfo.Name,
+                Role = new RoleSimpleView() { Id = LogonInfo.RoleId }
+            };            
             var role = _roleService.SearchById(view.Role.Id);
             if (role != null)
             {
@@ -92,8 +94,7 @@ namespace TianCheng.SystemCommon.Controller
                 view.Menu = role.PagePower;
                 view.Functions = role.FunctionPower;
             }
-            view.Department = new BaseViewModel();
-            view.Department.Id = LogonInfo.DepartmentId;
+            view.Department = new BaseViewModel() { Id = LogonInfo.DepartmentId };
             if (!String.IsNullOrEmpty(view.Department.Id))
             {
                 var dep = _departmentService._SearchById(view.Department.Id);
