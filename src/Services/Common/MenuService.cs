@@ -35,7 +35,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> ManageMultipleTree()
         {
-            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e=>e.Index).ToList();
+            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e => e.Index).ToList();
             return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
         }
         /// <summary>
@@ -82,6 +82,105 @@ namespace TianCheng.SystemCommon.Services
             _Dal.Insert(mainList);
         }
         #endregion
+        /// <summary>
+        /// 保存一个子菜单信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="sref"></param>
+        /// <param name="parentName"></param>
+        public void SaveSubMenu(string name, int index, string sref, string parentName)
+        {
+            SaveSubMenu(new MenuSubInfo() { Name = name, Index = index, Sref = sref }, parentName);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="subMenu"></param>
+        /// <param name="parentName"></param>
+        public void SaveSubMenu(MenuSubInfo subMenu, string parentName)
+        {
+            if (String.IsNullOrEmpty(subMenu.Sref))
+            {
+                TianCheng.Model.ApiException.ThrowBadRequest("菜单地址不能为空");
+            }
+
+
+
+            var main = GetMainByName(parentName);
+
+            if(main == null)
+            {
+                main = CreateMainMenu(parentName);
+            }
+
+            var sub = main.SubMenu.Where(e => e.Sref == subMenu.Sref).FirstOrDefault();
+            if (sub == null)
+            {
+                main.SubMenu.Add(subMenu);
+            }
+            else
+            {
+                sub.Name = subMenu.Name;
+                sub.Index = subMenu.Index;
+                sub.Sref = subMenu.Sref;
+            }
+            _Dal.Update(main);
+        }
+
+        private MenuMainInfo CreateMainMenu(string name)
+        {
+            MenuMainInfo main = new MenuMainInfo() { Name = name, Index = 10,CreateDate = DateTime.Now ,UpdateDate = DateTime.Now};
+            _Dal.Insert(main);
+            return main;
+        }
+        /// <summary>
+        /// 保存一个主菜单信息 （子菜单不变）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="index"></param>
+        /// <param name="sref"></param>
+        public void SaveMainMenu(string name, int index, string sref)
+        {
+            SaveMainMenu(new MenuMainInfo() { Name = name, Index = index, Sref = sref });
+        }
+        public void SaveMainMenu(string name, int index)
+        {
+            SaveMainMenu(new MenuMainInfo() { Name = name, Index = index });
+        }
+
+        /// <summary>
+        /// 保存一个主菜单信息 （子菜单不变）
+        /// </summary>
+        /// <param name="mainInfo"></param>
+        public void SaveMainMenu(MenuMainInfo mainInfo)
+        {
+            if (String.IsNullOrEmpty(mainInfo.Name))
+            {
+                TianCheng.Model.ApiException.ThrowBadRequest("菜单名称不能为空");
+            }
+
+            var main = GetMainByName(mainInfo.Name);
+            if (main != null)
+            {
+                main.Index = main.Index;
+                main.Sref = main.Sref;
+                _Dal.Update(main);
+            }
+            else
+            {
+                _Dal.Insert(main);
+            }
+        }
+
+        private MenuMainInfo GetMainByName(string name)
+        {
+            return _Dal.Queryable().Where(e => e.Name == name).FirstOrDefault();
+        }
+        private MenuMainInfo GetMainBySref(string sref)
+        {
+            return _Dal.Queryable().Where(e => e.Sref == sref).FirstOrDefault();
+        }
 
         //public void AppendMenu()
         //{

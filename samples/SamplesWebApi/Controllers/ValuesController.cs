@@ -17,14 +17,16 @@ namespace SamplesWebApi.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
-        private static ServiceCollection _service;
+        //private static ServiceCollection _service;
+        private readonly MenuService MenuService;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serviceCollection"></param>
-        public ValuesController(ServiceCollection serviceCollection)
+        public ValuesController( MenuService menuService)
         {
-            _service = serviceCollection;
+            //_service = serviceCollection;
+            MenuService = menuService;
         }
 
         /// <summary>
@@ -34,10 +36,10 @@ namespace SamplesWebApi.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            var provider = _service.BuildServiceProvider();
-            var depService = provider.GetService<DepartmentService>();
+            //var provider = _service.BuildServiceProvider();
+            //var depService = provider.GetService<DepartmentService>();
 
-            
+            MenuService.SaveSubMenu("测试111s", 1, "test", "测试主菜单");
 
 
 

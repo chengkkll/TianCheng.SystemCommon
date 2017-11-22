@@ -6,9 +6,9 @@
     <Authors>KKLL</Authors>
     <Company>TianCheng</Company>
     <Description>部门、用户、角色、功能点、菜单的通用处理</Description>
-    <Version>1.1.0.4-alpha</Version>
-    <AssemblyVersion>1.1.0.4</AssemblyVersion>
-    <FileVersion>1.1.0.4</FileVersion>
+    <Version>1.1.0.5-preview</Version>
+    <AssemblyVersion>1.1.0.5</AssemblyVersion>
+    <FileVersion>1.1.0.5</FileVersion>
     <PackageProjectUrl>https://github.com/chengkkll/TianCheng.SystemCommon</PackageProjectUrl>
   </PropertyGroup>
 
