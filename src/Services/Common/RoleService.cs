@@ -150,7 +150,7 @@ namespace TianCheng.SystemCommon.Services
             //添加管理员角色
             foreach (RoleInfo admin in roleList)
             {
-                admin.PagePower = _MenuService.AllTree();
+                admin.PagePower = _MenuService.SearchMainTree();
                 admin.FunctionPower = _FunctionService.SearchFunction();
                 admin.CreateDate = DateTime.Now;
                 admin.CreaterId = "";
@@ -174,7 +174,7 @@ namespace TianCheng.SystemCommon.Services
                 admin.ProcessState = ProcessState.Edit;
 
             }
-            admin.PagePower = _MenuService.ManageMultipleTree();
+            admin.PagePower = _MenuService.SearchMainTree();
             admin.FunctionPower = _FunctionService.SearchFunction();
             admin.UpdateDate = DateTime.Now;
             admin.UpdaterId = "";

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TianCheng.Model;
 using TianCheng.BaseService;
 using TianCheng.DAL.MongoDB;
 using TianCheng.SystemCommon.DAL;
@@ -28,35 +29,54 @@ namespace TianCheng.SystemCommon.Services
         }
         #endregion
 
+        private MenuType DefaultMenuType = MenuType.ManageSingle;
+
         #region 查询
         /// <summary>
-        /// 查询多页面的菜单列表，按树形显示
+        /// 获取主菜单的树形结构
         /// </summary>
+        /// <param name="menuType"></param>
         /// <returns></returns>
-        public List<MenuMainView> ManageMultipleTree()
+        public List<MenuMainView> SearchMainTree(MenuType menuType = MenuType.None)
         {
-            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e => e.Index).ToList();
+            var query = _Dal.Queryable();
+            switch (menuType)
+            {
+                case MenuType.None: { break; }
+                case MenuType.ManageMultiple:
+                case MenuType.ManageSingle: { query = query.Where(e => e.Type == menuType); break; }
+                default: { query = query.Where(e => e.Type == MenuType.ManageSingle); break; }
+            }
+            var list = query.OrderBy(e => e.Index).ToList();
             return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
         }
-        /// <summary>
-        /// 查询多页面的菜单列表，按树形显示
-        /// </summary>
-        /// <returns></returns>
-        public List<MenuMainView> ManageSingleTree()
-        {
-            var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageSingle).OrderBy(e => e.Index).ToList();
-            return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
-        }
-
-        /// <summary>
-        /// 查询所有的菜单列表，按树形显示
-        /// </summary>
-        /// <returns></returns>
-        public List<MenuMainView> AllTree()
-        {
-            var list = _Dal.Queryable().OrderBy(e => e.Index).ToList();
-            return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
-        }
+        ///// <summary>
+        ///// 查询多页面的菜单列表，按树形显示
+        ///// </summary>
+        ///// <returns></returns>
+        //public List<MenuMainView> ManageMultipleTree()
+        //{
+        //    var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageMultiple).OrderBy(e => e.Index).ToList();
+        //    return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
+        //}
+        ///// <summary>
+        ///// 查询多页面的菜单列表，按树形显示
+        ///// </summary>
+        ///// <returns></returns>
+        //public List<MenuMainView> ManageSingleTree()
+        //{
+        //    var list = _Dal.Queryable().Where(e => e.Type == MenuType.ManageSingle).OrderBy(e => e.Index).ToList();
+        //    return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
+        //}
+        ///// <summary>
+        ///// 查询所有的菜单列表，按树形显示
+        ///// </summary>
+        ///// <returns></returns>
+        //public List<MenuMainView> AllTree()
+        //{
+        //    var list = _Dal.Queryable().OrderBy(e => e.Index).ToList();
+        //    return AutoMapper.Mapper.Map<List<MenuMainView>>(list);
+        //}
         #endregion
 
         #region 初始化
@@ -71,19 +91,74 @@ namespace TianCheng.SystemCommon.Services
             mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Sref = "app.system.employee", Index = 3 });
             mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Sref = "app.system.roles", Index = 5 });
             mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Sref = "app.personal.change_my_login_password", Index = 4 });
-
             mainList.Add(mainSystem);
 
-            if (MenuServiceOption.Option.InitMenuData != null)
-            {
-                MenuServiceOption.Option.InitMenuData(mainList);
-            }
+            MenuServiceOption.Option.InitMenuData?.Invoke(mainList);
+
             _Dal.Drop();
-            _Dal.Insert(mainList);
+            foreach (var main in mainList)
+            {
+                Create(main, new TokenLogonInfo() { });
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="logonInfo"></param>
+        protected override void Saving(MenuMainInfo info, TokenLogonInfo logonInfo)
+        {
+            if(info.Type == MenuType.None)
+            {
+                info.Type = DefaultMenuType;
+            }
         }
         #endregion
+
         /// <summary>
-        /// 保存一个子菜单信息
+        /// 保存主菜单的前置验证
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="logonInfo"></param>
+        protected override void SavingCheck(MenuMainInfo info, TokenLogonInfo logonInfo)
+        {
+            if(String.IsNullOrWhiteSpace(info.Name))
+            {
+                ApiException.ThrowBadRequest("主菜单名称不能为空");
+            }
+            if (info.Index <= 0)
+            {
+                info.Index = 10;
+            }
+            if (info.Type == MenuType.None)
+            {
+                info.Type = DefaultMenuType;
+            }
+
+            foreach(var sub in info.SubMenu)
+            {
+                if (String.IsNullOrWhiteSpace(sub.Name))
+                {
+                    ApiException.ThrowBadRequest("子菜单名称不能为空");
+                }
+                if(String.IsNullOrWhiteSpace(sub.Sref))
+                {
+                    ApiException.ThrowBadRequest("子菜单的地址不能为空");
+                }
+                if(sub.Index <=0)
+                {
+                    sub.Index = 10;
+                }
+                if(sub.Type == MenuType.None)
+                {
+                    sub.Type = DefaultMenuType;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 保存一个子菜单信息   如果对于的父菜单不存在会新建
         /// </summary>
         /// <param name="name"></param>
         /// <param name="index"></param>
@@ -94,7 +169,7 @@ namespace TianCheng.SystemCommon.Services
             SaveSubMenu(new MenuSubInfo() { Name = name, Index = index, Sref = sref }, parentName);
         }
         /// <summary>
-        /// 
+        /// 保存一个子菜单信息   如果对于的父菜单不存在会新建
         /// </summary>
         /// <param name="subMenu"></param>
         /// <param name="parentName"></param>
@@ -105,11 +180,8 @@ namespace TianCheng.SystemCommon.Services
                 TianCheng.Model.ApiException.ThrowBadRequest("菜单地址不能为空");
             }
 
-
-
             var main = GetMainByName(parentName);
-
-            if(main == null)
+            if (main == null)
             {
                 main = CreateMainMenu(parentName);
             }
@@ -125,13 +197,25 @@ namespace TianCheng.SystemCommon.Services
                 sub.Index = subMenu.Index;
                 sub.Sref = subMenu.Sref;
             }
-            _Dal.Update(main);
+            Update(main, new TokenLogonInfo() { });
         }
-
+        /// <summary>
+        /// 根据菜单名新增一个主菜单
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private MenuMainInfo CreateMainMenu(string name)
         {
-            MenuMainInfo main = new MenuMainInfo() { Name = name, Index = 10,CreateDate = DateTime.Now ,UpdateDate = DateTime.Now};
-            _Dal.Insert(main);
+            MenuMainInfo main = new MenuMainInfo()
+            {
+                Name = name,
+                Index = 10,
+                Type = DefaultMenuType,
+                Sref = String.Empty,
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now
+            };
+            Create(main, new TokenLogonInfo() { });
             return main;
         }
         /// <summary>
@@ -144,6 +228,11 @@ namespace TianCheng.SystemCommon.Services
         {
             SaveMainMenu(new MenuMainInfo() { Name = name, Index = index, Sref = sref });
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="index"></param>
         public void SaveMainMenu(string name, int index)
         {
             SaveMainMenu(new MenuMainInfo() { Name = name, Index = index });
@@ -172,29 +261,14 @@ namespace TianCheng.SystemCommon.Services
                 _Dal.Insert(main);
             }
         }
-
+        /// <summary>
+        /// 根据主菜单名称获取一个主菜单信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         private MenuMainInfo GetMainByName(string name)
         {
             return _Dal.Queryable().Where(e => e.Name == name).FirstOrDefault();
         }
-        private MenuMainInfo GetMainBySref(string sref)
-        {
-            return _Dal.Queryable().Where(e => e.Sref == sref).FirstOrDefault();
-        }
-
-        //public void AppendMenu()
-        //{
-        //    //var spalist = _Dal.SearchQueryable().Where(e => e.Type == MenuType.ManageSingle).ToList();
-        //    //_Dal.Remove(spalist);
-
-        //    List<MenuMainInfo> mainList = new List<MenuMainInfo>();
-
-        //    MenuMainInfo main3 = new MenuMainInfo() { Name = "财务管理", Sref = "app.finance", Index = 12, Type = MenuType.ManageSingle };
-        //    main3.SubMenu.Add(new MenuSubInfo() { Name = "财务图片", Sref = "app.finance.images", Index = 1, Type = MenuType.ManageSingle });
-        //    mainList.Add(main3);
-
-        //    _Dal.Save(mainList);
-
-        //}
     }
 }

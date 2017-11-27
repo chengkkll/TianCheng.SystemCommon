@@ -29,6 +29,7 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         FunctionModuleConfig ModuleConfig;
         IHostingEnvironment _host;
+        ILogger<FunctionService> _Logger;
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -64,6 +65,7 @@ namespace TianCheng.SystemCommon.Services
             //    ModuleConfig = moduleConfig.Value;
             //}
             _host = host;
+            _Logger = logger;
         }
         #endregion
 
@@ -112,6 +114,10 @@ namespace TianCheng.SystemCommon.Services
                         Name = GetSummary($"T:{type.FullName}"),
                         ModeuleCode = type.FullName.Replace("." + type.Name, "")
                     };
+                    if (String.IsNullOrWhiteSpace(group.Name))
+                    {
+                        group.Name = type.FullName;
+                    }
                     if (!String.IsNullOrEmpty(group.Name) && !groupDict.ContainsKey(group.Name))
                     {
                         groupDict.Add(group.Name, group);
@@ -130,15 +136,20 @@ namespace TianCheng.SystemCommon.Services
                         if (attribute == null)
                         {
                             continue;
-                        }                        
-                        funList.Add(new FunctionInfo()
+                        }
+                        FunctionInfo fun = new FunctionInfo()
                         {
                             Policy = attribute.Policy,
                             Code = method.Name,
                             GroupCode = GetSummary($"T:{type.FullName}"),
                             ModeuleCode = type.FullName.Replace("." + type.Name, ""),
                             Name = GetSummary($"M:{ type.FullName}.{ method.Name}")
-                        });
+                        };
+                        if (String.IsNullOrWhiteSpace(fun.GroupCode))
+                        {
+                            fun.GroupCode = type.FullName;
+                        }
+                        funList.Add(fun);
                     }
                 }
             }

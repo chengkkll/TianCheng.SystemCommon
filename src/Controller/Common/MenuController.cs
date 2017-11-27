@@ -45,19 +45,19 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<MenuMainView> Tree()
         {
-            return _Service.AllTree();
+            return _Service.SearchMainTree();
         }
-        /// <summary>
-        /// 查询所有的菜单信息，以树形结构显示，无分页信息
-        /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.MenuController.Tree")]
-        [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
-        [Route("All")]
-        [HttpGet]
-        public List<MenuMainView> ALL()
-        {
-            return _Service.ManageMultipleTree();
-        }
+        ///// <summary>
+        ///// 查询所有的菜单信息，以树形结构显示，无分页信息
+        ///// </summary>
+        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.MenuController.Tree")]
+        //[SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
+        //[Route("All")]
+        //[HttpGet]
+        //public List<MenuMainView> ALL()
+        //{
+        //    return _Service.ManageMultipleTree();
+        //}
 
         /// <summary>
         /// 查询单页面的菜单信息，以树形结构显示，无分页信息
@@ -68,7 +68,7 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<MenuMainView> ManageSingleTree()
         {
-            return _Service.ManageSingleTree();
+            return _Service.SearchMainTree(MenuType.ManageSingle);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<MenuMainView> ManageMultipleTree()
         {
-            return _Service.ManageMultipleTree();
+            return _Service.SearchMainTree(MenuType.ManageMultiple);
         }
         #endregion
 
@@ -95,16 +95,50 @@ namespace TianCheng.SystemCommon.Controller
         {
             _Service.Init();
         }
-        ///// <summary>
-        ///// 追加菜单
-        ///// </summary>
-        //[SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
-        //[Route("Append")]
-        //[HttpPost]
-        //public void Append()
-        //{
-        //    _Service.AppendMenu();
-        //}
+
+        #region 新增修改数据
+        /// <summary>
+        /// 新增一个主菜单
+        /// </summary>
+        /// <param name="view">请求体中放置新增对象的信息</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.MenuController.Create")]
+        [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
+        [Route("")]
+        [HttpPost]
+        public ResultView Create([FromBody]MenuMainView view)
+        {
+            return _Service.Create(view, LogonInfo);
+        }
+
+        /// <summary>
+        /// 修改一个主菜单
+        /// </summary>
+        /// <param name="view">请求体中带入修改对象的信息</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.MenuController.Update")]
+        [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
+        [Route("")]
+        [HttpPut]
+        public ResultView Update([FromBody]MenuMainView view)
+        {
+            return _Service.Update(view, LogonInfo);
+        }
+
+        #endregion
+
+        #region 数据删除
+        /// <summary>
+        /// 删除一个主菜单
+        /// </summary>
+        /// <param name="id">要删除的对象id</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.MenuController.Remove")]
+        [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
+        [Route("{id}")]
+        [HttpDelete]
+        public ResultView Remove(string id)
+        {
+            return _Service.Remove(id, LogonInfo);
+        }
+        #endregion
     }
 }
 

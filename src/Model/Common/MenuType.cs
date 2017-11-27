@@ -10,6 +10,10 @@ namespace TianCheng.SystemCommon.Model
     public enum MenuType
     {
         /// <summary>
+        /// 空值
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// 管理端多页面处理
         /// </summary>
         ManageMultiple = 1,
