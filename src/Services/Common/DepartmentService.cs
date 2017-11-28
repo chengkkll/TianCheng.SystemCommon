@@ -23,9 +23,10 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
+        /// <param name="servicesProvider"></param>
         /// <param name="employeeService"></param>
-        public DepartmentService(DepartmentDAL dal, ILogger<DepartmentService> logger,
-            EmployeeService employeeService) : base(dal, logger)
+        public DepartmentService(DepartmentDAL dal, ILogger<DepartmentService> logger, IServiceProvider servicesProvider,
+            EmployeeService employeeService) : base(dal, logger, servicesProvider)
         {
             _EmployeeService = employeeService;
         }

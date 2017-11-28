@@ -22,8 +22,9 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
-        public MenuService(MenuMainDAL dal, ILogger<MenuService> logger)
-            : base(dal, logger)
+        /// <param name="servicesProvider"></param>
+        public MenuService(MenuMainDAL dal, ILogger<MenuService> logger, IServiceProvider servicesProvider)
+            : base(dal, logger, servicesProvider)
         {
 
         }
@@ -108,7 +109,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logonInfo"></param>
         protected override void Saving(MenuMainInfo info, TokenLogonInfo logonInfo)
         {
-            if(info.Type == MenuType.None)
+            if (info.Type == MenuType.None)
             {
                 info.Type = DefaultMenuType;
             }
@@ -122,7 +123,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logonInfo"></param>
         protected override void SavingCheck(MenuMainInfo info, TokenLogonInfo logonInfo)
         {
-            if(String.IsNullOrWhiteSpace(info.Name))
+            if (String.IsNullOrWhiteSpace(info.Name))
             {
                 ApiException.ThrowBadRequest("主菜单名称不能为空");
             }
@@ -135,21 +136,21 @@ namespace TianCheng.SystemCommon.Services
                 info.Type = DefaultMenuType;
             }
 
-            foreach(var sub in info.SubMenu)
+            foreach (var sub in info.SubMenu)
             {
                 if (String.IsNullOrWhiteSpace(sub.Name))
                 {
                     ApiException.ThrowBadRequest("子菜单名称不能为空");
                 }
-                if(String.IsNullOrWhiteSpace(sub.Sref))
+                if (String.IsNullOrWhiteSpace(sub.Sref))
                 {
                     ApiException.ThrowBadRequest("子菜单的地址不能为空");
                 }
-                if(sub.Index <=0)
+                if (sub.Index <= 0)
                 {
                     sub.Index = 10;
                 }
-                if(sub.Type == MenuType.None)
+                if (sub.Type == MenuType.None)
                 {
                     sub.Type = DefaultMenuType;
                 }
@@ -199,6 +200,37 @@ namespace TianCheng.SystemCommon.Services
             }
             Update(main, new TokenLogonInfo() { });
         }
+
+        /// <summary>
+        /// 在父菜单中删除一个子菜单
+        /// </summary>
+        /// <param name="subName"></param>
+        /// <param name="parentName"></param>
+        public void RemoveSubMenu(string subName, string parentName)
+        {
+            if (String.IsNullOrEmpty(subName) || String.IsNullOrEmpty(parentName))
+            {
+                TianCheng.Model.ApiException.ThrowBadRequest("菜单名称不能为空");
+            }
+
+            var main = GetMainByName(parentName);
+            if (main == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < main.SubMenu.Count; i++)
+            {
+                if (main.SubMenu[i].Name == subName)
+                {
+                    main.SubMenu.RemoveAt(i);
+                    break;
+                }
+            }
+
+            Update(main, new TokenLogonInfo() { });
+        }
+
         /// <summary>
         /// 根据菜单名新增一个主菜单
         /// </summary>

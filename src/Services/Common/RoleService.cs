@@ -25,12 +25,13 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
+        /// <param name="servicesProvider"></param>
         /// <param name="menuService"></param>
         /// <param name="functionService"></param>
         /// <param name="employeeService"></param>
-        public RoleService(RoleDAL dal, ILogger<RoleService> logger,
+        public RoleService(RoleDAL dal, ILogger<RoleService> logger, IServiceProvider servicesProvider,
            MenuService menuService, FunctionService functionService, EmployeeService employeeService)
-            : base(dal, logger)
+            : base(dal, logger, servicesProvider)
         {
             _MenuService = menuService;
             _FunctionService = functionService;

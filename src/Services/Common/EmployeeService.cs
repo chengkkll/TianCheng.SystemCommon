@@ -24,10 +24,11 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
+        /// <param name="servicesProvider"></param>
         /// <param name="depDal"></param>
         /// <param name="roleDal"></param>
-        public EmployeeService(EmployeeDAL dal, ILogger<EmployeeService> logger,
-            DepartmentDAL depDal, RoleDAL roleDal) : base(dal, logger)
+        public EmployeeService(EmployeeDAL dal, ILogger<EmployeeService> logger,IServiceProvider servicesProvider,
+            DepartmentDAL depDal, RoleDAL roleDal) : base(dal, logger, servicesProvider)
         {
             _RoleDal = roleDal;
             _DepDal = depDal;

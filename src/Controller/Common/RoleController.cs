@@ -136,7 +136,7 @@ namespace TianCheng.SystemCommon.Controller
         }
         #endregion
 
-        #region 
+        #region 初始化角色
         /// <summary>
         /// 初始化角色   清除已有角色，重置管理员角色信息
         /// </summary>

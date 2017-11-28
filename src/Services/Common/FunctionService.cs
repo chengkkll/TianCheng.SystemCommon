@@ -35,17 +35,17 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
+        /// <param name="servicesProvider"></param>
         /// <param name="configuration"></param>
         /// <param name="host"></param>
-        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger,
+        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, IServiceProvider servicesProvider,
             IConfiguration configuration,
             IHostingEnvironment host)
-            : base(dal, logger)
+            : base(dal, logger, servicesProvider)
         {
             var node = configuration.GetSection("FunctionModule:ModuleDict");
 
             ModuleConfig = new FunctionModuleConfig() { ModuleDict = new Dictionary<string, string>() };
-
 
             for (int i = 0; true; i++)
             {
