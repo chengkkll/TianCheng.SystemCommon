@@ -39,7 +39,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="roleService"></param>
         /// <param name="menuService"></param>
         /// <param name="functionService"></param>
-        public AuthService(EmployeeDAL employeeDal, ILogger<AuthService> logger, 
+        public AuthService(EmployeeDAL employeeDal, ILogger<AuthService> logger,
             Microsoft.Extensions.Configuration.IConfiguration configuration,
             EmployeeService employeeService, RoleService roleService, MenuService menuService, FunctionService functionService)
         {
@@ -57,12 +57,12 @@ namespace TianCheng.SystemCommon.Services
         /// 每次请求接口时，加载用户的权限信息
         /// </summary>
         /// <param name="identity"></param>
-        public void FillFunctionPolicy( ClaimsIdentity identity)
+        public void FillFunctionPolicy(ClaimsIdentity identity)
         {
             string userId = "";
-            foreach(var item in identity.Claims)
+            foreach (var item in identity.Claims)
             {
-                if(item.Type == "id")
+                if (item.Type == "id")
                 {
                     userId = item.Value;
                     break;
@@ -131,7 +131,7 @@ namespace TianCheng.SystemCommon.Services
             password = password.Trim();
             //查询密码正确的可用用户列表
             var pwdQuery = _employeeDal.Queryable().Where(e => e.LogonPassword == password && e.IsDelete == false).ToList();
-            
+
             // 通过账号和密码验证登录
             var employeeList = pwdQuery.Where(e => e.LogonAccount == account);
             if (employeeList.Count() > 1)
@@ -165,11 +165,8 @@ namespace TianCheng.SystemCommon.Services
                 throw ApiException.BadRequest("多次登陆失败，登陆已被锁住，请与管理员联系。");
             }
 
-            if(OnLogin != null)
-            {
-                OnLogin(employee);
-            }
-
+            // 执行扩展的登录事件
+            OnLogin?.Invoke(employee);
 
             List<Claim> claims = new List<Claim>
             {
@@ -194,10 +191,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public void Logout(TokenLogonInfo logonInfo)
         {
-            if (OnLogout != null)
-            {
-                OnLogout(logonInfo);
-            }
+            OnLogout?.Invoke(logonInfo);
         }
     }
 

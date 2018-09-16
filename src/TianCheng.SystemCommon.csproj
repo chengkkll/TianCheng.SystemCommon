@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>KKLL</Authors>
     <Company>TianCheng</Company>
     <Description>部门、用户、角色、功能点、菜单的通用处理</Description>
-    <Version>1.1.0.6-preview</Version>
-    <AssemblyVersion>1.1.0.6</AssemblyVersion>
-    <FileVersion>1.1.0.6</FileVersion>
+    <Version>1.2.0.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
     <PackageProjectUrl>https://github.com/chengkkll/TianCheng.SystemCommon</PackageProjectUrl>
   </PropertyGroup>
 
@@ -18,6 +18,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DAL\Common\DataImport\**" />
+    <Compile Remove="Model\Common\DataImport\**" />
+    <Compile Remove="Services\Common\DataImport\**" />
+    <EmbeddedResource Remove="DAL\Common\DataImport\**" />
+    <EmbeddedResource Remove="Model\Common\DataImport\**" />
+    <EmbeddedResource Remove="Services\Common\DataImport\**" />
+    <None Remove="DAL\Common\DataImport\**" />
+    <None Remove="Model\Common\DataImport\**" />
+    <None Remove="Services\Common\DataImport\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controller\Common\DataImportEmployeesController.cs" />
     <Compile Remove="Model\TokenLogonInfo.cs" />
     <Compile Remove="Services\Auth\DateTimeExtension.cs" />
     <Compile Remove="Services\Auth\Jwt.cs" />
@@ -31,8 +44,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="TianCheng.BaseService" Version="1.1.0.5-preview" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
+    <PackageReference Include="TianCheng.BaseService" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@ namespace TianCheng.SystemCommon.Services
     /// <summary>
     /// 功能点 [ Service ]
     /// </summary>
-    public class FunctionService : BusinessService<FunctionModuleInfo, FunctionModuleView, FunctionQuery>
+    public class FunctionService : MongoBusinessService<FunctionModuleInfo, FunctionModuleView, FunctionQuery>
     {
         #region 构造方法
         /// <summary>
@@ -29,22 +29,19 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         FunctionModuleConfig ModuleConfig;
         IHostingEnvironment _host;
-        ILogger<FunctionService> _Logger;
+        readonly ILogger<FunctionService> _Logger;
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
-        /// <param name="servicesProvider"></param>
         /// <param name="configuration"></param>
         /// <param name="host"></param>
-        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, IServiceProvider servicesProvider,
+        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger,
             IConfiguration configuration,
             IHostingEnvironment host)
-            : base(dal, logger, servicesProvider)
+            : base(dal)
         {
-            var node = configuration.GetSection("FunctionModule:ModuleDict");
-
             ModuleConfig = new FunctionModuleConfig() { ModuleDict = new Dictionary<string, string>() };
 
             for (int i = 0; true; i++)
@@ -137,18 +134,32 @@ namespace TianCheng.SystemCommon.Services
                         {
                             continue;
                         }
+                        // 如果功能点名称有重复的，不添加。
+                        if (funList.Where(f => f.Policy == attribute.Policy).Count() > 0)
+                        {
+                            continue;
+                        }
                         FunctionInfo fun = new FunctionInfo()
                         {
                             Policy = attribute.Policy,
                             Code = method.Name,
                             GroupCode = GetSummary($"T:{type.FullName}"),
-                            ModeuleCode = type.FullName.Replace("." + type.Name, ""),
-                            Name = GetSummary($"M:{ type.FullName}.{ method.Name}")
+                            ModeuleCode = type.FullName.Replace("." + type.Name, "")
                         };
+                        fun.Name = GetSummary($"M:{ type.FullName}.{ method.Name}(");
+                        if (String.IsNullOrEmpty(fun.Name))
+                        {
+                            fun.Name = GetSummary($"M:{ type.FullName}.{ method.Name}");
+                        }
+                        if (fun.Name.Contains(" "))
+                        {
+                            fun.Name = fun.Name.Split(' ')[0];
+                        }
                         if (String.IsNullOrWhiteSpace(fun.GroupCode))
                         {
                             fun.GroupCode = type.FullName;
                         }
+
                         funList.Add(fun);
                     }
                 }
@@ -188,7 +199,15 @@ namespace TianCheng.SystemCommon.Services
             }
             //保存数据
             _Dal.Drop();
-            _Dal.Insert(moduleList);
+            if (moduleList.Count > 0)
+            {
+                _Dal.InsertRange(moduleList);
+            }
+            if (moduleList.Count == 0)
+            {
+                // 如果moduleList长度为0 ，提示配置appsettings.json文件中的FunctionModule下的ModuleDict节点。
+                TianCheng.Model.ApiException.ThrowBadRequest("请配置appsettings.json文件中FunctionModule下的ModuleDict节点");
+            }
         }
 
         #region 注释文档操作
@@ -233,17 +252,25 @@ namespace TianCheng.SystemCommon.Services
                                 {
                                     foreach (string file in System.IO.Directory.GetFiles(assemblyPath, "*.xml"))
                                     {
+                                        
                                         docList.Add(XDocument.Load(file));
                                     }
                                 }
-
+                                if(docList.Count == 0)
+                                {
+                                    string libraryPath = System.IO.Path.Combine(assemblyPath, "LibraryComments");
+                                    foreach (string file in System.IO.Directory.GetFiles(libraryPath, "*.xml"))
+                                    {
+                                        docList.Add(XDocument.Load(file));
+                                    }
+                                }
                             }
                         }
                         catch
                         {
                             //程序集无法反射时跳过
                         }
-                    }
+                    }                    
                 }
                 return docList;
             }
@@ -271,6 +298,8 @@ namespace TianCheng.SystemCommon.Services
                         return ele.Element("summary")?.Value?.ToString().Replace("\n", "").Replace("\r", "").Trim();
                     }
                 }
+
+            TianCheng.Model.CommonLog.Logger.LogWarning($"{method}对应的说明文本没有找到");
             return String.Empty;
         }
         #endregion

@@ -100,8 +100,34 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 部门信息
         /// </summary>
-        public SelectView Department { get { return _Department; } set { _Department = value; } }
-
+        public SelectView Department
+        {
+            get { return _Department; }
+            set
+            {
+                if (value == null)
+                {
+                    value = new SelectView();
+                }
+                _Department = value;
+            }
+        }
+        private ParentDepartment _ParentDep = new ParentDepartment();
+        /// <summary>
+        /// 上级部门信息
+        /// </summary>
+        public ParentDepartment ParentDepartment
+        {
+            get { return _ParentDep; }
+            set
+            {
+                if (value == null)
+                {
+                    value = new ParentDepartment();
+                }
+                _ParentDep = value;
+            }
+        }
         #endregion
 
         #region 角色信息

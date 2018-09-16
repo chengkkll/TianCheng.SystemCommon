@@ -12,7 +12,7 @@ namespace TianCheng.SystemCommon.Services
     /// <summary>
     /// 区域服务
     /// </summary>
-    public class AreaService : BusinessService<AreaInfo, AreaView, AreaQuery>
+    public class AreaService : MongoBusinessService<AreaInfo, AreaView, AreaQuery>
     {
         #region 构造方法
         /// <summary>
@@ -21,7 +21,8 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="dal"></param>
         /// <param name="logger"></param>
         /// <param name="servicesProvider"></param>
-        public AreaService(AreaDAL dal, ILogger<AreaService> logger, IServiceProvider servicesProvider) : base(dal, logger, servicesProvider)
+        public AreaService(AreaDAL dal, ILogger<AreaService> logger, IServiceProvider servicesProvider) 
+            : base(dal, logger, servicesProvider)
         {
 
         }
@@ -404,8 +405,8 @@ namespace TianCheng.SystemCommon.Services
 
 
 
-            _Dal.Drop();
-            _Dal.Insert(areaList);
+            //_Dal.Drop();
+            //_Dal.Insert(areaList);
         }
         #endregion
 
@@ -490,10 +491,11 @@ namespace TianCheng.SystemCommon.Services
             {
                 return new List<AreaInfo>();
             }
-            return _Dal.Queryable().Where(e => (!String.IsNullOrEmpty(e.Code) && e.Code.Contains(key)) ||
-                (!String.IsNullOrEmpty(e.Name) && e.Name.Contains(key)) ||
-                (!String.IsNullOrEmpty(e.NameEn) && e.NameEn.Contains(key)) ||
-                (!String.IsNullOrEmpty(e.TelephoneCode) && e.TelephoneCode.Contains(key)));
+            //return _Dal.Queryable().Where(e => (!String.IsNullOrEmpty(e.Code) && e.Code.Contains(key)) ||
+            //    (!String.IsNullOrEmpty(e.Name) && e.Name.Contains(key)) ||
+            //    (!String.IsNullOrEmpty(e.NameEn) && e.NameEn.Contains(key)) ||
+            //    (!String.IsNullOrEmpty(e.TelephoneCode) && e.TelephoneCode.Contains(key)));
+            return null;
         }
         /// <summary>
         /// 根据一段地址模糊查询区域信息，查询范围有编码、名称、电话区号
@@ -509,24 +511,24 @@ namespace TianCheng.SystemCommon.Services
             }
 
             List<AreaInfo> areaList = new List<AreaInfo>();
-            foreach (var area in _Dal.Queryable().ToList())
-            {
-                if (!String.IsNullOrEmpty(area.Name) && address.Contains(area.Name))
-                {
-                    areaList.Add(area);
-                    continue;
-                }
-                if (!String.IsNullOrEmpty(area.NameEn) && address.Contains(area.NameEn.ToLower()))
-                {
-                    areaList.Add(area);
-                    continue;
-                }
-                if (!String.IsNullOrEmpty(area.Code) && address.Contains(area.Code))
-                {
-                    areaList.Add(area);
-                    continue;
-                }
-            }
+            //foreach (var area in _Dal.Queryable().ToList())
+            //{
+            //    if (!String.IsNullOrEmpty(area.Name) && address.Contains(area.Name))
+            //    {
+            //        areaList.Add(area);
+            //        continue;
+            //    }
+            //    if (!String.IsNullOrEmpty(area.NameEn) && address.Contains(area.NameEn.ToLower()))
+            //    {
+            //        areaList.Add(area);
+            //        continue;
+            //    }
+            //    if (!String.IsNullOrEmpty(area.Code) && address.Contains(area.Code))
+            //    {
+            //        areaList.Add(area);
+            //        continue;
+            //    }
+            //}
             return areaList;
         }
 

@@ -39,18 +39,18 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        [JsonProperty("update_date")]
+        [JsonProperty("updateDate")]
         public string UpdateDate { get; set; }
         /// <summary>
         /// 最后更新人
         /// </summary>
-        [JsonProperty("update_user")]
+        [JsonProperty("updateUser")]
         public string UpdaterName { get; set; }
 
         /// <summary>
         /// 是否为系统级别数据
         /// </summary>
-        [JsonProperty("is_system")]
+        [JsonProperty("isSystem")]
         public bool IsSystem { get; set; }
     }
 }

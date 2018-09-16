@@ -10,6 +10,8 @@ using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
+using TianCheng.BaseService.Services;
+using System.Diagnostics;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -42,8 +44,7 @@ namespace TianCheng.SystemCommon.Controller
         /// <param name="view">请求体中放置新增对象的信息</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Create")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("")]
-        [HttpPost]
+        [HttpPost("")]
         public ResultView Create([FromBody]DepartmentView view)
         {
             return _Service.Create(view, LogonInfo);
@@ -55,8 +56,7 @@ namespace TianCheng.SystemCommon.Controller
         /// <param name="view">请求体中带入修改对象的信息</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Update")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("")]
-        [HttpPut]
+        [HttpPut("")]
         public ResultView Update([FromBody]DepartmentView view)
         {
             return _Service.Update(view, LogonInfo);
@@ -71,7 +71,7 @@ namespace TianCheng.SystemCommon.Controller
         /// <param name="id">要删除的对象id</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Delete")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("{id}")]
+        [Route("Delete/{id}")]
         [HttpDelete]
         public ResultView Delete(string id)
         {
@@ -186,8 +186,21 @@ namespace TianCheng.SystemCommon.Controller
 
             DepartmentQuery query = new DepartmentQuery() { ParentId = LogonInfo.DepartmentId };
             List<SelectView> subList = _Service.Select(query);
-            subList.Insert(0, new SelectView() { Id = LogonInfo.DepartmentId, Name = LogonInfo.DepartmentName });
+            // subList.Insert(0, new SelectView() { Id = LogonInfo.DepartmentId, Name = LogonInfo.DepartmentName });
             return subList;
+        }
+
+        /// <summary>
+        /// 获取根部门
+        /// </summary>
+        /// <returns></returns>
+        [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
+        [HttpGet("Root")]
+        public List<SelectView> GetRoot()
+        {
+            List<DepartmentInfo> depList = _Service.GetRoot();
+
+            return AutoMapper.Mapper.Map<List<SelectView>>(depList);
         }
         #endregion
 

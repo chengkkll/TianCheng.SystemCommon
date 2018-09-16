@@ -33,24 +33,24 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 上级部门ID
         /// </summary>
-        [JsonProperty("parent_id")]
+        [JsonProperty("parentId")]
         public string ParentId { get; set; }
         /// <summary>
         /// 上级部门名称
         /// </summary>
-        [JsonProperty("parent_name")]
+        [JsonProperty("parentName")]
         public string ParentName { get; set; }
 
-        /// <summary>
-        /// 部门主管ID
-        /// </summary>
-        [JsonProperty("manage_id")]
-        public string ManageId { get; set; }
-        /// <summary>
-        /// 部门主管名称
-        /// </summary>
-        [JsonProperty("manage_name")]
-        public string ManageName { get; set; }
+        ///// <summary>
+        ///// 部门主管ID
+        ///// </summary>
+        //[JsonProperty("manageId")]
+        //public string ManageId { get; set; }
+        ///// <summary>
+        ///// 部门主管名称
+        ///// </summary>
+        //[JsonProperty("manageName")]
+        //public string ManageName { get; set; }
 
         /// <summary>
         /// 包含的子部门
@@ -58,11 +58,11 @@ namespace TianCheng.SystemCommon.Model
         [JsonProperty("sub")]
         public List<BaseViewModel> SubList { get; set; }
 
-        /// <summary>
-        /// 包含的行业列表
-        /// </summary>
-        [JsonProperty("industries")]
-        public List<BaseViewModel> Industries { get; set; }
+        ///// <summary>
+        ///// 包含的行业列表
+        ///// </summary>
+        //[JsonProperty("industries")]
+        //public List<BaseViewModel> Industries { get; set; }
 
         /// <summary>
         /// 包含的员工列表 仅用于查询时方便（查询单条部门时会有数据），新增修改时不需要传递
@@ -73,18 +73,18 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 最后更新时间  仅用于列表显示及排序，新增修改时不需要传递
         /// </summary>
-        [JsonProperty("update_date")]
+        [JsonProperty("updateDate")]
         public string UpdateDate { get; set; }
         /// <summary>
         /// 最后更新人  仅用于列表显示及排序，新增修改时不需要传递
         /// </summary>
-        [JsonProperty("update_user")]
+        [JsonProperty("updateUser")]
         public string UpdaterName { get; set; }
 
         /// <summary>
         /// 扩展ID 用于部门信息的扩展
         /// </summary>
-        [JsonProperty("ext_id")]
+        [JsonProperty("extId")]
         public string ExtId { get; set; }
     }
 }

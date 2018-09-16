@@ -46,15 +46,15 @@ namespace SamplesWebApi.Service
         {
 
 
-            MenuMainInfo mainSystem = new MenuMainInfo() { Name = "系统管理", Sref = "System", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 6 };
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Sref = "System.Departments", Type = MenuType.ManageSingle, Index = 1 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "菜单管理", Sref = "System.Menus", Type = MenuType.ManageSingle, Index = 3 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Sref = "System.Employees", Type = MenuType.ManageSingle, Index = 5 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Sref = "System.Roles", Type = MenuType.ManageSingle, Index = 7 });
+            MenuMainInfo mainSystem = new MenuMainInfo() { Name = "系统管理", Link = "System", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 6 };
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Link = "System.Departments", Type = MenuType.ManageSingle, Index = 1 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "菜单管理", Link = "System.Menus", Type = MenuType.ManageSingle, Index = 3 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Link = "System.Employees", Type = MenuType.ManageSingle, Index = 5 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Link = "System.Roles", Type = MenuType.ManageSingle, Index = 7 });
 
-            MenuMainInfo mainPersonal = new MenuMainInfo() { Name = "个人中心", Sref = "PersonalCenter", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 5 };
-            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "基本信息", Sref = "PersonalCenter.Common", Type = MenuType.ManageSingle, Index = 2 });
-            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Sref = "PersonalCenter.ChangePwd", Type = MenuType.ManageSingle, Index = 4 });
+            MenuMainInfo mainPersonal = new MenuMainInfo() { Name = "个人中心", Link = "PersonalCenter", Icon = "el-icon-setting", Type = MenuType.ManageSingle, Index = 5 };
+            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "基本信息", Link = "PersonalCenter.Common", Type = MenuType.ManageSingle, Index = 2 });
+            mainPersonal.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Link = "PersonalCenter.ChangePwd", Type = MenuType.ManageSingle, Index = 4 });
 
             mainList.Clear();
             mainList.Add(mainSystem);

@@ -20,7 +20,7 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 按部门ID查询
         /// </summary>
-        [JsonProperty("dep_id")]
+        [JsonProperty("departmentId")]
         public string DepartmentId { get; set; }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 角色
         /// </summary>
-        [JsonProperty("role_id")]
+        [JsonProperty("roleId")]
         public string RoleId { get; set; }
         /// <summary>
         /// 按状态查询   1-可用，3-锁住，5-禁用
@@ -41,7 +41,7 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 是否查看被逻辑删除的数据  0/不传值-不显示逻辑删除的数据 1-显示所有数据，包含逻辑删除的   2-只显示逻辑删除的数据
         /// </summary>
-        [JsonProperty("has_delete")]
+        [JsonProperty("hasDelete")]
         public int HasDelete { get; set; }
     }
 }

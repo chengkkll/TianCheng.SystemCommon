@@ -9,7 +9,7 @@ namespace TianCheng.SystemCommon.Services
     /// </summary>
     public class AuthServiceOption
     {
-        #region 单件处理
+        #region 设置静态访问方式
         /// <summary>
         /// 
         /// </summary>

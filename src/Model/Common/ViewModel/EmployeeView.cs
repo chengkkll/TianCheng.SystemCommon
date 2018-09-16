@@ -58,12 +58,12 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 登录账号
         /// </summary>
-        [JsonProperty("logon_account")]
+        [JsonProperty("logonAccount")]
         public string LogonAccount { get; set; }
         /// <summary>
         /// 登录密码
         /// </summary>
-        [JsonProperty("logon_password")]
+        [JsonProperty("logonPassword")]
         public string LogonPassword { get; set; }
         #endregion
 
@@ -71,12 +71,12 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 动态令牌Id
         /// </summary>
-        [JsonProperty("secure_id")]
+        [JsonProperty("secureId")]
         public string SecureKeyId { get; set; }
         /// <summary>
         /// 动态令牌号
         /// </summary>
-        [JsonProperty("secure_mark")]
+        [JsonProperty("secureMark")]
         public string SecureKeyMark { get; set; }
         #endregion
 
@@ -86,7 +86,7 @@ namespace TianCheng.SystemCommon.Model
         /// 部门信息
         /// </summary>
         [JsonProperty("department")]
-        public SelectView Department { get ;  set ; }
+        public SelectView Department { get; set; }
 
         #endregion
 
@@ -105,24 +105,24 @@ namespace TianCheng.SystemCommon.Model
         /// 性别
         /// </summary>
         [JsonProperty("gender")]
-        public UserGender gender { get; set; }
+        public UserGender Gender { get; set; }
 
         /// <summary>
         /// 生日
         /// </summary>
         [JsonProperty("birthday")]
-        public DateTime? birthday { get; set; }
+        public DateTime? Birthday { get; set; }
 
         /// <summary>
         /// 学历
         /// </summary>
         [JsonProperty("education")]
-        public string education { get; set; }
+        public string Education { get; set; }
 
         /// <summary>
         /// 血型
         /// </summary>
-        [JsonProperty("blood_type")]
+        [JsonProperty("bloodType")]
         public string BloodType { get; set; }
         /// <summary>
         /// 职称 
@@ -137,7 +137,7 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 籍贯
         /// </summary>
-        [JsonProperty("native_place")]
+        [JsonProperty("nativePlace")]
         public string NativePlace { get; set; }
         /// <summary>
         /// 身份证号
@@ -157,25 +157,31 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 是否为系统级别数据
         /// </summary>
-        [JsonProperty("is_system")]
+        [JsonProperty("isSystem")]
         public bool IsSystem { get; set; }
         #endregion
 
         /// <summary>
         /// 最后更新时间
         /// </summary>
-        [JsonProperty("update_date")]
+        [JsonProperty("updateDate")]
         public string UpdateDate { get; set; }
         /// <summary>
         /// 最后更新人
         /// </summary>
-        [JsonProperty("updater_name")]
+        [JsonProperty("updaterName")]
         public string UpdaterName { get; set; }
 
         /// <summary>
         /// 扩展ID 用于员工信息的扩展
         /// </summary>
-        [JsonProperty("ext_id")]
+        [JsonProperty("extId")]
         public string ExtId { get; set; }
+
+        /// <summary>
+        /// 是否在职
+        /// </summary>
+        [JsonProperty("isDelete")]
+        public bool IsDelete { get; set; }
     }
 }

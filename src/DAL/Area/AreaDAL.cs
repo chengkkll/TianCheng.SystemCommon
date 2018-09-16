@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TianCheng.DAL;
 using TianCheng.DAL.MongoDB;
 using TianCheng.SystemCommon.Model;
 

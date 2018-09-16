@@ -49,7 +49,6 @@ namespace TianCheng.SystemCommon.Controller
         /// 退出登录
         /// </summary>
         /// <returns></returns>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.SystemController.Power")]
         [HttpPost("logout")]
         [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
         public ResultView Logout()

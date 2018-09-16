@@ -12,6 +12,7 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 角色信息
     /// </summary>
+    [MongoDB.Bson.Serialization.Attributes.BsonIgnoreExtraElements]
     public class RoleInfo : BusinessMongoModel
     {
         /// <summary>
@@ -26,23 +27,14 @@ namespace TianCheng.SystemCommon.Model
         /// 当前角色登录后的默认页面
         /// </summary>
         public string DefaultPage { get; set; }
-
-        /// <summary>
-        /// 菜单列表
-        /// </summary>
-        private List<MenuMainView> _PagePower = new List<MenuMainView>();
         /// <summary>
         /// 包含菜单列表
         /// </summary>
-        public List<MenuMainView> PagePower { get { return _PagePower; } set { _PagePower = value; } }
-
-
-        private List<FunctionView> _FunctionPower = new List<FunctionView>();
+        public List<MenuMainView> PagePower { get; set; } = new List<MenuMainView>();
         /// <summary>
         /// 包含功能点列表
         /// </summary>
-        public List<FunctionView> FunctionPower { get { return _FunctionPower; } set { _FunctionPower = value; } }
-
+        public List<FunctionView> FunctionPower { get; set; } = new List<FunctionView>();
         /// <summary>
         /// 是否为系统级别数据
         /// </summary>

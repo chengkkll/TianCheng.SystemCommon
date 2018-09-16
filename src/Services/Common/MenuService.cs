@@ -14,7 +14,7 @@ namespace TianCheng.SystemCommon.Services
     /// <summary>
     ///  菜单      [ Service ]
     /// </summary>
-    public class MenuService : BusinessService<MenuMainInfo, MenuMainView, MenuQuery>
+    public class MenuService : MongoBusinessService<MenuMainInfo, MenuMainView, MenuQuery>
     {
         #region 构造方法
         /// <summary>
@@ -28,6 +28,10 @@ namespace TianCheng.SystemCommon.Services
         {
 
         }
+        /// <summary>
+        /// 是否启用缓存
+        /// </summary>
+        protected override bool EnableCache => false;
         #endregion
 
         private MenuType DefaultMenuType = MenuType.ManageSingle;
@@ -40,7 +44,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> SearchMainTree(MenuType menuType = MenuType.None)
         {
-            var query = _Dal.Queryable();
+            var query = HasRedisCache ? base.RedisCacheQuery() : _Dal.Queryable();
             switch (menuType)
             {
                 case MenuType.None: { break; }
@@ -88,10 +92,10 @@ namespace TianCheng.SystemCommon.Services
         {
             List<MenuMainInfo> mainList = new List<MenuMainInfo>();
             MenuMainInfo mainSystem = new MenuMainInfo() { Name = "系统管理", Index = 20 };
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Sref = "app.system.department", Index = 1 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Sref = "app.system.employee", Index = 3 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Sref = "app.system.roles", Index = 5 });
-            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Sref = "app.personal.change_my_login_password", Index = 4 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "部门管理", Link = "app.system.department", Index = 1 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "员工管理", Link = "app.system.employee", Index = 3 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "角色管理", Link = "app.system.roles", Index = 5 });
+            mainSystem.SubMenu.Add(new MenuSubInfo() { Name = "修改密码", Link = "app.personal.change_my_login_password", Index = 4 });
             mainList.Add(mainSystem);
 
             MenuServiceOption.Option.InitMenuData?.Invoke(mainList);
@@ -142,7 +146,7 @@ namespace TianCheng.SystemCommon.Services
                 {
                     ApiException.ThrowBadRequest("子菜单名称不能为空");
                 }
-                if (String.IsNullOrWhiteSpace(sub.Sref))
+                if (String.IsNullOrWhiteSpace(sub.Link))
                 {
                     ApiException.ThrowBadRequest("子菜单的地址不能为空");
                 }
@@ -163,11 +167,11 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="name"></param>
         /// <param name="index"></param>
-        /// <param name="sref"></param>
+        /// <param name="link"></param>
         /// <param name="parentName"></param>
-        public void SaveSubMenu(string name, int index, string sref, string parentName)
+        public void SaveSubMenu(string name, int index, string link, string parentName)
         {
-            SaveSubMenu(new MenuSubInfo() { Name = name, Index = index, Sref = sref }, parentName);
+            SaveSubMenu(new MenuSubInfo() { Name = name, Index = index, Link = link }, parentName);
         }
         /// <summary>
         /// 保存一个子菜单信息   如果对于的父菜单不存在会新建
@@ -176,7 +180,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="parentName"></param>
         public void SaveSubMenu(MenuSubInfo subMenu, string parentName)
         {
-            if (String.IsNullOrEmpty(subMenu.Sref))
+            if (String.IsNullOrEmpty(subMenu.Link))
             {
                 TianCheng.Model.ApiException.ThrowBadRequest("菜单地址不能为空");
             }
@@ -187,7 +191,7 @@ namespace TianCheng.SystemCommon.Services
                 main = CreateMainMenu(parentName);
             }
 
-            var sub = main.SubMenu.Where(e => e.Sref == subMenu.Sref).FirstOrDefault();
+            var sub = main.SubMenu.Where(e => e.Link == subMenu.Link).FirstOrDefault();
             if (sub == null)
             {
                 main.SubMenu.Add(subMenu);
@@ -196,7 +200,7 @@ namespace TianCheng.SystemCommon.Services
             {
                 sub.Name = subMenu.Name;
                 sub.Index = subMenu.Index;
-                sub.Sref = subMenu.Sref;
+                sub.Link = subMenu.Link;
             }
             Update(main, new TokenLogonInfo() { });
         }
@@ -243,7 +247,7 @@ namespace TianCheng.SystemCommon.Services
                 Name = name,
                 Index = 10,
                 Type = DefaultMenuType,
-                Sref = String.Empty,
+                Link = String.Empty,
                 CreateDate = DateTime.Now,
                 UpdateDate = DateTime.Now
             };
@@ -255,10 +259,10 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         /// <param name="name"></param>
         /// <param name="index"></param>
-        /// <param name="sref"></param>
-        public void SaveMainMenu(string name, int index, string sref)
+        /// <param name="link"></param>
+        public void SaveMainMenu(string name, int index, string link)
         {
-            SaveMainMenu(new MenuMainInfo() { Name = name, Index = index, Sref = sref });
+            SaveMainMenu(new MenuMainInfo() { Name = name, Index = index, Link = link });
         }
         /// <summary>
         /// 
@@ -285,12 +289,12 @@ namespace TianCheng.SystemCommon.Services
             if (main != null)
             {
                 main.Index = main.Index;
-                main.Sref = main.Sref;
-                _Dal.Update(main);
+                main.Link = main.Link;
+                _Dal.UpdateObject(main);
             }
             else
             {
-                _Dal.Insert(main);
+                _Dal.InsertObject(main);
             }
         }
         /// <summary>

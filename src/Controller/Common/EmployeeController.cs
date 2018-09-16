@@ -84,7 +84,7 @@ namespace TianCheng.SystemCommon.Controller
                 Id = LogonInfo.Id,
                 Name = LogonInfo.Name,
                 Role = new RoleSimpleView() { Id = LogonInfo.RoleId }
-            };            
+            };
             var role = _roleService.SearchById(view.Role.Id);
             if (role != null)
             {
@@ -170,16 +170,37 @@ namespace TianCheng.SystemCommon.Controller
 
         #region 数据删除
         /// <summary>
-        /// 删除用户信息    
+        /// 设置离职    
         /// </summary>
         /// <param name="id">要逻辑删除的对象id</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Delete")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("{id}")]
-        [HttpDelete]
+        [HttpDelete("Delete/{id}")]
         public ResultView Delete(string id)
         {
             return _Service.Delete(id, LogonInfo);
+        }
+        /// <summary>
+        /// 设置在职    
+        /// </summary>
+        /// <param name="id">要逻辑删除的对象id</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Delete")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [HttpPatch("UnDelete/{id}")]
+        public ResultView UnDelete(string id)
+        {
+            return _Service.UnDelete(id, LogonInfo);
+        }
+        /// <summary>
+        /// 粉碎数据    
+        /// </summary>
+        /// <param name="id">要逻辑删除的对象id</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Remove")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [HttpDelete("Remove/{id}")]
+        public ResultView Remove(string id)
+        {
+            return _Service.Remove(id, LogonInfo);
         }
         #endregion
 
@@ -292,7 +313,33 @@ namespace TianCheng.SystemCommon.Controller
             return _Service.Select(query);
         }
         /// <summary>
-        /// 为下拉列表提供数据 - 获取某部门下的员工列表   
+        /// 为下拉列表提供数据 - 获取所有的员工列表      
+        /// </summary>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Select")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [Route("SelectView")]
+        [HttpGet]
+        public List<EmployeeSelectView> SelectDepartment()
+        {
+            List<EmployeeSelectView> viewList = new List<EmployeeSelectView>();
+            foreach (var info in _Service.SearchQueryable().OrderBy(e => e.Name).ToList())
+            {
+                viewList.Add(new EmployeeSelectView
+                {
+                    Id = info.Id.ToString(),
+                    Name = info.Name,
+                    Code = info.Code,
+                    DepartmentId = info.Department.Id,
+                    DepartmentName = info.Department.Name,
+                    RoleId = info.Role.Id,
+                    RoleName = info.Role.Name,
+                    IsDelete = info.IsDelete
+                });
+            }
+            return viewList;
+        }
+        /// <summary>
+        /// 为下拉列表提供数据 - 获取某部门下的员工列表（不显示已离职的员工）   
         /// </summary>
         /// <param name="depId">部门id</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
@@ -301,7 +348,34 @@ namespace TianCheng.SystemCommon.Controller
         [HttpGet]
         public List<SelectView> SelectByDepartment(string depId)
         {
-            EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject };
+            EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject, HasDelete = 0 };
+            query.Sort.Property = "name";
+            return _Service.Select(query);
+        }
+        /// <summary>
+        /// 为下拉列表提供数据 - 获取某部门下的员工列表（显示已离职的员工）   
+        /// </summary>
+        /// <param name="depId">部门id</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [Route("SelectByDep/{depId}/All")]
+        [HttpGet]
+        public List<SelectView> SelectByDepartmentAll(string depId)
+        {
+            EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject, HasDelete = 1 };
+            query.Sort.Property = "name";
+            return _Service.Select(query);
+        }
+        /// <summary>
+        /// 为下拉列表提供数据 - 获取某部门下的员工列表   
+        /// </summary>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [Route("SelectMyDepartment")]
+        [HttpGet]
+        public List<SelectView> SelectByMyDepartment()
+        {
+            EmployeeQuery query = new EmployeeQuery() { DepartmentId = LogonInfo.DepartmentId, Pagination = QueryPagination.DefaultObject };
             query.Sort.Property = "name";
             return _Service.Select(query);
         }
@@ -377,6 +451,16 @@ namespace TianCheng.SystemCommon.Controller
 
         #endregion
 
+        /// <summary>
+        /// 更新所有的人的密码
+        /// </summary>
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [HttpPatch("UpdateAllPassword")]
+        public ResultView UpdateAllPassword()
+        {
+            _Service.UpdateAllPassword("123456");
+            return ResultView.Success();
+        }
 
         //#region 忘记密码
 

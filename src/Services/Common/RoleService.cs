@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TianCheng.BaseService;
+using TianCheng.BaseService.Services;
 using TianCheng.DAL.MongoDB;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
@@ -14,7 +15,7 @@ namespace TianCheng.SystemCommon.Services
     /// <summary>
     /// 角色管理    [ Service ]
     /// </summary>
-    public class RoleService : BusinessService<RoleInfo, RoleView, RoleQuery>
+    public class RoleService : MongoBusinessService<RoleInfo, RoleView, RoleQuery>
     {
         #region 构造方法
         MenuService _MenuService;
@@ -24,19 +25,17 @@ namespace TianCheng.SystemCommon.Services
         /// 构造方法
         /// </summary>
         /// <param name="dal"></param>
-        /// <param name="logger"></param>
-        /// <param name="servicesProvider"></param>
-        /// <param name="menuService"></param>
-        /// <param name="functionService"></param>
-        /// <param name="employeeService"></param>
-        public RoleService(RoleDAL dal, ILogger<RoleService> logger, IServiceProvider servicesProvider,
-           MenuService menuService, FunctionService functionService, EmployeeService employeeService)
-            : base(dal, logger, servicesProvider)
+        public RoleService(RoleDAL dal)
+            : base(dal)
         {
-            _MenuService = menuService;
-            _FunctionService = functionService;
-            _EmployeeService = employeeService;
+            _MenuService = ServiceLoader.GetService<MenuService>();
+            _FunctionService = ServiceLoader.GetService<FunctionService>();
+            _EmployeeService = ServiceLoader.GetService<EmployeeService>();
         }
+        /// <summary>
+        /// 是否启用缓存
+        /// </summary>
+        protected override bool EnableCache => false;
         #endregion
 
         #region 查询方法
@@ -47,7 +46,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<RoleInfo> _Filter(RoleQuery input)
         {
-            var query = _Dal.Queryable();
+            var query = HasRedisCache ? base.RedisCacheQuery() : _Dal.Queryable();
 
             #region 查询条件
             //不显示删除的数据
@@ -101,25 +100,7 @@ namespace TianCheng.SystemCommon.Services
         }
         #endregion
 
-        #region 新增 / 修改方法
-        /// <summary>
-        /// 更新的后置操作
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="old"></param>
-        /// <param name="logonInfo"></param>
-        protected override void Updated(RoleInfo info, RoleInfo old, TokenLogonInfo logonInfo)
-        {
-            //如果角色名称发生改变，修改对应的用户信息中的角色
-            if (!info.Name.Equals(old.Name))
-            {
-                _EmployeeService.OnRoleChanged(info);
-            }
-        }
-        #endregion
-
         #region 删除方法
-
         /// <summary>
         /// 删除时的检查
         /// </summary>
@@ -127,12 +108,12 @@ namespace TianCheng.SystemCommon.Services
         protected override void DeleteRemoveCheck(RoleInfo info)
         {
             //如果角色下有员工信息，不允许删除
-            if (_EmployeeService.CountByRoleId(info.Id.ToString()) > 0)
+            EmployeeService employeeService = ServiceLoader.GetService<EmployeeService>();
+            if (employeeService.CountByRoleId(info.Id.ToString()) > 0)
             {
                 throw ApiException.BadRequest("角色下有员工信息，不允许删除");
             }
         }
-
         #endregion
 
         #region 初始化
@@ -141,12 +122,14 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         public void InitAdmin()
         {
-            //删除已有的角色信息
+            //获取已有的角色信息
             List<RoleInfo> roleList = _Dal.Queryable().Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains("管理员")).ToList();
             if (roleList == null || roleList.Count == 0)
             {
-                roleList = new List<RoleInfo>();
-                roleList.Add(new RoleInfo() { Name = "系统管理员", Desc = "系统默认系统管理员" });
+                roleList = new List<RoleInfo>
+                {
+                    new RoleInfo() { Name = "系统管理员", Desc = "系统默认系统管理员" }
+                };
             }
             //添加管理员角色
             foreach (RoleInfo admin in roleList)
@@ -167,13 +150,15 @@ namespace TianCheng.SystemCommon.Services
             RoleInfo admin = _Dal.Queryable().Where(e => e.Name == "系统管理员").FirstOrDefault();
             if (admin == null)
             {
-                admin = new RoleInfo() { Name = "系统管理员", Desc = "系统默认系统管理员" };
-
-                admin.CreateDate = DateTime.Now;
-                admin.CreaterId = "";
-                admin.CreaterName = "系统初始化";
-                admin.ProcessState = ProcessState.Edit;
-
+                admin = new RoleInfo()
+                {
+                    Name = "系统管理员",
+                    Desc = "系统默认系统管理员",
+                    CreateDate = DateTime.Now,
+                    CreaterId = "",
+                    CreaterName = "系统初始化",
+                    ProcessState = ProcessState.Edit
+                };
             }
             admin.PagePower = _MenuService.SearchMainTree();
             admin.FunctionPower = _FunctionService.SearchFunction();
@@ -183,16 +168,15 @@ namespace TianCheng.SystemCommon.Services
             admin.IsDelete = false;
 
             //保存管理员角色信息
-            if (admin.IsEmpty())
+            if (admin.IsEmpty)
             {
-                _Dal.Insert(admin);
+                _Dal.InsertObject(admin);
             }
             else
             {
-                _Dal.Update(admin);
+                _Dal.UpdateObject(admin);
             }
         }
         #endregion
-
     }
 }

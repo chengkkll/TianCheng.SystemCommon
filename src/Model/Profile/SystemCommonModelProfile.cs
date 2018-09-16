@@ -48,6 +48,14 @@ namespace TianCheng.SystemCommon.Model
             CreateMap<DepartmentView, DepartmentInfo>();
             CreateMap<DepartmentInfo, SelectView>();
 
+            CreateMap<IndustryInfo, IndustryView>();
+            CreateMap<IndustryView, IndustryInfo>();
+            CreateMap<IndustryInfo, SelectView>();
+
+            CreateMap<IndustryCategoryInfo, IndustryCategoryView>();
+            CreateMap<IndustryCategoryView, IndustryCategoryInfo>();
+            CreateMap<IndustryCategoryInfo, SelectView>();
+
             CreateMap<AreaView, AreaInfo>();
             CreateMap<AreaInfo, AreaView>();
             CreateMap<AreaInfo, SelectView>();

@@ -27,7 +27,6 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 部门名称
         /// </summary>
-        [Required(ErrorMessage = "部门名称不能为空")]
         public string Name { get; set; }
 
         /// <summary>
@@ -47,18 +46,22 @@ namespace TianCheng.SystemCommon.Model
         /// 上级部门名称
         /// </summary>
         public string ParentName { get; set; }
+        /// <summary>
+        /// 上级部门ID列表
+        /// </summary>
+        public List<string> ParentsIds { get; set; } = new List<string>();
         #endregion
 
-        #region 主管信息
-        /// <summary>
-        /// 部门主管ID
-        /// </summary>
-        public string ManageId { get; set; }
-        /// <summary>
-        /// 部门主管名称
-        /// </summary>
-        public string ManageName { get; set; }
-        #endregion
+        //#region 主管信息
+        ///// <summary>
+        ///// 部门主管ID
+        ///// </summary>
+        //public string ManageId { get; set; }
+        ///// <summary>
+        ///// 部门主管名称
+        ///// </summary>
+        //public string ManageName { get; set; }
+        //#endregion
 
         #region 子部门信息
         /// <summary>
@@ -68,6 +71,7 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 子部门列表
         /// </summary>
+        [MongoDB.Bson.Serialization.Attributes.BsonIgnore]
         public List<BaseViewModel> SubList
         {
             get { return _SubList; }
@@ -81,26 +85,26 @@ namespace TianCheng.SystemCommon.Model
         }
         #endregion
 
-        #region 行业信息
-        /// <summary>
-        /// 部门内的行业列表
-        /// </summary>
-        private List<BaseViewModel> _Industries = new List<BaseViewModel>();
-        /// <summary>
-        /// 部门内的行业列表
-        /// </summary>
-        public List<BaseViewModel> Industries
-        {
-            get { return _Industries; }
-            set
-            {
-                if (value == null)
-                    _Industries = new List<BaseViewModel>();
-                else
-                    _Industries = value;
-            }
-        }
-        #endregion
+        //#region 行业信息
+        ///// <summary>
+        ///// 部门内的行业列表
+        ///// </summary>
+        //private List<BaseViewModel> _Industries = new List<BaseViewModel>();
+        ///// <summary>
+        ///// 部门内的行业列表
+        ///// </summary>
+        //public List<BaseViewModel> Industries
+        //{
+        //    get { return _Industries; }
+        //    set
+        //    {
+        //        if (value == null)
+        //            _Industries = new List<BaseViewModel>();
+        //        else
+        //            _Industries = value;
+        //    }
+        //}
+        //#endregion
 
         #region 部门内员工信息
         private List<SelectView> _Employees = new List<SelectView>();

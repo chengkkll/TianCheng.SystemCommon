@@ -7,6 +7,7 @@ namespace TianCheng.SystemCommon.Model
     /// <summary>
     /// 菜单信息
     /// </summary>
+    [MongoDB.Bson.Serialization.Attributes.BsonIgnoreExtraElements]
     public class MenuSubInfo
     {
         /// <summary>
@@ -22,19 +23,13 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         public string Title { get; set; }
         /// <summary>
-        /// 菜单的定位
-        /// </summary>
-        public string Sref { get; set; }
-        /// <summary>
-        /// 字体图标
-        /// </summary>
-        public string FontAwesome { get; set; }
-
-        /// <summary>
         /// 图标
         /// </summary>
         public string Icon { get; set; }
-
+        /// <summary>
+        /// 菜单的定位
+        /// </summary>
+        public string Link { get; set; }
         /// <summary>
         /// 菜单类型
         /// </summary>

@@ -9,6 +9,7 @@ using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Diagnostics;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -63,7 +64,7 @@ namespace TianCheng.SystemCommon.Controller
         }
 
         /// <summary>
-        /// 更新Admin账号信息
+        /// 根据密码初始化系统数据
         /// </summary>
         /// <param name="updatePwd"></param>
         [SwaggerOperation(Tags = new[] { "系统管理-系统设置" })]
@@ -75,9 +76,20 @@ namespace TianCheng.SystemCommon.Controller
             {
                 return;
             }
-
             Init();
-
         }
+
+        ///// <summary>
+        ///// 备份数据库
+        ///// </summary>
+        //[SwaggerOperation(Tags = new[] { "系统管理-系统设置" })]
+        //[HttpPost("MongoDB/bak")]
+        //public void MongoDBBak()
+        //{
+        //    var psi = new ProcessStartInfo("shell\\BakMongoDB.bat");
+
+        //    //启动
+        //    var proc = Process.Start(psi);
+        //}
     }
 }
