@@ -12,11 +12,9 @@ public void ConfigureServices(IServiceCollection services)
     services.TianChengCommonInit(Configuration);
 }
 
-public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
-    TianCheng.SystemCommon.Services.AuthService authService)
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-	//注意增加了一个authService的参数，验证的Service只要继承IAuthService即可
-    app.TianChengCommonInit(Configuration, loggerFactory, authService);
+    app.TianChengCommonInit(Configuration);
 }
 ```
 
