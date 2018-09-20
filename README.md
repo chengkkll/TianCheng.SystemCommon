@@ -20,10 +20,10 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 数据库的链接配置
 appsettings.json 
-1、配置Swagger
-2、设置登录验证的Token信息
-3、配置MongoDB数据库连接
-4、FunctionModule可配置，也可不配置，此配置主要用于权限中功能点的自动生成处理
+1. 配置Swagger
+2. 设置登录验证的Token信息
+3. 配置MongoDB数据库连接
+4. FunctionModule可配置，也可不配置，此配置主要用于权限中功能点的自动生成处理
 
 ```cs
 {
