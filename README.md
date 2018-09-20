@@ -19,18 +19,49 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 ```
 
 数据库的链接配置
-appsettings.json 文件中配置MongoDB数据库：
+appsettings.json 
+1、配置Swagger
+2、设置登录验证的Token信息
+3、配置MongoDB数据库连接
+4、FunctionModule可配置，也可不配置，此配置主要用于权限中功能点的自动生成处理
+
 ```cs
 {
   "Logging": {
-    "IncludeScopes": false,
     "LogLevel": {
       "Default": "Warning"
     }
   },
+  "AllowedHosts": "*",
+  "SwaggerDoc": {
+    "Version": "v1",
+    "Title": "demo",
+    "Description": "RESTful API for demo",
+    "TermsOfService": "None",
+    "ContactName": "cheng_kkll",
+    "ContactEmail": "cheng_kkll@163.com",
+    "ContactUrl": "",
+    "EndpointUrl": "/swagger/v1/swagger.json",
+    "EndpointDesc": "demo API V1"
+  },
+  "Token": {
+    "Issuer": "demo.issuer",
+    "Audience": "demo.audi",
+    "SecretKey": "DemoSecretKey",
+    "Scheme": "Bearer",
+    "Path": "/api/auth/login"
+  },  
+  "FunctionModule": {
+    "ModuleDict": [
+      {
+        "Code": "TianCheng.SystemCommon",
+        "Name": "系统管理"
+      }
+    ]
+  },
   "DatabaseInfo": {
-    "ServerAddress": "mongodb://test:test@123.45.67.89:20000",
-    "Database": "test"
+    "ServerAddress": "mongodb://demo:demo@loalhost",
+    "Database": "demo"
   }
 }
 
