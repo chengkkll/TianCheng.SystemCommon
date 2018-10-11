@@ -24,14 +24,11 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logger"></param>
         /// <param name="servicesProvider"></param>
         public MenuService(MenuMainDAL dal, ILogger<MenuService> logger, IServiceProvider servicesProvider)
-            : base(dal, logger, servicesProvider)
+            : base(dal)
         {
 
         }
-        /// <summary>
-        /// 是否启用缓存
-        /// </summary>
-        protected override bool EnableCache => false;
+
         #endregion
 
         private MenuType DefaultMenuType = MenuType.ManageSingle;
@@ -44,7 +41,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<MenuMainView> SearchMainTree(MenuType menuType = MenuType.None)
         {
-            var query = HasRedisCache ? base.RedisCacheQuery() : _Dal.Queryable();
+            var query = _Dal.Queryable();
             switch (menuType)
             {
                 case MenuType.None: { break; }

@@ -27,10 +27,7 @@ namespace TianCheng.SystemCommon.Services
         {
 
         }
-        /// <summary>
-        /// 是否启用缓存
-        /// </summary>
-        protected override bool EnableCache => false;
+
         #endregion
 
         #region 查询方法
@@ -75,7 +72,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<DepartmentInfo> _Filter(DepartmentQuery input)
         {
-            var query = HasRedisCache ? base.RedisCacheQuery() : _Dal.Queryable();
+            var query = _Dal.Queryable();
 
             #region 查询条件
             //不显示删除的数据

@@ -23,7 +23,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logger"></param>
         /// <param name="servicesProvider"></param>
         public IndustryCategoryService(IndustryCategoryDAL dal, ILogger<IndustryCategoryService> logger, IServiceProvider servicesProvider)
-            : base(dal, logger, servicesProvider)
+            : base(dal)
         {
         }
         #endregion

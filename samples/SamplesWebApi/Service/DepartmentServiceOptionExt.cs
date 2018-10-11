@@ -36,10 +36,10 @@ namespace SamplesWebApi.Service
         public void SetOption()
         {
             // 设置部门保存时的验证处理
-            DepartmentServiceOption.Option.SavingCheck = OnSavingCheck;
+            //DepartmentServiceOption.Option.SavingCheck = OnSavingCheck;
 
-            // 设置部门更新的后置处理
-            DepartmentServiceOption.Option.Updated = OnUpdated;
+            //// 设置部门更新的后置处理
+            //DepartmentServiceOption.Option.Updated = OnUpdated;
 
         }
 

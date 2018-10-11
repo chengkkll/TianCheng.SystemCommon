@@ -30,15 +30,11 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="depDal"></param>
         /// <param name="roleDal"></param>
         public EmployeeService(EmployeeDAL dal, ILogger<EmployeeService> logger, IServiceProvider servicesProvider,
-            DepartmentDAL depDal, RoleDAL roleDal) : base(dal, logger, servicesProvider)
+            DepartmentDAL depDal, RoleDAL roleDal) : base(dal)
         {
             _RoleDal = roleDal;
             _DepDal = depDal;
         }
-        /// <summary>
-        /// 是否启用缓存
-        /// </summary>
-        protected override bool EnableCache => false;
         #endregion
 
         #region 查询方法
@@ -63,7 +59,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public override IQueryable<EmployeeInfo> _Filter(EmployeeQuery input)
         {
-            var query = HasRedisCache ? base.RedisCacheQuery() : _Dal.Queryable();
+            var query = _Dal.Queryable();
             //_logger.LogInformation("this is a log test: input.code:{0}, input.key:{1}", input.Name, input.State);
             // var query = _Dal.Queryable();
 
@@ -295,7 +291,6 @@ namespace TianCheng.SystemCommon.Services
                 depInfo.ParentName != oldInfo.ParentName || depInfo.ParentsIds.Equals(oldInfo.ParentsIds))
             {
                 ((EmployeeDAL)_Dal).UpdateDepartmentInfo(depInfo);
-                ResetRedisCache();
             }
         }
         #endregion

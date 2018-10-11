@@ -22,7 +22,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logger"></param>
         /// <param name="servicesProvider"></param>
         public AreaService(AreaDAL dal, ILogger<AreaService> logger, IServiceProvider servicesProvider) 
-            : base(dal, logger, servicesProvider)
+            : base(dal)
         {
 
         }
@@ -34,199 +34,201 @@ namespace TianCheng.SystemCommon.Services
         /// </summary>
         public void DefaultInit()
         {
-            List<AreaInfo> areaList = new List<AreaInfo>();
-            areaList.Add(new AreaInfo() { Name = "中国", AreaType = AreaType.Country, Code = "86", TelephoneCode = "+86" });
+            List<AreaInfo> areaList = new List<AreaInfo>
+            {
+                new AreaInfo() { Name = "中国", AreaType = AreaType.Country, Code = "86", TelephoneCode = "+86" },
 
-            areaList.Add(new AreaInfo() { Name = "北京市", AreaType = AreaType.Municipality, Code = "010", TelephoneCode = "010", SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "上海市", AreaType = AreaType.Municipality, Code = "021", TelephoneCode = "021", SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "天津市", AreaType = AreaType.Municipality, Code = "022", TelephoneCode = "022", SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "重庆市", AreaType = AreaType.Municipality, Code = "023", TelephoneCode = "023", SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "香港", AreaType = AreaType.Municipality, Code = "852", TelephoneCode = "852", SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "澳门", AreaType = AreaType.Municipality, Code = "853", TelephoneCode = "853", SuperiorCode = "86", SuperiorName = "中国" });
+                new AreaInfo() { Name = "北京市", AreaType = AreaType.Municipality, Code = "010", TelephoneCode = "010", SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "上海市", AreaType = AreaType.Municipality, Code = "021", TelephoneCode = "021", SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "天津市", AreaType = AreaType.Municipality, Code = "022", TelephoneCode = "022", SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "重庆市", AreaType = AreaType.Municipality, Code = "023", TelephoneCode = "023", SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "香港", AreaType = AreaType.Municipality, Code = "852", TelephoneCode = "852", SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "澳门", AreaType = AreaType.Municipality, Code = "853", TelephoneCode = "853", SuperiorCode = "86", SuperiorName = "中国" },
 
-            areaList.Add(new AreaInfo() { Name = "河北省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "邯郸市", AreaType = AreaType.City, Code = "0310", TelephoneCode = "0310", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "石家庄", AreaType = AreaType.City, Code = "0311", TelephoneCode = "0311", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "保定市", AreaType = AreaType.City, Code = "0312", TelephoneCode = "0312", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "张家口", AreaType = AreaType.City, Code = "0313", TelephoneCode = "0313", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "承德市", AreaType = AreaType.City, Code = "0314", TelephoneCode = "0314", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "唐山市", AreaType = AreaType.City, Code = "0315", TelephoneCode = "0315", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "廊坊市", AreaType = AreaType.City, Code = "0316", TelephoneCode = "0316", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "沧州市", AreaType = AreaType.City, Code = "0317", TelephoneCode = "0317", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "衡水市", AreaType = AreaType.City, Code = "0318", TelephoneCode = "0318", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "邢台市", AreaType = AreaType.City, Code = "0319", TelephoneCode = "0319", SuperiorName = "河北省" });
-            areaList.Add(new AreaInfo() { Name = "秦皇岛", AreaType = AreaType.City, Code = "0335", TelephoneCode = "0335", SuperiorName = "河北省" });
+                new AreaInfo() { Name = "河北省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "邯郸市", AreaType = AreaType.City, Code = "0310", TelephoneCode = "0310", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "石家庄", AreaType = AreaType.City, Code = "0311", TelephoneCode = "0311", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "保定市", AreaType = AreaType.City, Code = "0312", TelephoneCode = "0312", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "张家口", AreaType = AreaType.City, Code = "0313", TelephoneCode = "0313", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "承德市", AreaType = AreaType.City, Code = "0314", TelephoneCode = "0314", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "唐山市", AreaType = AreaType.City, Code = "0315", TelephoneCode = "0315", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "廊坊市", AreaType = AreaType.City, Code = "0316", TelephoneCode = "0316", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "沧州市", AreaType = AreaType.City, Code = "0317", TelephoneCode = "0317", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "衡水市", AreaType = AreaType.City, Code = "0318", TelephoneCode = "0318", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "邢台市", AreaType = AreaType.City, Code = "0319", TelephoneCode = "0319", SuperiorName = "河北省" },
+                new AreaInfo() { Name = "秦皇岛", AreaType = AreaType.City, Code = "0335", TelephoneCode = "0335", SuperiorName = "河北省" },
 
-            areaList.Add(new AreaInfo() { Name = "浙江省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "衢州市", AreaType = AreaType.City, Code = "0570", TelephoneCode = "0570", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "杭州市", AreaType = AreaType.City, Code = "0571", TelephoneCode = "0571", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "湖州市", AreaType = AreaType.City, Code = "0572", TelephoneCode = "0572", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "嘉兴市", AreaType = AreaType.City, Code = "0573", TelephoneCode = "0573", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "宁波市", AreaType = AreaType.City, Code = "0574", TelephoneCode = "0574", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "绍兴市", AreaType = AreaType.City, Code = "0575", TelephoneCode = "0575", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "台州市", AreaType = AreaType.City, Code = "0576", TelephoneCode = "0576", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "温州市", AreaType = AreaType.City, Code = "0577", TelephoneCode = "0577", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "丽水市", AreaType = AreaType.City, Code = "0578", TelephoneCode = "0578", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "金华市", AreaType = AreaType.City, Code = "0579", TelephoneCode = "0579", SuperiorName = "浙江省" });
-            areaList.Add(new AreaInfo() { Name = "舟山市", AreaType = AreaType.City, Code = "0580", TelephoneCode = "0580", SuperiorName = "浙江省" });
+                new AreaInfo() { Name = "浙江省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "衢州市", AreaType = AreaType.City, Code = "0570", TelephoneCode = "0570", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "杭州市", AreaType = AreaType.City, Code = "0571", TelephoneCode = "0571", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "湖州市", AreaType = AreaType.City, Code = "0572", TelephoneCode = "0572", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "嘉兴市", AreaType = AreaType.City, Code = "0573", TelephoneCode = "0573", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "宁波市", AreaType = AreaType.City, Code = "0574", TelephoneCode = "0574", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "绍兴市", AreaType = AreaType.City, Code = "0575", TelephoneCode = "0575", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "台州市", AreaType = AreaType.City, Code = "0576", TelephoneCode = "0576", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "温州市", AreaType = AreaType.City, Code = "0577", TelephoneCode = "0577", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "丽水市", AreaType = AreaType.City, Code = "0578", TelephoneCode = "0578", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "金华市", AreaType = AreaType.City, Code = "0579", TelephoneCode = "0579", SuperiorName = "浙江省" },
+                new AreaInfo() { Name = "舟山市", AreaType = AreaType.City, Code = "0580", TelephoneCode = "0580", SuperiorName = "浙江省" },
 
-            areaList.Add(new AreaInfo() { Name = "辽宁省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "沈阳市", AreaType = AreaType.City, Code = "024", TelephoneCode = "024", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "铁岭市", AreaType = AreaType.City, Code = "0410", TelephoneCode = "0410", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "大连市", AreaType = AreaType.City, Code = "0411", TelephoneCode = "0411", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "鞍山市", AreaType = AreaType.City, Code = "0412", TelephoneCode = "0412", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "抚顺市", AreaType = AreaType.City, Code = "0413", TelephoneCode = "0413", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "本溪市", AreaType = AreaType.City, Code = "0414", TelephoneCode = "0414", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "丹东市", AreaType = AreaType.City, Code = "0415", TelephoneCode = "0415", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "锦州市", AreaType = AreaType.City, Code = "0416", TelephoneCode = "0416", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "营口市", AreaType = AreaType.City, Code = "0417", TelephoneCode = "0417", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "阜新市", AreaType = AreaType.City, Code = "0418", TelephoneCode = "0418", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "辽阳市", AreaType = AreaType.City, Code = "0419", TelephoneCode = "0419", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "朝阳市", AreaType = AreaType.City, Code = "0421", TelephoneCode = "0421", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "盘锦市", AreaType = AreaType.City, Code = "0427", TelephoneCode = "0427", SuperiorName = "辽宁省" });
-            areaList.Add(new AreaInfo() { Name = "葫芦岛", AreaType = AreaType.City, Code = "0429", TelephoneCode = "0429", SuperiorName = "辽宁省" });
+                new AreaInfo() { Name = "辽宁省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "沈阳市", AreaType = AreaType.City, Code = "024", TelephoneCode = "024", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "铁岭市", AreaType = AreaType.City, Code = "0410", TelephoneCode = "0410", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "大连市", AreaType = AreaType.City, Code = "0411", TelephoneCode = "0411", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "鞍山市", AreaType = AreaType.City, Code = "0412", TelephoneCode = "0412", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "抚顺市", AreaType = AreaType.City, Code = "0413", TelephoneCode = "0413", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "本溪市", AreaType = AreaType.City, Code = "0414", TelephoneCode = "0414", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "丹东市", AreaType = AreaType.City, Code = "0415", TelephoneCode = "0415", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "锦州市", AreaType = AreaType.City, Code = "0416", TelephoneCode = "0416", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "营口市", AreaType = AreaType.City, Code = "0417", TelephoneCode = "0417", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "阜新市", AreaType = AreaType.City, Code = "0418", TelephoneCode = "0418", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "辽阳市", AreaType = AreaType.City, Code = "0419", TelephoneCode = "0419", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "朝阳市", AreaType = AreaType.City, Code = "0421", TelephoneCode = "0421", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "盘锦市", AreaType = AreaType.City, Code = "0427", TelephoneCode = "0427", SuperiorName = "辽宁省" },
+                new AreaInfo() { Name = "葫芦岛", AreaType = AreaType.City, Code = "0429", TelephoneCode = "0429", SuperiorName = "辽宁省" },
 
-            areaList.Add(new AreaInfo() { Name = "湖北省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "武汉市", AreaType = AreaType.City, Code = "027", TelephoneCode = "027", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "襄城市", AreaType = AreaType.City, Code = "0710", TelephoneCode = "0710", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "鄂州市", AreaType = AreaType.City, Code = "0711", TelephoneCode = "0711", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "孝感市", AreaType = AreaType.City, Code = "0712", TelephoneCode = "0712", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "黄州市", AreaType = AreaType.City, Code = "0713", TelephoneCode = "0713", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "黄石市", AreaType = AreaType.City, Code = "0714", TelephoneCode = "0714", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "咸宁市", AreaType = AreaType.City, Code = "0715", TelephoneCode = "0715", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "荆沙市", AreaType = AreaType.City, Code = "0716", TelephoneCode = "0716", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "宜昌市", AreaType = AreaType.City, Code = "0717", TelephoneCode = "0717", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "恩施市", AreaType = AreaType.City, Code = "0718", TelephoneCode = "0718", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "十堰市", AreaType = AreaType.City, Code = "0719", TelephoneCode = "0719", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "随枣市", AreaType = AreaType.City, Code = "0722", TelephoneCode = "0722", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "荆门市", AreaType = AreaType.City, Code = "0724", TelephoneCode = "0724", SuperiorName = "湖北省" });
-            areaList.Add(new AreaInfo() { Name = "江汉市", AreaType = AreaType.City, Code = "0728", TelephoneCode = "0728", SuperiorName = "湖北省" });
+                new AreaInfo() { Name = "湖北省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "武汉市", AreaType = AreaType.City, Code = "027", TelephoneCode = "027", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "襄城市", AreaType = AreaType.City, Code = "0710", TelephoneCode = "0710", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "鄂州市", AreaType = AreaType.City, Code = "0711", TelephoneCode = "0711", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "孝感市", AreaType = AreaType.City, Code = "0712", TelephoneCode = "0712", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "黄州市", AreaType = AreaType.City, Code = "0713", TelephoneCode = "0713", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "黄石市", AreaType = AreaType.City, Code = "0714", TelephoneCode = "0714", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "咸宁市", AreaType = AreaType.City, Code = "0715", TelephoneCode = "0715", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "荆沙市", AreaType = AreaType.City, Code = "0716", TelephoneCode = "0716", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "宜昌市", AreaType = AreaType.City, Code = "0717", TelephoneCode = "0717", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "恩施市", AreaType = AreaType.City, Code = "0718", TelephoneCode = "0718", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "十堰市", AreaType = AreaType.City, Code = "0719", TelephoneCode = "0719", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "随枣市", AreaType = AreaType.City, Code = "0722", TelephoneCode = "0722", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "荆门市", AreaType = AreaType.City, Code = "0724", TelephoneCode = "0724", SuperiorName = "湖北省" },
+                new AreaInfo() { Name = "江汉市", AreaType = AreaType.City, Code = "0728", TelephoneCode = "0728", SuperiorName = "湖北省" },
 
-            areaList.Add(new AreaInfo() { Name = "江苏省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "南京市", AreaType = AreaType.City, Code = "025", TelephoneCode = "025", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "无锡市", AreaType = AreaType.City, Code = "0510", TelephoneCode = "0510", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "镇江市", AreaType = AreaType.City, Code = "0511", TelephoneCode = "0511", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "苏州市", AreaType = AreaType.City, Code = "0512", TelephoneCode = "0512", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "南通市", AreaType = AreaType.City, Code = "0513", TelephoneCode = "0513", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "扬州市", AreaType = AreaType.City, Code = "0514", TelephoneCode = "0514", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "盐城市", AreaType = AreaType.City, Code = "0515", TelephoneCode = "0515", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "徐州市", AreaType = AreaType.City, Code = "0516", TelephoneCode = "0516", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "淮阴市", AreaType = AreaType.City, Code = "0517", TelephoneCode = "0517", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "淮安市", AreaType = AreaType.City, Code = "0517", TelephoneCode = "0517", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "连云港", AreaType = AreaType.City, Code = "0518", TelephoneCode = "0518", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "常州市", AreaType = AreaType.City, Code = "0519", TelephoneCode = "0519", SuperiorName = "江苏省" });
-            areaList.Add(new AreaInfo() { Name = "泰州市", AreaType = AreaType.City, Code = "0523", TelephoneCode = "0523", SuperiorName = "江苏省" });
+                new AreaInfo() { Name = "江苏省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "南京市", AreaType = AreaType.City, Code = "025", TelephoneCode = "025", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "无锡市", AreaType = AreaType.City, Code = "0510", TelephoneCode = "0510", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "镇江市", AreaType = AreaType.City, Code = "0511", TelephoneCode = "0511", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "苏州市", AreaType = AreaType.City, Code = "0512", TelephoneCode = "0512", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "南通市", AreaType = AreaType.City, Code = "0513", TelephoneCode = "0513", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "扬州市", AreaType = AreaType.City, Code = "0514", TelephoneCode = "0514", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "盐城市", AreaType = AreaType.City, Code = "0515", TelephoneCode = "0515", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "徐州市", AreaType = AreaType.City, Code = "0516", TelephoneCode = "0516", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "淮阴市", AreaType = AreaType.City, Code = "0517", TelephoneCode = "0517", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "淮安市", AreaType = AreaType.City, Code = "0517", TelephoneCode = "0517", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "连云港", AreaType = AreaType.City, Code = "0518", TelephoneCode = "0518", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "常州市", AreaType = AreaType.City, Code = "0519", TelephoneCode = "0519", SuperiorName = "江苏省" },
+                new AreaInfo() { Name = "泰州市", AreaType = AreaType.City, Code = "0523", TelephoneCode = "0523", SuperiorName = "江苏省" },
 
-            areaList.Add(new AreaInfo() { Name = "内蒙古", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "海拉尔", AreaType = AreaType.City, Code = "0470", TelephoneCode = "0470", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "呼和浩特", AreaType = AreaType.City, Code = "0471", TelephoneCode = "0471", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "包头市", AreaType = AreaType.City, Code = "0472", TelephoneCode = "0472", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "乌海市", AreaType = AreaType.City, Code = "0473", TelephoneCode = "0473", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "集宁市", AreaType = AreaType.City, Code = "0474", TelephoneCode = "0474", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "通辽市", AreaType = AreaType.City, Code = "0475", TelephoneCode = "0475", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "赤峰市", AreaType = AreaType.City, Code = "0476", TelephoneCode = "0476", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "东胜市", AreaType = AreaType.City, Code = "0477", TelephoneCode = "0477", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "临河市", AreaType = AreaType.City, Code = "0478", TelephoneCode = "0478", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "锡林浩特", AreaType = AreaType.City, Code = "0479", TelephoneCode = "0479", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "乌兰浩特", AreaType = AreaType.City, Code = "0482", TelephoneCode = "0482", SuperiorName = "内蒙古" });
-            areaList.Add(new AreaInfo() { Name = "阿拉善左旗", AreaType = AreaType.City, Code = "0483", TelephoneCode = "0483", SuperiorName = "内蒙古" });
+                new AreaInfo() { Name = "内蒙古", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "海拉尔", AreaType = AreaType.City, Code = "0470", TelephoneCode = "0470", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "呼和浩特", AreaType = AreaType.City, Code = "0471", TelephoneCode = "0471", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "包头市", AreaType = AreaType.City, Code = "0472", TelephoneCode = "0472", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "乌海市", AreaType = AreaType.City, Code = "0473", TelephoneCode = "0473", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "集宁市", AreaType = AreaType.City, Code = "0474", TelephoneCode = "0474", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "通辽市", AreaType = AreaType.City, Code = "0475", TelephoneCode = "0475", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "赤峰市", AreaType = AreaType.City, Code = "0476", TelephoneCode = "0476", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "东胜市", AreaType = AreaType.City, Code = "0477", TelephoneCode = "0477", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "临河市", AreaType = AreaType.City, Code = "0478", TelephoneCode = "0478", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "锡林浩特", AreaType = AreaType.City, Code = "0479", TelephoneCode = "0479", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "乌兰浩特", AreaType = AreaType.City, Code = "0482", TelephoneCode = "0482", SuperiorName = "内蒙古" },
+                new AreaInfo() { Name = "阿拉善左旗", AreaType = AreaType.City, Code = "0483", TelephoneCode = "0483", SuperiorName = "内蒙古" },
 
-            areaList.Add(new AreaInfo() { Name = "江西省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "新余市", AreaType = AreaType.City, Code = "0790", TelephoneCode = "0790", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "南昌市", AreaType = AreaType.City, Code = "0791", TelephoneCode = "0791", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "九江市", AreaType = AreaType.City, Code = "0792", TelephoneCode = "0792", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "上饶市", AreaType = AreaType.City, Code = "0793", TelephoneCode = "0793", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "临川市", AreaType = AreaType.City, Code = "0794", TelephoneCode = "0794", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "宜春市", AreaType = AreaType.City, Code = "0795", TelephoneCode = "0795", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "吉安市", AreaType = AreaType.City, Code = "0796", TelephoneCode = "0796", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "赣州市", AreaType = AreaType.City, Code = "0797", TelephoneCode = "0797", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "景德镇", AreaType = AreaType.City, Code = "0798", TelephoneCode = "0798", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "萍乡市", AreaType = AreaType.City, Code = "0799", TelephoneCode = "0799", SuperiorName = "江西省" });
-            areaList.Add(new AreaInfo() { Name = "鹰潭市", AreaType = AreaType.City, Code = "0701", TelephoneCode = "0701", SuperiorName = "江西省" });
+                new AreaInfo() { Name = "江西省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "新余市", AreaType = AreaType.City, Code = "0790", TelephoneCode = "0790", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "南昌市", AreaType = AreaType.City, Code = "0791", TelephoneCode = "0791", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "九江市", AreaType = AreaType.City, Code = "0792", TelephoneCode = "0792", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "上饶市", AreaType = AreaType.City, Code = "0793", TelephoneCode = "0793", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "临川市", AreaType = AreaType.City, Code = "0794", TelephoneCode = "0794", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "宜春市", AreaType = AreaType.City, Code = "0795", TelephoneCode = "0795", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "吉安市", AreaType = AreaType.City, Code = "0796", TelephoneCode = "0796", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "赣州市", AreaType = AreaType.City, Code = "0797", TelephoneCode = "0797", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "景德镇", AreaType = AreaType.City, Code = "0798", TelephoneCode = "0798", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "萍乡市", AreaType = AreaType.City, Code = "0799", TelephoneCode = "0799", SuperiorName = "江西省" },
+                new AreaInfo() { Name = "鹰潭市", AreaType = AreaType.City, Code = "0701", TelephoneCode = "0701", SuperiorName = "江西省" },
 
-            areaList.Add(new AreaInfo() { Name = "山西省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "忻州市", AreaType = AreaType.City, Code = "0350", TelephoneCode = "0350", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "太原市", AreaType = AreaType.City, Code = "0351", TelephoneCode = "0351", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "大同市", AreaType = AreaType.City, Code = "0352", TelephoneCode = "0352", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "阳泉市", AreaType = AreaType.City, Code = "0353", TelephoneCode = "0353", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "榆次市", AreaType = AreaType.City, Code = "0354", TelephoneCode = "0354", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "长治市", AreaType = AreaType.City, Code = "0355", TelephoneCode = "0355", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "晋城市", AreaType = AreaType.City, Code = "0356", TelephoneCode = "0356", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "临汾市", AreaType = AreaType.City, Code = "0357", TelephoneCode = "0357", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "离石市", AreaType = AreaType.City, Code = "0358", TelephoneCode = "0358", SuperiorName = "山西省" });
-            areaList.Add(new AreaInfo() { Name = "运城市", AreaType = AreaType.City, Code = "0359", TelephoneCode = "0359", SuperiorName = "山西省" });
+                new AreaInfo() { Name = "山西省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "忻州市", AreaType = AreaType.City, Code = "0350", TelephoneCode = "0350", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "太原市", AreaType = AreaType.City, Code = "0351", TelephoneCode = "0351", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "大同市", AreaType = AreaType.City, Code = "0352", TelephoneCode = "0352", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "阳泉市", AreaType = AreaType.City, Code = "0353", TelephoneCode = "0353", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "榆次市", AreaType = AreaType.City, Code = "0354", TelephoneCode = "0354", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "长治市", AreaType = AreaType.City, Code = "0355", TelephoneCode = "0355", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "晋城市", AreaType = AreaType.City, Code = "0356", TelephoneCode = "0356", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "临汾市", AreaType = AreaType.City, Code = "0357", TelephoneCode = "0357", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "离石市", AreaType = AreaType.City, Code = "0358", TelephoneCode = "0358", SuperiorName = "山西省" },
+                new AreaInfo() { Name = "运城市", AreaType = AreaType.City, Code = "0359", TelephoneCode = "0359", SuperiorName = "山西省" },
 
-            areaList.Add(new AreaInfo() { Name = "甘肃省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "临夏市", AreaType = AreaType.City, Code = "0930", TelephoneCode = "0930", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "兰州市", AreaType = AreaType.City, Code = "0931", TelephoneCode = "0931", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "定西市", AreaType = AreaType.City, Code = "0932", TelephoneCode = "0932", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "平凉市", AreaType = AreaType.City, Code = "0933", TelephoneCode = "0933", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "西峰市", AreaType = AreaType.City, Code = "0934", TelephoneCode = "0934", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "武威市", AreaType = AreaType.City, Code = "0935", TelephoneCode = "0935", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "张掖市", AreaType = AreaType.City, Code = "0936", TelephoneCode = "0936", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "酒泉市", AreaType = AreaType.City, Code = "0937", TelephoneCode = "0937", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "天水市", AreaType = AreaType.City, Code = "0938", TelephoneCode = "0938", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "甘南州", AreaType = AreaType.City, Code = "0941", TelephoneCode = "0941", SuperiorName = "甘肃省" });
-            areaList.Add(new AreaInfo() { Name = "白银市", AreaType = AreaType.City, Code = "0943", TelephoneCode = "0943", SuperiorName = "甘肃省" });
+                new AreaInfo() { Name = "甘肃省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "临夏市", AreaType = AreaType.City, Code = "0930", TelephoneCode = "0930", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "兰州市", AreaType = AreaType.City, Code = "0931", TelephoneCode = "0931", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "定西市", AreaType = AreaType.City, Code = "0932", TelephoneCode = "0932", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "平凉市", AreaType = AreaType.City, Code = "0933", TelephoneCode = "0933", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "西峰市", AreaType = AreaType.City, Code = "0934", TelephoneCode = "0934", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "武威市", AreaType = AreaType.City, Code = "0935", TelephoneCode = "0935", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "张掖市", AreaType = AreaType.City, Code = "0936", TelephoneCode = "0936", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "酒泉市", AreaType = AreaType.City, Code = "0937", TelephoneCode = "0937", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "天水市", AreaType = AreaType.City, Code = "0938", TelephoneCode = "0938", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "甘南州", AreaType = AreaType.City, Code = "0941", TelephoneCode = "0941", SuperiorName = "甘肃省" },
+                new AreaInfo() { Name = "白银市", AreaType = AreaType.City, Code = "0943", TelephoneCode = "0943", SuperiorName = "甘肃省" },
 
-            areaList.Add(new AreaInfo() { Name = "山东省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "菏泽市", AreaType = AreaType.City, Code = "0530", TelephoneCode = "0530", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "济南市", AreaType = AreaType.City, Code = "0531", TelephoneCode = "0531", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "青岛市", AreaType = AreaType.City, Code = "0532", TelephoneCode = "0532", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "淄博市", AreaType = AreaType.City, Code = "0533", TelephoneCode = "0533", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "德州市", AreaType = AreaType.City, Code = "0534", TelephoneCode = "0534", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "烟台市", AreaType = AreaType.City, Code = "0535", TelephoneCode = "0535", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "淮坊市", AreaType = AreaType.City, Code = "0536", TelephoneCode = "0536", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "济宁市", AreaType = AreaType.City, Code = "0537", TelephoneCode = "0537", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "泰安市", AreaType = AreaType.City, Code = "0538", TelephoneCode = "0538", SuperiorName = "山东省" });
-            areaList.Add(new AreaInfo() { Name = "临沂市", AreaType = AreaType.City, Code = "0539", TelephoneCode = "0539", SuperiorName = "山东省" });
+                new AreaInfo() { Name = "山东省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "菏泽市", AreaType = AreaType.City, Code = "0530", TelephoneCode = "0530", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "济南市", AreaType = AreaType.City, Code = "0531", TelephoneCode = "0531", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "青岛市", AreaType = AreaType.City, Code = "0532", TelephoneCode = "0532", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "淄博市", AreaType = AreaType.City, Code = "0533", TelephoneCode = "0533", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "德州市", AreaType = AreaType.City, Code = "0534", TelephoneCode = "0534", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "烟台市", AreaType = AreaType.City, Code = "0535", TelephoneCode = "0535", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "淮坊市", AreaType = AreaType.City, Code = "0536", TelephoneCode = "0536", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "济宁市", AreaType = AreaType.City, Code = "0537", TelephoneCode = "0537", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "泰安市", AreaType = AreaType.City, Code = "0538", TelephoneCode = "0538", SuperiorName = "山东省" },
+                new AreaInfo() { Name = "临沂市", AreaType = AreaType.City, Code = "0539", TelephoneCode = "0539", SuperiorName = "山东省" },
 
-            areaList.Add(new AreaInfo() { Name = "黑龙江", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "阿城市", AreaType = AreaType.City, Code = "0450", TelephoneCode = "0450", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "哈尔滨", AreaType = AreaType.City, Code = "0451", TelephoneCode = "0451", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "齐齐哈尔", AreaType = AreaType.City, Code = "0452", TelephoneCode = "0452", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "牡丹江", AreaType = AreaType.City, Code = "0453", TelephoneCode = "0453", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "佳木斯", AreaType = AreaType.City, Code = "0454", TelephoneCode = "0454", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "绥化市", AreaType = AreaType.City, Code = "0455", TelephoneCode = "0455", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "黑河市", AreaType = AreaType.City, Code = "0456", TelephoneCode = "0456", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "加格达奇", AreaType = AreaType.City, Code = "0457", TelephoneCode = "0457", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "伊春市", AreaType = AreaType.City, Code = "0458", TelephoneCode = "0458", SuperiorName = "黑龙江" });
-            areaList.Add(new AreaInfo() { Name = "大庆市", AreaType = AreaType.City, Code = "0459", TelephoneCode = "0459", SuperiorName = "黑龙江" });
+                new AreaInfo() { Name = "黑龙江", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "阿城市", AreaType = AreaType.City, Code = "0450", TelephoneCode = "0450", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "哈尔滨", AreaType = AreaType.City, Code = "0451", TelephoneCode = "0451", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "齐齐哈尔", AreaType = AreaType.City, Code = "0452", TelephoneCode = "0452", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "牡丹江", AreaType = AreaType.City, Code = "0453", TelephoneCode = "0453", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "佳木斯", AreaType = AreaType.City, Code = "0454", TelephoneCode = "0454", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "绥化市", AreaType = AreaType.City, Code = "0455", TelephoneCode = "0455", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "黑河市", AreaType = AreaType.City, Code = "0456", TelephoneCode = "0456", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "加格达奇", AreaType = AreaType.City, Code = "0457", TelephoneCode = "0457", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "伊春市", AreaType = AreaType.City, Code = "0458", TelephoneCode = "0458", SuperiorName = "黑龙江" },
+                new AreaInfo() { Name = "大庆市", AreaType = AreaType.City, Code = "0459", TelephoneCode = "0459", SuperiorName = "黑龙江" },
 
-            areaList.Add(new AreaInfo() { Name = "福建省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "福州市", AreaType = AreaType.City, Code = "0591", TelephoneCode = "0591", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "厦门市", AreaType = AreaType.City, Code = "0592", TelephoneCode = "0592", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "宁德市", AreaType = AreaType.City, Code = "0593", TelephoneCode = "0593", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "莆田市", AreaType = AreaType.City, Code = "0594", TelephoneCode = "0594", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "泉州市", AreaType = AreaType.City, Code = "0595", TelephoneCode = "0595", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "晋江市", AreaType = AreaType.City, Code = "0595", TelephoneCode = "0595", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "漳州市", AreaType = AreaType.City, Code = "0596", TelephoneCode = "0596", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "龙岩市", AreaType = AreaType.City, Code = "0597", TelephoneCode = "0597", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "三明市", AreaType = AreaType.City, Code = "0598", TelephoneCode = "0598", SuperiorName = "福建省" });
-            areaList.Add(new AreaInfo() { Name = "南平市", AreaType = AreaType.City, Code = "0599", TelephoneCode = "0599", SuperiorName = "福建省" });
+                new AreaInfo() { Name = "福建省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "福州市", AreaType = AreaType.City, Code = "0591", TelephoneCode = "0591", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "厦门市", AreaType = AreaType.City, Code = "0592", TelephoneCode = "0592", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "宁德市", AreaType = AreaType.City, Code = "0593", TelephoneCode = "0593", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "莆田市", AreaType = AreaType.City, Code = "0594", TelephoneCode = "0594", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "泉州市", AreaType = AreaType.City, Code = "0595", TelephoneCode = "0595", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "晋江市", AreaType = AreaType.City, Code = "0595", TelephoneCode = "0595", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "漳州市", AreaType = AreaType.City, Code = "0596", TelephoneCode = "0596", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "龙岩市", AreaType = AreaType.City, Code = "0597", TelephoneCode = "0597", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "三明市", AreaType = AreaType.City, Code = "0598", TelephoneCode = "0598", SuperiorName = "福建省" },
+                new AreaInfo() { Name = "南平市", AreaType = AreaType.City, Code = "0599", TelephoneCode = "0599", SuperiorName = "福建省" },
 
-            areaList.Add(new AreaInfo() { Name = "广东省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" });
-            areaList.Add(new AreaInfo() { Name = "广州市", AreaType = AreaType.City, Code = "020", TelephoneCode = "020", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "韶关市", AreaType = AreaType.City, Code = "0751", TelephoneCode = "0751", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "惠州市", AreaType = AreaType.City, Code = "0752", TelephoneCode = "0752", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "梅州市", AreaType = AreaType.City, Code = "0753", TelephoneCode = "0753", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "汕头市", AreaType = AreaType.City, Code = "0754", TelephoneCode = "0754", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "深圳市", AreaType = AreaType.City, Code = "0755", TelephoneCode = "0755", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "珠海市", AreaType = AreaType.City, Code = "0756", TelephoneCode = "0756", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "佛山市", AreaType = AreaType.City, Code = "0757", TelephoneCode = "0757", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "肇庆市", AreaType = AreaType.City, Code = "0758", TelephoneCode = "0758", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "湛江市", AreaType = AreaType.City, Code = "0759", TelephoneCode = "0759", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "中山市", AreaType = AreaType.City, Code = "0760", TelephoneCode = "0760", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "河源市", AreaType = AreaType.City, Code = "0762", TelephoneCode = "0762", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "清远市", AreaType = AreaType.City, Code = "0763", TelephoneCode = "0763", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "顺德市", AreaType = AreaType.City, Code = "0765", TelephoneCode = "0765", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "云浮市", AreaType = AreaType.City, Code = "0766", TelephoneCode = "0766", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "潮州市", AreaType = AreaType.City, Code = "0768", TelephoneCode = "0768", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "东莞市", AreaType = AreaType.City, Code = "0769", TelephoneCode = "0769", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "汕尾市", AreaType = AreaType.City, Code = "0660", TelephoneCode = "0660", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "潮阳市", AreaType = AreaType.City, Code = "0661", TelephoneCode = "0661", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "阳江市", AreaType = AreaType.City, Code = "0662", TelephoneCode = "0662", SuperiorName = "广东省" });
-            areaList.Add(new AreaInfo() { Name = "揭西市", AreaType = AreaType.City, Code = "0663", TelephoneCode = "0663", SuperiorName = "广东省" });
+                new AreaInfo() { Name = "广东省", AreaType = AreaType.Province, SuperiorCode = "86", SuperiorName = "中国" },
+                new AreaInfo() { Name = "广州市", AreaType = AreaType.City, Code = "020", TelephoneCode = "020", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "韶关市", AreaType = AreaType.City, Code = "0751", TelephoneCode = "0751", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "惠州市", AreaType = AreaType.City, Code = "0752", TelephoneCode = "0752", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "梅州市", AreaType = AreaType.City, Code = "0753", TelephoneCode = "0753", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "汕头市", AreaType = AreaType.City, Code = "0754", TelephoneCode = "0754", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "深圳市", AreaType = AreaType.City, Code = "0755", TelephoneCode = "0755", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "珠海市", AreaType = AreaType.City, Code = "0756", TelephoneCode = "0756", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "佛山市", AreaType = AreaType.City, Code = "0757", TelephoneCode = "0757", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "肇庆市", AreaType = AreaType.City, Code = "0758", TelephoneCode = "0758", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "湛江市", AreaType = AreaType.City, Code = "0759", TelephoneCode = "0759", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "中山市", AreaType = AreaType.City, Code = "0760", TelephoneCode = "0760", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "河源市", AreaType = AreaType.City, Code = "0762", TelephoneCode = "0762", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "清远市", AreaType = AreaType.City, Code = "0763", TelephoneCode = "0763", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "顺德市", AreaType = AreaType.City, Code = "0765", TelephoneCode = "0765", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "云浮市", AreaType = AreaType.City, Code = "0766", TelephoneCode = "0766", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "潮州市", AreaType = AreaType.City, Code = "0768", TelephoneCode = "0768", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "东莞市", AreaType = AreaType.City, Code = "0769", TelephoneCode = "0769", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "汕尾市", AreaType = AreaType.City, Code = "0660", TelephoneCode = "0660", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "潮阳市", AreaType = AreaType.City, Code = "0661", TelephoneCode = "0661", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "阳江市", AreaType = AreaType.City, Code = "0662", TelephoneCode = "0662", SuperiorName = "广东省" },
+                new AreaInfo() { Name = "揭西市", AreaType = AreaType.City, Code = "0663", TelephoneCode = "0663", SuperiorName = "广东省" }
+            };
 
 
             //            四川省

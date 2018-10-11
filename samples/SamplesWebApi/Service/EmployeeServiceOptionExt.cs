@@ -35,18 +35,18 @@ namespace SamplesWebApi.Service
         public void SetOption()
         {
             //设置角色是否必填
-            EmployeeServiceOption.Option.RequiredRole = true;
-            //设置部门信息是否必填
-            EmployeeServiceOption.Option.RequiredDepartment = true;
-            // 排列方式为执行顺序的方式
-            // 设置员工保存时的验证处理
-            EmployeeServiceOption.Option.SavingCheck = OnSavingCheck;
-            // 设置员工保存的前置处理
-            EmployeeServiceOption.Option.Saving = OnSaving;
-            // 设置员工更新的后置处理
-            EmployeeServiceOption.Option.Updated = OnUpdated;
-            // 设置员工保存的后置处理
-            EmployeeServiceOption.Option.Saved = OnSaved;
+            //EmployeeServiceOption.Option.RequiredRole = true;
+            ////设置部门信息是否必填
+            //EmployeeServiceOption.Option.RequiredDepartment = true;
+            //// 排列方式为执行顺序的方式
+            //// 设置员工保存时的验证处理
+            //EmployeeServiceOption.Option.SavingCheck = OnSavingCheck;
+            //// 设置员工保存的前置处理
+            //EmployeeServiceOption.Option.Saving = OnSaving;
+            //// 设置员工更新的后置处理
+            //EmployeeServiceOption.Option.Updated = OnUpdated;
+            //// 设置员工保存的后置处理
+            //EmployeeServiceOption.Option.Saved = OnSaved;
         }
 
         #region 事件处理

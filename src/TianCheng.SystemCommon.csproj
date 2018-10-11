@@ -6,9 +6,9 @@
     <Authors>KKLL</Authors>
     <Company>TianCheng</Company>
     <Description>部门、用户、角色、功能点、菜单的通用处理</Description>
-    <Version>1.2.0.0</Version>
-    <AssemblyVersion>1.2.0.0</AssemblyVersion>
-    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.1.0</Version>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <FileVersion>1.2.1.0</FileVersion>
     <PackageProjectUrl>https://github.com/chengkkll/TianCheng.SystemCommon</PackageProjectUrl>
   </PropertyGroup>
 
@@ -45,7 +45,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
-    <PackageReference Include="TianCheng.BaseService" Version="1.2.0" />
+    <PackageReference Include="TianCheng.BaseService" Version="1.2.1" />
   </ItemGroup>
 
 </Project>
