@@ -99,15 +99,13 @@ namespace TianCheng.SystemCommon.Controller
         /// 
         ///     排序规则包含： 
         /// 
-        ///         nameAsc         : 按名称正序排列
-        ///         nameDesc        : 按名称倒序排列          
-        ///         dateAsc         : 按最后更新时间正序排列
-        ///         dateDesc        : 按最后更新时间倒序排列   为默认排序
+        ///         name            : 按名称排序
+        ///         date            : 按最后更新时间排序
         ///     
+        ///     默认查询条件：最后更新时间倒序
+        /// 
         /// </remarks>
-        /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）
-        /// 排序规则包含： 【nameAsc：按名称正序排列 】、【nameDesc：按名称倒序排列】、【dateAsc：按最后更新时间正序排列】、【dateDesc：按最后更新时间倒序排列，默认排序】
-        /// </param>
+        /// <param name="queryInfo">查询信息。</param>
         /// <returns></returns>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.RoleController.SearchPage")]
         [SwaggerOperation(Tags = new[] { "系统管理-角色管理" })]

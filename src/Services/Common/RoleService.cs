@@ -59,14 +59,6 @@ namespace TianCheng.SystemCommon.Services
 
             #region 设置排序规则
             //设置排序方式
-            //switch (input.OrderBy)
-            //{
-            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
-            //    default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
-            //}
             switch (input.Sort.Property)
             {
                 case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }

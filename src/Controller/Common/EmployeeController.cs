@@ -237,16 +237,13 @@ namespace TianCheng.SystemCommon.Controller
         /// 
         ///     排序规则包含： 
         /// 
-        ///         nameDesc      : 按名称倒序排列          
-        ///         nameAsc       : 按名称正序排列
-        ///         depNameAsc    : 按部门名称正序排列
-        ///         depNameDesc   : 按部门名称倒序排列
-        ///         roleNameAsc   : 按角色名称正序排列
-        ///         roleNameDesc  : 按角色名称倒叙排列
-        ///         stateAsc      : 按状态正序排列
-        ///         stateDesc     : 按状态倒叙排列
-        ///         dateAsc       : 更新时间正序排列 
-        ///         dateDesc      : 更新时间倒序排列     为默认排序
+        ///         name            : 按名称排序
+        ///         department.name : 按部门名称排序
+        ///         role.name       : 按角色名称排序
+        ///         state           : 按状态排序
+        ///         date            : 按更新时间排序
+        ///         
+        ///     默认查询条件：最后更新时间倒序        
         ///         
         /// </remarks>
         /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）
@@ -275,17 +272,14 @@ namespace TianCheng.SystemCommon.Controller
         /// 
         ///     排序规则包含： 
         /// 
-        ///         nameDesc      : 按名称倒序排列          
-        ///         nameAsc       : 按名称正序排列
-        ///         depNameAsc    : 按部门名称正序排列
-        ///         depNameDesc   : 按部门名称倒序排列
-        ///         roleNameAsc   : 按角色名称正序排列
-        ///         roleNameDesc  : 按角色名称倒叙排列
-        ///         stateAsc      : 按状态正序排列
-        ///         stateDesc     : 按状态倒叙排列
-        ///         dateAsc       : 更新时间正序排列 
-        ///         dateDesc      : 更新时间倒序排列     为默认排序
+        ///         name            : 按名称排序
+        ///         department.name : 按部门名称排序
+        ///         role.name       : 按角色名称排序
+        ///         state           : 按状态排序
+        ///         date            : 按更新时间排序     
         ///         
+        ///     默认查询条件：最后更新时间倒序
+        ///     
         /// </remarks>
         /// <param name="queryInfo">查询信息。（包含查询条件、排序条件）
         /// 排序规则参见上面的描述

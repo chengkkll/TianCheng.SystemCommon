@@ -99,15 +99,16 @@ namespace TianCheng.SystemCommon.Controller
         /// <remarks> 
         ///     排序规则包含： 
         /// 
-        ///         nameAsc         : 按名称正序排列
-        ///         nameDesc        : 按名称倒序排列          
-        ///         dateAsc         : 按最后更新时间正序排列
-        ///         dateDesc        : 按最后更新时间倒序排列   为默认排序
+        ///         name            : 按名称排序          
+        ///         code            : 按编码排序          
+        ///         parent          : 按上级部门名称排序          
+        ///         index           : 按序号排序          
+        ///         date            : 按最后更新时间排序   
         ///         
+        ///     默认查询条件：最后更新时间倒序
+        ///     
         /// </remarks> 
-        /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）
-        /// 排序规则包含： 【nameAsc：按名称正序排列 】、【nameDesc：按名称倒序排列】、【dateAsc：按最后更新时间正序排列】、【dateDesc：按最后更新时间倒序排列，默认排序】
-        /// </param>
+        /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.SearchPage")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
         [Route("Search")]
@@ -123,17 +124,16 @@ namespace TianCheng.SystemCommon.Controller
         /// <remarks> 
         ///     排序规则包含： 
         /// 
-        ///         nameAsc         : 按名称正序排列
-        ///         nameDesc        : 按名称倒序排列          
-        ///         dateAsc         : 按最后更新时间正序排列
-        ///         dateDesc        : 按最后更新时间倒序排列   
-        ///         indexAsc        : 按序号正序排列   为默认排序
-        ///         indexDesc       : 按序号倒序排列   
+        ///         name            : 按名称排序          
+        ///         code            : 按编码排序          
+        ///         parent          : 按上级部门名称排序          
+        ///         index           : 按序号排序          
+        ///         date            : 按最后更新时间排序 
+        ///     
+        ///     默认查询条件：最后更新时间倒序
         ///         
         /// </remarks> 
-        /// <param name="queryInfo">查询信息。（包含查询条件、排序条件）
-        /// 排序规则包含： 【nameAsc：按名称正序排列 】、【nameDesc：按名称倒序排列】、【dateAsc：按最后更新时间正序排列】、【dateDesc：按最后更新时间倒序排列，默认排序】
-        /// </param>
+        /// <param name="queryInfo">查询信息。（包含查询条件、排序条件）</param>
         [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.SearchFilter")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
         [Route("SearchALL")]
