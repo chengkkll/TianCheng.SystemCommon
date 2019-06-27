@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TianCheng.DataImport.Model;
-using TianCheng.Excel;
+﻿using TianCheng.Excel;
 
 namespace TianCheng.SystemCommon.Model
 {

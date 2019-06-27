@@ -1,11 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TianCheng.BaseService;
-using TianCheng.BaseService.Services;
-using TianCheng.DAL.MongoDB;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
@@ -18,9 +14,8 @@ namespace TianCheng.SystemCommon.Services
     public class RoleService : MongoBusinessService<RoleInfo, RoleView, RoleQuery>
     {
         #region 构造方法
-        MenuService _MenuService;
+        private readonly MenuService _MenuService;
         private readonly FunctionService _FunctionService;
-        private readonly EmployeeService _EmployeeService;
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -30,7 +25,6 @@ namespace TianCheng.SystemCommon.Services
         {
             _MenuService = ServiceLoader.GetService<MenuService>();
             _FunctionService = ServiceLoader.GetService<FunctionService>();
-            _EmployeeService = ServiceLoader.GetService<EmployeeService>();
         }
 
         #endregion
@@ -52,7 +46,7 @@ namespace TianCheng.SystemCommon.Services
             // 按名称的模糊查询
             if (!string.IsNullOrWhiteSpace(input.Name))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
+                query = query.Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
             }
 
             #endregion
@@ -112,7 +106,7 @@ namespace TianCheng.SystemCommon.Services
         public void InitAdmin()
         {
             //获取已有的角色信息
-            List<RoleInfo> roleList = _Dal.Queryable().Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains("管理员")).ToList();
+            List<RoleInfo> roleList = _Dal.Queryable().Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains("管理员")).ToList();
             if (roleList == null || roleList.Count == 0)
             {
                 roleList = new List<RoleInfo>

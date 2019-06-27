@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TianCheng.SystemCommon.Model
 {
@@ -16,6 +13,12 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// 查询关键字
+        /// </summary>
+        [JsonProperty("key")]
+        public string Key { get; set; }
 
         /// <summary>
         /// 按部门ID查询

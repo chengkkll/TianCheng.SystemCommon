@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TianCheng.BaseService;
-using TianCheng.BaseService.Services;
+﻿using TianCheng.BaseService;
 using TianCheng.Model;
 
 namespace TianCheng.SystemCommon.Services

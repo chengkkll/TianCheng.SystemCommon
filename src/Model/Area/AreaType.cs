@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TianCheng.SystemCommon.Model
+﻿namespace TianCheng.SystemCommon.Model
 {
     /// <summary>
     /// 区域类型
@@ -22,20 +18,16 @@ namespace TianCheng.SystemCommon.Model
         /// </summary>
         Province = 2,
         /// <summary>
-        /// 直辖市
-        /// </summary>
-        Municipality = 4,
-        /// <summary>
         /// 城市
         /// </summary>
-        City = 8,
-        ///// <summary>
-        ///// 县
-        ///// </summary>
-        //County = 16,
-        ///// <summary>
-        ///// 村 / 镇
-        ///// </summary>
-        //Town = 32,
+        City = 4,
+        /// <summary>
+        /// 县
+        /// </summary>
+        District = 8,
+        /// <summary>
+        /// 街道
+        /// </summary>
+        Street = 16,
     }
 }

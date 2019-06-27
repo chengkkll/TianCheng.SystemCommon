@@ -30,7 +30,7 @@ namespace SamplesWebApi
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .ConfigureLogging(TianCheng.BaseService.LoggerExt.AddCommonLog)
+                .ConfigureAppConfiguration(TianCheng.Model.ServiceLoader.Appsettings)
                 .Build();
     }
 }

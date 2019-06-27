@@ -1,11 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using TianCheng.BaseService;
 using TianCheng.SystemCommon.Model;
-using TianCheng.SystemCommon.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -21,11 +15,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configuration"></param>
         public static void TianChengCommonInit(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient(typeof(TianCheng.BaseService.PlugIn.IAuthService), typeof(TianCheng.SystemCommon.Services.AuthService));
-            services.TianChengInit(configuration);
+            services.TianChengBaseServicesInit(configuration);
 
-            //读取配置信息
-            //services.Configure<FunctionModuleConfig>(configuration.GetSection("FunctionModule"));
+            // 注册功能模块配置信息
+            services.Configure<FunctionModuleConfig>(configuration.GetSection("FunctionModule"));
         }
     }
 }

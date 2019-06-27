@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Services;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using TianCheng.BaseService.PlugIn;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -20,12 +14,12 @@ namespace TianCheng.SystemCommon.Controller
     public class AuthController : DataController
     {
         #region 构造方法
-        private readonly IAuthService _authService;
+        private readonly AuthService _authService;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="authService"></param>
-        public AuthController(IAuthService authService)
+        public AuthController(AuthService authService)
         {
             _authService = authService;
         }
@@ -38,7 +32,7 @@ namespace TianCheng.SystemCommon.Controller
         /// <response code="200">登录成功返回token</response>
         /// <returns></returns>
         [HttpPost("login")]
-        [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
+        [SwaggerOperation(Tags = new[] { "系统管理-登录验证" })]
         public LoginResult Login([FromBody]LoginView loginView)
         {
             string token = _authService.Login(loginView.Account, loginView.Password);
@@ -50,7 +44,7 @@ namespace TianCheng.SystemCommon.Controller
         /// </summary>
         /// <returns></returns>
         [HttpPost("logout")]
-        [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
+        [SwaggerOperation(Tags = new[] { "系统管理-登录验证" })]
         public ResultView Logout()
         {
             _authService.Logout(LogonInfo);

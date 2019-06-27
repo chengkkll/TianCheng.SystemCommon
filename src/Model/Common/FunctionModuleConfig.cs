@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace TianCheng.SystemCommon.Model
 {
@@ -10,16 +8,9 @@ namespace TianCheng.SystemCommon.Model
     public class FunctionModuleConfig
     {
         /// <summary>
-        /// 
-        /// </summary>
-        private Dictionary<string, string> _ModuleDict = new Dictionary<string, string>();
-        /// <summary>
         /// 获取模块的命名空间及模块名称
         /// </summary>
-        public Dictionary<string, string> ModuleDict
-        {
-            get { return _ModuleDict; }
-            set { _ModuleDict = value; }
-        }
+        //public Dictionary<string, string> ModuleDict { get; set; } = new Dictionary<string, string>();
+        public List<TianCheng.Model.SelectView> ModuleDict { get; set; } = new List<TianCheng.Model.SelectView>();
     }
 }

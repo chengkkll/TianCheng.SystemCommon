@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using TianCheng.BaseService;
-using TianCheng.BaseService.Services;
-using TianCheng.DataImport.Service;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
@@ -72,7 +67,7 @@ namespace TianCheng.Company.Services
                 State = isDelete ? UserState.Disable : UserState.Enable
             };
             // 获取部门
-            if (!String.IsNullOrWhiteSpace(import.Department))
+            if (!string.IsNullOrWhiteSpace(import.Department))
             {
                 DepartmentService depService = ServiceLoader.GetService<DepartmentService>();
                 DepartmentInfo depInfo = depService.SearchQueryable().Where(e => e.Name == import.Department).FirstOrDefault();
@@ -83,13 +78,13 @@ namespace TianCheng.Company.Services
                 }
             }
             // 获取角色
-            if (!String.IsNullOrWhiteSpace(import.Role))
+            if (!string.IsNullOrWhiteSpace(import.Role))
             {
                 RoleService roleService = ServiceLoader.GetService<RoleService>();
                 RoleInfo roleInfo = roleService.SearchQueryable().Where(e => e.Name == import.Role).FirstOrDefault();
                 if (roleInfo != null)
                 {
-                    info.Role = new SelectView { Id = roleInfo.Id.ToString(), Name = roleInfo.Name, Code = String.Empty };
+                    info.Role = new SelectView { Id = roleInfo.Id.ToString(), Name = roleInfo.Name, Code = string.Empty };
                 }
             }
             // 返回信息
@@ -105,34 +100,34 @@ namespace TianCheng.Company.Services
         /// <returns></returns>
         protected override void ImportCheck(EmployeesImportDetail import, EmployeeInfo info)
         {
-            string fail = String.Empty;
-            if (String.IsNullOrEmpty(import.Code))
+            string fail = string.Empty;
+            if (string.IsNullOrEmpty(import.Code))
             {
                 fail += "编号不能为空、";
             }
-            if (String.IsNullOrEmpty(import.Name))
+            if (string.IsNullOrEmpty(import.Name))
             {
                 fail += "名称不能为空、";
             }
-            if (String.IsNullOrEmpty(import.LogonAccount))
+            if (string.IsNullOrEmpty(import.LogonAccount))
             {
                 fail += "登陆账号不能为空、";
             }
-            if (String.IsNullOrEmpty(import.LogonPassword))
+            if (string.IsNullOrEmpty(import.LogonPassword))
             {
                 fail += "登陆密码不能为空、";
             }
 
-            if (!String.IsNullOrWhiteSpace(fail) || import.ImportState == DataImport.Model.ImportState.Fail)
+            if (!string.IsNullOrWhiteSpace(fail) || import.ImportState == SystemCommon.Model.ImportState.Fail)
             {
-                import.ImportState = DataImport.Model.ImportState.Fail;
+                import.ImportState = ImportState.Fail;
                 import.FailureReason = fail;
                 return;
             }
             else
             {
-                import.ImportState = DataImport.Model.ImportState.Check;
-                import.FailureReason = String.Empty;
+                import.ImportState = ImportState.Check;
+                import.FailureReason = string.Empty;
             }
         }
 
@@ -143,27 +138,27 @@ namespace TianCheng.Company.Services
         /// <param name="info"></param>
         protected override void RepeatCheck(EmployeesImportDetail import, EmployeeInfo info)
         {
-            string fail = String.Empty;
+            string fail = string.Empty;
             // 判断是否已经导入过
             EmployeeService employeeService = ServiceLoader.GetService<EmployeeService>();
-            if (!String.IsNullOrEmpty(import.Code) && employeeService.SearchQueryable().Where(e => e.Code == import.Code).Count() > 0)
+            if (!string.IsNullOrEmpty(import.Code) && employeeService.SearchQueryable().Where(e => e.Code == import.Code).Count() > 0)
             {
                 fail += $"编码为{import.Code}的员工已经导入过，终止再次导入";
             }
-            if (!String.IsNullOrEmpty(import.LogonAccount) && employeeService.SearchQueryable().Where(e => e.LogonAccount == import.LogonAccount).Count() > 0)
+            if (!string.IsNullOrEmpty(import.LogonAccount) && employeeService.SearchQueryable().Where(e => e.LogonAccount == import.LogonAccount).Count() > 0)
             {
                 fail += $"编码为{import.Code}的{import.Name}员工登陆账号（{import.LogonAccount}）已存在，终止再次导入";
             }
-            if (!String.IsNullOrEmpty(fail))
+            if (!string.IsNullOrEmpty(fail))
             {
-                import.ImportState = DataImport.Model.ImportState.Fail;
+                import.ImportState = ImportState.Fail;
                 import.FailureReason = fail;
                 return;
             }
             else
             {
-                import.ImportState = DataImport.Model.ImportState.Check;
-                import.FailureReason = String.Empty;
+                import.ImportState = ImportState.Check;
+                import.FailureReason = string.Empty;
             }
         }
 

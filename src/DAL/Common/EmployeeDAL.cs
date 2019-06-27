@@ -1,8 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using TianCheng.DAL;
 using TianCheng.DAL.MongoDB;
 using TianCheng.SystemCommon.Model;
@@ -12,7 +9,7 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 员工信息 [数据持久化]
     /// </summary>
-    [DBMapping("System_EmployeeInfo")]
+    [DBMapping("system_employee")]
     public class EmployeeDAL : MongoOperation<EmployeeInfo>
     {
         /// <summary>
@@ -35,16 +32,16 @@ namespace TianCheng.SystemCommon.DAL
                                                                              .Set("ParentDepartment.Ids", departmentInfo.ParentsIds);
             try
             {
-                UpdateResult result = _mongoCollection.UpdateMany(filter, ud);
+                UpdateResult result = MongoCollection.UpdateMany(filter, ud);
             }
             catch (System.TimeoutException te)
             {
-                DBLog.Logger.LogWarning(te, "数据库链接超时。链接字符串：" + _options.ConnectionOptions.ConnectionString());
+                DBLog.Logger.Warning(te, "数据库链接超时。链接字符串：" + Provider.Connection.ConnectionString());
                 throw;
             }
             catch (Exception ex)
             {
-                DBLog.Logger.LogWarning(ex, "操作异常终止。");
+                DBLog.Logger.Warning(ex, "操作异常终止。");
                 throw;
             }
         }
@@ -65,16 +62,16 @@ namespace TianCheng.SystemCommon.DAL
             UpdateDefinition<EmployeeInfo> ud = Builders<EmployeeInfo>.Update.Set("Role.Name", roleInfo.Name);
             try
             {
-                UpdateResult result = _mongoCollection.UpdateMany(filter, ud);
+                UpdateResult result = MongoCollection.UpdateMany(filter, ud);
             }
             catch (System.TimeoutException te)
             {
-                DBLog.Logger.LogWarning(te, "数据库链接超时。链接字符串：" + _options.ConnectionOptions.ConnectionString());
+                DBLog.Logger.Warning(te, "数据库链接超时。链接字符串：" + Provider.Connection.ConnectionString());
                 throw;
             }
             catch (Exception ex)
             {
-                DBLog.Logger.LogWarning(ex, "操作异常终止。");
+                DBLog.Logger.Warning(ex, "操作异常终止。");
                 throw;
             }
         }

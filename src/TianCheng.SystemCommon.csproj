@@ -1,51 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>KKLL</Authors>
-    <Company>TianCheng</Company>
-    <Description>部门、用户、角色、功能点、菜单的通用处理</Description>
-    <Version>1.2.1.0</Version>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.0</Version>
+    <Authors>成善斌</Authors>
+    <Company>天成科技</Company>
+    <Product>天成科技通用业务类库</Product>
+    <Description>部门、用户、角色、功能点、菜单的通用处理
+2.0 增加了区域、行业、IP登录、系统版本的处理</Description>
+    <PackageIconUrl>https://raw.githubusercontent.com/chengkkll/resources/master/Logo64.ico</PackageIconUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageReleaseNotes>设置目标架构为：.NET Standard 2.0</PackageReleaseNotes>
+    <PackageTags>tiancheng</PackageTags>
     <PackageProjectUrl>https://github.com/chengkkll/TianCheng.SystemCommon</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/chengkkll/TianCheng.SystemCommon.git</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp1.1\TianCheng.SystemCommon.xml</DocumentationFile>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Debug\netstandard2.0\TianCheng.SystemCommon.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DAL\Common\DataImport\**" />
-    <Compile Remove="Model\Common\DataImport\**" />
-    <Compile Remove="Services\Common\DataImport\**" />
-    <EmbeddedResource Remove="DAL\Common\DataImport\**" />
-    <EmbeddedResource Remove="Model\Common\DataImport\**" />
-    <EmbeddedResource Remove="Services\Common\DataImport\**" />
-    <None Remove="DAL\Common\DataImport\**" />
-    <None Remove="Model\Common\DataImport\**" />
-    <None Remove="Services\Common\DataImport\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Controller\Common\DataImportEmployeesController.cs" />
-    <Compile Remove="Model\TokenLogonInfo.cs" />
-    <Compile Remove="Services\Auth\DateTimeExtension.cs" />
-    <Compile Remove="Services\Auth\Jwt.cs" />
-    <Compile Remove="Services\Auth\TokenLogonInfo.cs" />
-    <Compile Remove="Services\Auth\TokenProviderOption.cs" />
-    <Compile Remove="Services\CommonExt\IServiceExtOption.cs" />
+    <Compile Remove="Controller\Common\EmployeeImageController.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\Message\" />
+    <Folder Include="Model\DataImport\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
-    <PackageReference Include="TianCheng.BaseService" Version="1.2.1" />
+    <PackageReference Include="PinYinConverterCore" Version="1.0.2" />
+    <PackageReference Include="TianCheng.BaseService" Version="2.0.1" />
+    <PackageReference Include="TianCheng.DAL.MongoDB" Version="2.0.2" />
+    <PackageReference Include="TianCheng.Excel" Version="2.0.0" />
+    <PackageReference Include="TianCheng.Model" Version="2.0.4" />
   </ItemGroup>
 
 </Project>

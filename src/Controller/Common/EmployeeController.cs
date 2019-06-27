@@ -1,15 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
-using TianCheng.BaseService.PlugIn.Swagger;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -22,27 +19,20 @@ namespace TianCheng.SystemCommon.Controller
     {
         #region 构造方法
         private readonly EmployeeService _Service;
-        private readonly ILogger<EmployeeController> _logger;
         private readonly RoleService _roleService;
         private readonly DepartmentService _departmentService;
-        private readonly MenuService _menuService;
 
         /// <summary> 
         /// 构造方法
         /// </summary>
         /// <param name="service"></param>
-        /// <param name="logger"></param>        
         /// <param name="roleService"></param>        
         /// <param name="departmentService"></param>   
-        /// <param name="menuService"></param>   
-        public EmployeeController(EmployeeService service, ILogger<EmployeeController> logger,
-            RoleService roleService, DepartmentService departmentService, MenuService menuService)
+        public EmployeeController(EmployeeService service, RoleService roleService, DepartmentService departmentService)
         {
             _Service = service;
-            _logger = logger;
             _roleService = roleService;
             _departmentService = departmentService;
-            _menuService = menuService;
         }
         #endregion
 
@@ -51,33 +41,11 @@ namespace TianCheng.SystemCommon.Controller
         /// 获取当前用户权限信息
         /// </summary>
         /// <returns></returns>
-        /// <power>登录登出</power>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Power")]
+        /// <power>登录</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Power")]
         [HttpGet("Power")]
-        [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
+        [SwaggerOperation(Tags = new[] { "系统管理-登录验证" })]
         public LogonPowerView Power()
-        {
-            return Power(false);
-        }
-
-        /// <summary>
-        /// 获取当前用户权限信息 没有此功能无法登陆
-        /// </summary>
-        /// <returns></returns>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Power")]
-        [HttpGet("PowerSPA")]
-        [SwaggerOperation(Tags = new[] { "登录验证相关接口" })]
-        [HiddenApi]
-        public LogonPowerView PowerSPA()
-        {
-            return Power(true);
-        }
-        /// <summary>
-        /// 获取当前用户权限信息
-        /// </summary>
-        /// <param name="isSpa"></param>
-        /// <returns></returns>
-        private LogonPowerView Power(bool isSpa)
         {
             LogonPowerView view = new LogonPowerView()
             {
@@ -90,12 +58,11 @@ namespace TianCheng.SystemCommon.Controller
             {
                 view.Role.Name = role.Name;
                 view.Role.DefaultPage = role.DefaultPage;
-                //view.Menu = isSpa ? _menuService.ManageSingleTree() : role.PagePower;
                 view.Menu = role.PagePower;
                 view.Functions = role.FunctionPower;
             }
             view.Department = new BaseViewModel() { Id = LogonInfo.DepartmentId };
-            if (!String.IsNullOrEmpty(view.Department.Id))
+            if (!string.IsNullOrEmpty(view.Department.Id))
             {
                 var dep = _departmentService._SearchById(view.Department.Id);
                 if (dep != null)
@@ -109,26 +76,24 @@ namespace TianCheng.SystemCommon.Controller
 
         #region 新增修改数据
         /// <summary>
-        /// 新增一个用户 
+        /// 新增
         /// </summary>
         /// <param name="view">请求体中放置新增对象的信息</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Create")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Create")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("")]
-        [HttpPost]
+        [HttpPost("")]
         public ResultView Create([FromBody]EmployeeView view)
         {
             return _Service.Create(view, LogonInfo);
         }
 
         /// <summary>
-        /// 修改一个用户 
+        /// 修改
         /// </summary>
         /// <param name="view">请求体中带入修改对象的信息</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Update")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Update")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("")]
-        [HttpPut]
+        [HttpPut("")]
         public ResultView Update([FromBody]EmployeeView view)
         {
             return _Service.Update(view, LogonInfo);
@@ -138,10 +103,9 @@ namespace TianCheng.SystemCommon.Controller
         ///// 修改昵称信息
         ///// </summary>
         ///// <param name="view">请求体中带入修改对象的信息</param>
-        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SetNickname")]
+        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SetNickname")]
         //[SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        //[Route("SetNickname")]
-        //[HttpPatch]
+        //[HttpPatch("SetNickname")]
         //public ResultView SetNickname([FromBody]EmployeeView view)
         //{
         //    var info = _Service.SearchById(view.Id);
@@ -153,19 +117,15 @@ namespace TianCheng.SystemCommon.Controller
         ///// 修改职位信息
         ///// </summary>
         ///// <param name="view">请求体中带入修改对象的信息</param>
-        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SetPosition")]
+        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SetPosition")]
         //[SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        //[Route("SetPosition")]
-        //[HttpPatch]
+        //[HttpPatch("SetPosition")]
         //public ResultView SetPosition([FromBody]EmployeeView view)
         //{
         //    var info = _Service.SearchById(view.Id);
         //    info.Position = view.Position;            
         //    return _Service.Update(info, LogonInfo);
         //}
-
-
-
         #endregion
 
         #region 数据删除
@@ -173,7 +133,7 @@ namespace TianCheng.SystemCommon.Controller
         /// 设置离职    
         /// </summary>
         /// <param name="id">要逻辑删除的对象id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Delete")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Delete")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
         [HttpDelete("Delete/{id}")]
         public ResultView Delete(string id)
@@ -184,7 +144,7 @@ namespace TianCheng.SystemCommon.Controller
         /// 设置在职    
         /// </summary>
         /// <param name="id">要逻辑删除的对象id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Delete")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Delete")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
         [HttpPatch("UnDelete/{id}")]
         public ResultView UnDelete(string id)
@@ -192,10 +152,11 @@ namespace TianCheng.SystemCommon.Controller
             return _Service.UnDelete(id, LogonInfo);
         }
         /// <summary>
-        /// 粉碎数据    
+        /// 物理删除
         /// </summary>
         /// <param name="id">要逻辑删除的对象id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Remove")]
+        /// <power>粉碎数据</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Remove")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
         [HttpDelete("Remove/{id}")]
         public ResultView Remove(string id)
@@ -209,10 +170,10 @@ namespace TianCheng.SystemCommon.Controller
         /// 根据ID获取一条用户信息    
         /// </summary>
         /// <param name="id">查询的用户ID</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SearchById")]
+        /// <power>详情</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Single")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("{id}")]
-        [HttpGet]
+        [HttpGet("{id}")]
         public EmployeeView SearchById(string id)
         {
             return _Service.SearchById(id);
@@ -220,14 +181,12 @@ namespace TianCheng.SystemCommon.Controller
         /// <summary>
         /// 获取当前用户信息    
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Load")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Load")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("")]
-        [HttpGet]
+        [HttpGet("")]
         public EmployeeView Load()
         {
-            string id = LogonInfo.Id;
-            return _Service.SearchById(id);
+            return _Service.SearchById(LogonInfo.Id);
         }
 
         /// <summary>
@@ -237,22 +196,20 @@ namespace TianCheng.SystemCommon.Controller
         /// 
         ///     排序规则包含： 
         /// 
-        ///         name            : 按名称排序
-        ///         department.name : 按部门名称排序
-        ///         role.name       : 按角色名称排序
-        ///         state           : 按状态排序
-        ///         date            : 按更新时间排序
-        ///         
-        ///     默认查询条件：最后更新时间倒序        
+        ///         name            : 按名称排列          
+        ///         department.name : 按部门名称排列
+        ///         role.name       : 按角色名称倒序排列
+        ///         state           : 按状态正序排列
+        ///         updateDate      : 更新时间排列     为默认排序
         ///         
         /// </remarks>
         /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）
         /// 排序规则参见上面的描述
         /// </param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SearchPage")]
+        /// <power>查询</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Search")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("Search")]
-        [HttpPost]
+        [HttpPost("Search")]
         public PagedResult<EmployeeView> SearchPage([FromBody]EmployeeQuery queryInfo)
         {
             var role = _roleService._SearchById(LogonInfo.RoleId);
@@ -272,22 +229,20 @@ namespace TianCheng.SystemCommon.Controller
         /// 
         ///     排序规则包含： 
         /// 
-        ///         name            : 按名称排序
-        ///         department.name : 按部门名称排序
-        ///         role.name       : 按角色名称排序
-        ///         state           : 按状态排序
-        ///         date            : 按更新时间排序     
+        ///         name            : 按名称排列          
+        ///         department.name : 按部门名称排列
+        ///         role.name       : 按角色名称倒序排列
+        ///         state           : 按状态正序排列
+        ///         updateDate      : 更新时间排列     为默认排序
         ///         
-        ///     默认查询条件：最后更新时间倒序
-        ///     
         /// </remarks>
         /// <param name="queryInfo">查询信息。（包含查询条件、排序条件）
         /// 排序规则参见上面的描述
         /// </param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SearchFilter")]
+        /// <power>查询</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Search")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("List")]
-        [HttpPost]
+        [HttpPost("List")]
         public List<EmployeeView> SearchFilter([FromBody]EmployeeQuery queryInfo)
         {
             return _Service.Filter(queryInfo);
@@ -296,10 +251,10 @@ namespace TianCheng.SystemCommon.Controller
         /// <summary>
         /// 为下拉列表提供数据 - 获取所有的员工列表      
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Select")]
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("Select")]
-        [HttpGet]
+        [HttpGet("Select")]
         public List<SelectView> Select()
         {
             EmployeeQuery query = new EmployeeQuery() { Pagination = QueryPagination.DefaultObject };
@@ -309,10 +264,10 @@ namespace TianCheng.SystemCommon.Controller
         /// <summary>
         /// 为下拉列表提供数据 - 获取所有的员工列表      
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Select")]
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("SelectView")]
-        [HttpGet]
+        [HttpGet("SelectView")]
         public List<EmployeeSelectView> SelectDepartment()
         {
             List<EmployeeSelectView> viewList = new List<EmployeeSelectView>();
@@ -336,10 +291,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 为下拉列表提供数据 - 获取某部门下的员工列表（不显示已离职的员工）   
         /// </summary>
         /// <param name="depId">部门id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SelectByDepartment")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("SelectByDep/{depId}")]
-        [HttpGet]
+        [HttpGet("SelectByDep/{depId}")]
         public List<SelectView> SelectByDepartment(string depId)
         {
             EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject, HasDelete = 0 };
@@ -350,10 +304,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 为下拉列表提供数据 - 获取某部门下的员工列表（显示已离职的员工）   
         /// </summary>
         /// <param name="depId">部门id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SelectByDepartment")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("SelectByDep/{depId}/All")]
-        [HttpGet]
+        [HttpGet("SelectByDep/{depId}/All")]
         public List<SelectView> SelectByDepartmentAll(string depId)
         {
             EmployeeQuery query = new EmployeeQuery() { DepartmentId = depId, Pagination = QueryPagination.DefaultObject, HasDelete = 1 };
@@ -363,15 +316,27 @@ namespace TianCheng.SystemCommon.Controller
         /// <summary>
         /// 为下拉列表提供数据 - 获取某部门下的员工列表   
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.SelectByDepartment")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SelectByDepartment")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("SelectMyDepartment")]
-        [HttpGet]
+        [HttpGet("SelectMyDepartment")]
         public List<SelectView> SelectByMyDepartment()
         {
             EmployeeQuery query = new EmployeeQuery() { DepartmentId = LogonInfo.DepartmentId, Pagination = QueryPagination.DefaultObject };
             query.Sort.Property = "name";
             return _Service.Select(query);
+        }
+
+        /// <summary>
+        /// 获取所有可用的员工列表，按部门分组
+        /// </summary>
+        /// <returns></returns>
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Select")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [HttpGet("SelectGroupByDepartment")]
+        public List<EmployeeGroupByDepartment> GetEmployeeByDepartment()
+        {
+            return _Service.GetEmployeeByDepartment();
         }
         #endregion
 
@@ -380,10 +345,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 修改其他用户密码
         /// </summary>
         /// <param name="view">用户id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.UpdatePasswordOther")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.UpdatePasswordOther")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("UpPwd/Other")]
-        [HttpPatch]
+        [HttpPatch("UpPwd/Other")]
         public ResultView UpdatePasswordOther([FromBody]UpdatePasswordView view)
         {
             return _Service.UpdatePassword(view.Id, view.OldPwd, view.NewPwd);
@@ -393,10 +357,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 修改当前用户密码
         /// </summary>
         /// <param name="view">用户id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.UpdatePasswordMe")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.UpdatePasswordMe")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("UpPwd/Me")]
-        [HttpPatch]
+        [HttpPatch("UpPwd/Me")]
         public ResultView UpdatePasswordMe([FromBody]UpdatePasswordMeView view)
         {
             _Service.UpdatePassword(LogonInfo.Id, view.OldPwd, view.NewPwd);
@@ -409,10 +372,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 禁止某些员工登录系统，主要用于员工离职
         /// </summary>
         /// <param name="id">用户id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Disable")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Disable")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("Disable/{id}")]
-        [HttpPatch]
+        [HttpPatch("Disable/{id}")]
         public ResultView Disable(string id)
         {
             return _Service.SetDisable(id);
@@ -422,10 +384,9 @@ namespace TianCheng.SystemCommon.Controller
         /// 恢复某些员工禁止登录系统的状态
         /// </summary>
         /// <param name="id">用户id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Enable")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Enable")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("Enable/{id}")]
-        [HttpPatch]
+        [HttpPatch("Enable/{id}")]
         public ResultView Enable(string id)
         {
             return _Service.SetEnable(id);
@@ -434,16 +395,77 @@ namespace TianCheng.SystemCommon.Controller
         /// 解锁某些用户的登录状态 - 用户连续多次由于密码错误而登录失败时，将会为用户设置登录锁状态，本功能用于解除这种登录锁的状态
         /// </summary>
         /// <param name="id">用户id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.EmployeeController.Unlock")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Unlock")]
         [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
-        [Route("Unlock/{id}")]
-        [HttpPatch]
+        [HttpPatch("Unlock/{id}")]
         public ResultView Unlock(string id)
         {
             return _Service.SetUnlock(id);
         }
 
         #endregion
+
+
+        /// <summary>
+        /// 修改头像
+        /// </summary>
+        /// <param name="employeeId">请求体中带入修改对象的信息</param>
+        /// <param name="imageFile">上传的文件信息</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.SetHeadImg")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [Route("{employeeId}/SetHeadImg")]
+        [HttpPatch]
+        public ResultView SetHeadImg(string employeeId, Microsoft.AspNetCore.Http.IFormFile imageFile)
+        {
+            string webFile = $"~/wwwroot/UploadFiles/Employee/Head/{employeeId}/{Guid.NewGuid().ToString()}";
+            UploadFileInfo file = UploadFileHandle.UploadImage(webFile, imageFile);
+
+            var info = _Service._SearchById(employeeId);
+            UploadFileHandle.Delete(info.HeadImg);
+            info.HeadImg = file.WebFileName;
+            _Service.Update(info, LogonInfo);
+            return ResultView.Success("头像修改成功");
+        }
+
+        /// <summary>
+        /// 按属性修改用户信息
+        /// </summary>
+        /// <remarks> 
+        /// 
+        ///     property包含（不区分大小写）： 
+        /// 
+        ///         Position      : 职位          
+        ///         Name          : 名称 
+        ///         Nickname      : 昵称
+        ///         Mobile        : 手机电话
+        ///         Telephone     : 座机电话
+        ///         
+        /// </remarks>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Employee.Update")]
+        [SwaggerOperation(Tags = new[] { "系统管理-员工管理" })]
+        [Route("SetProperty")]
+        [HttpPatch]
+        public ResultView SetProperty([FromBody] SetPropertyView view)
+        {
+            if (string.IsNullOrWhiteSpace(view.PropertyName))
+            {
+                ApiException.ThrowBadRequest("属性名不能为空");
+            }
+
+            var info = _Service._SearchById(LogonInfo.Id);
+            switch (view.PropertyName.ToLower())
+            {
+                case "position": { info.Position = view.PropertyValue; break; }
+                case "name": { info.Name = view.PropertyValue; break; }
+                case "nickname": { info.Nickname = view.PropertyValue; break; }
+                case "mobile": { info.Mobile = view.PropertyValue; break; }
+                case "telephone": { info.Telephone = view.PropertyValue; break; }
+            }
+            _Service.Update(info, LogonInfo);
+            return ResultView.Success("信息修改成功");
+        }
 
         /// <summary>
         /// 更新所有的人的密码

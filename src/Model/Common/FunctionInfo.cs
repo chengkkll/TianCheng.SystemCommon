@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TianCheng.SystemCommon.Model
+﻿namespace TianCheng.SystemCommon.Model
 {
     /// <summary>
     /// 权限功能点信息
     /// </summary>
-    public class FunctionInfo 
+    public class FunctionInfo
     {
         /// <summary>
         /// 序号

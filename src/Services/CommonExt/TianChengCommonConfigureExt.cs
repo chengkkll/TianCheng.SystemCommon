@@ -1,10 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TianCheng.BaseService.PlugIn;
 
 namespace Microsoft.AspNetCore.Builder
 {
@@ -20,7 +14,7 @@ namespace Microsoft.AspNetCore.Builder
         /// <param name="configuration"></param>
         public static void TianChengCommonInit(this IApplicationBuilder app, IConfiguration configuration)
         {
-            app.TianChengInit(configuration);
+            app.TianChengBaseServicesInit(configuration);
         }
     }
 }

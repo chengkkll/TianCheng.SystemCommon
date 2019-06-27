@@ -1,12 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using TianCheng.BaseService;
-using TianCheng.BaseService.Services;
-using TianCheng.DAL.MongoDB;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
@@ -31,46 +26,12 @@ namespace TianCheng.SystemCommon.Services
         #endregion
 
         #region 查询方法
-        ///// <summary>
-        ///// 根据ID查询
-        ///// </summary>
-        ///// <param name="id"></param>
-        ///// <returns></returns>
-        //public override DepartmentInfo _SearchById(string id)
-        //{
-        //    DepartmentCache cache = ServiceLoader.GetService<DepartmentCache>();
-        //    var info = cache.GetValue(id);
-        //    if (info == null)
-        //    {
-        //        info = base._SearchById(id);
-        //    }
-        //    return info;
-        //}
-
-        /// <summary>
-        /// 根据id查询对象信息
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public override DepartmentView SearchById(string id)
-        {
-            // 根据ID获取员工信息
-            var view = AutoMapper.Mapper.Map<DepartmentView>(_SearchById(id));
-
-            // 获取部门下的员工信息列表
-            //EmployeeService employeeService = ServiceLoader.GetService<EmployeeService>();
-            //view.Employees = employeeService.Select(new EmployeeQuery() { DepartmentId = id });
-
-            // 返回
-            return view;
-        }
-
         /// <summary>
         /// 按条件查询数据
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="filter"></param>
         /// <returns></returns>
-        public override IQueryable<DepartmentInfo> _Filter(DepartmentQuery input)
+        public override IQueryable<DepartmentInfo> _Filter(DepartmentQuery filter)
         {
             var query = _Dal.Queryable();
 
@@ -79,43 +40,26 @@ namespace TianCheng.SystemCommon.Services
             query = query.Where(e => e.IsDelete == false);
 
             // 按名称的模糊查询
-            if (!string.IsNullOrWhiteSpace(input.Name))
+            if (!string.IsNullOrWhiteSpace(filter.Name))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
+                query = query.Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains(filter.Name));
             }
             // 按上级部门ID查询
-            if (!string.IsNullOrWhiteSpace(input.ParentId))
+            if (!string.IsNullOrWhiteSpace(filter.ParentId))
             {
-                query = query.Where(e => e.ParentsIds.Contains(input.ParentId));
+                query = query.Where(e => e.ParentsIds.Contains(filter.ParentId));
             }
-            //// 按部门主管ID查询
-            //if (!string.IsNullOrWhiteSpace(input.ManageId))
-            //{
-            //    query = query.Where(e => e.ManageId == input.ManageId);
-            //}
-            // 按部门主管的名称模糊查询
-            //if (!string.IsNullOrWhiteSpace(input.ManageName))
-            //{
-            //    query = query.Where(e => !String.IsNullOrEmpty(e.ManageName) && e.ManageName.Contains(input.ManageName));
-            //}
-            //// 按所属行业id列表查询
-            //if (input.Industries != null)
-            //{
-            //    query = query.Where(e => e.Industries != null && e.Industries.Any(i => input.Industries.Contains(i.Id)));
-            //}
-
             #endregion
 
             #region 设置排序规则
-
             //设置排序方式
-            switch (input.Sort.Property)
+            switch (filter.Sort.Property)
             {
-                case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
-                case "code": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Code) : query.OrderByDescending(e => e.Code); break; }
-                case "parent": { query = input.Sort.IsAsc ? query.OrderBy(e => e.ParentName) : query.OrderByDescending(e => e.ParentName); break; }
-                case "index": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Index) : query.OrderByDescending(e => e.Index); break; }
-                case "date": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
+                case "name": { query = filter.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
+                case "code": { query = filter.Sort.IsAsc ? query.OrderBy(e => e.Code) : query.OrderByDescending(e => e.Code); break; }
+                case "parent": { query = filter.Sort.IsAsc ? query.OrderBy(e => e.ParentName) : query.OrderByDescending(e => e.ParentName); break; }
+                case "index": { query = filter.Sort.IsAsc ? query.OrderBy(e => e.Index) : query.OrderByDescending(e => e.Index); break; }
+                case "date": { query = filter.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
                 default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
             #endregion
@@ -123,23 +67,6 @@ namespace TianCheng.SystemCommon.Services
             //返回查询结果
             return query;
         }
-
-        ///// <summary>
-        ///// 获取一个以部门名称为key的字典信息
-        ///// </summary>
-        ///// <returns></returns>
-        //public Dictionary<string, DepartmentInfo> GetNameDict()
-        //{
-        //    Dictionary<string, DepartmentInfo> dict = new Dictionary<string, DepartmentInfo>();
-        //    foreach (DepartmentInfo info in _Dal.Queryable().Where(e => e.IsDelete == false))
-        //    {
-        //        if (!dict.ContainsKey(info.Name))
-        //        {
-        //            dict.Add(info.Name, info);
-        //        }
-        //    }
-        //    return dict;
-        //}
 
         /// <summary>
         /// 获取所有的子部门ID（包含指定部门，及逻辑删除的子部门）
@@ -178,7 +105,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         public List<DepartmentInfo> GetRoot()
         {
-            return _Dal.Queryable().Where(e => String.IsNullOrEmpty(e.ParentId)).ToList();
+            return _Dal.Queryable().Where(e => string.IsNullOrEmpty(e.ParentId)).ToList();
         }
         #endregion
 
@@ -191,7 +118,7 @@ namespace TianCheng.SystemCommon.Services
         protected override void SavingCheck(DepartmentInfo info, TokenLogonInfo logonInfo)
         {
             //数据验证
-            if (String.IsNullOrWhiteSpace(info.Name))
+            if (string.IsNullOrWhiteSpace(info.Name))
             {
                 throw ApiException.BadRequest("请指定部门的名称");
             }
@@ -204,7 +131,7 @@ namespace TianCheng.SystemCommon.Services
         protected override void Saving(DepartmentInfo info, TokenLogonInfo logonInfo)
         {
             //完善上级部门名称
-            if (!String.IsNullOrEmpty(info.ParentId))
+            if (!string.IsNullOrEmpty(info.ParentId))
             {
                 var parent = _SearchById(info.ParentId);
                 info.ParentName = parent.Name;
@@ -216,8 +143,8 @@ namespace TianCheng.SystemCommon.Services
             }
             else
             {
-                info.ParentId = String.Empty;
-                info.ParentName = String.Empty;
+                info.ParentId = string.Empty;
+                info.ParentName = string.Empty;
                 if (info.IsEmpty)
                 {
                     info.ParentsIds = new List<string>();
@@ -229,7 +156,7 @@ namespace TianCheng.SystemCommon.Services
             }
 
             //完善部门主管信息
-            //if (!String.IsNullOrEmpty(info.ManageId))
+            //if (!string.IsNullOrEmpty(info.ManageId))
             //{
             //    EmployeeService employeeService = ServiceLoader.GetService<EmployeeService>();
             //    var employee = employeeService._SearchById(info.ManageId);
@@ -237,10 +164,10 @@ namespace TianCheng.SystemCommon.Services
             //}
             //else
             //{
-            //    info.ManageName = String.Empty;
+            //    info.ManageName = string.Empty;
             //}
-            //上级部门不能是自己的子部门
-            if (!String.IsNullOrEmpty(info.ParentId) && GetSubDepartmentId(info.Id.ToString()).Contains(info.ParentId))
+            // 上级部门不能是自己的子部门
+            if (!string.IsNullOrEmpty(info.ParentId) && GetSubDepartmentId(info.Id.ToString()).Contains(info.ParentId))
             {
                 throw ApiException.BadRequest("上级部门不能是" + info.Name + "的子部门");
             }
@@ -332,7 +259,7 @@ namespace TianCheng.SystemCommon.Services
             EmployeeService employeeService = ServiceLoader.GetService<EmployeeService>();
             employeeInfo = employeeService._SearchById(employeeId);
             // 判断用户是否在指定的部门下
-            if (employeeInfo == null || employeeInfo.Department == null || String.IsNullOrWhiteSpace(employeeInfo.Department.Id))
+            if (employeeInfo == null || employeeInfo.Department == null || string.IsNullOrWhiteSpace(employeeInfo.Department.Id))
             {
                 return false;
             }

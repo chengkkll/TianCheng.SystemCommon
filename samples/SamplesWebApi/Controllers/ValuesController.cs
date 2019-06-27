@@ -22,7 +22,7 @@ namespace SamplesWebApi.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="serviceCollection"></param>
+        /// <param name="menuService"></param>
         public ValuesController( MenuService menuService)
         {
             //_service = serviceCollection;

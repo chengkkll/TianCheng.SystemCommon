@@ -1,16 +1,12 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TianCheng.SystemCommon.Model
 {
     /// <summary>
     /// 功能点分类 查看对象
     /// </summary>
-    public class FunctionGroupView 
+    public class FunctionGroupView
     {
         /// <summary>
         /// 分组序号

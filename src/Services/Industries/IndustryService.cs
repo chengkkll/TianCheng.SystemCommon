@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
@@ -52,9 +50,9 @@ namespace TianCheng.SystemCommon.Services
             // 按编码、名称、说明模糊查询
             if (!string.IsNullOrWhiteSpace(input.Key))
             {
-                query = query.Where(e => (!String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Key)) ||
-                                         (!String.IsNullOrEmpty(e.Code) && e.Code.Contains(input.Key)) ||
-                                         (!String.IsNullOrEmpty(e.Remarks) && e.Remarks.Contains(input.Key)));
+                query = query.Where(e => (!string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Key)) ||
+                                         (!string.IsNullOrEmpty(e.Code) && e.Code.Contains(input.Key)) ||
+                                         (!string.IsNullOrEmpty(e.Remarks) && e.Remarks.Contains(input.Key)));
             }
 
             // 根据行业ID列表
@@ -100,7 +98,7 @@ namespace TianCheng.SystemCommon.Services
         protected override void SavingCheck(IndustryInfo info, TokenLogonInfo logonInfo)
         {
             //行业名称不能为空
-            if (String.IsNullOrWhiteSpace(info.Name))
+            if (string.IsNullOrWhiteSpace(info.Name))
             {
                 throw ApiException.BadRequest("行业名称不能为空");
             }

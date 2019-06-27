@@ -1,20 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.Extensions.Logging;
-using TianCheng.BaseService;
-using TianCheng.SystemCommon.Model;
-using TianCheng.DAL.MongoDB;
-using TianCheng.SystemCommon.DAL;
 using System.Reflection;
-using System.Xml;
-using System.Xml.XPath;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+using System.Xml.Linq;
+using TianCheng.BaseService;
+using TianCheng.SystemCommon.DAL;
+using TianCheng.SystemCommon.Model;
 
 namespace TianCheng.SystemCommon.Services
 {
@@ -25,42 +18,27 @@ namespace TianCheng.SystemCommon.Services
     {
         #region 构造方法
         /// <summary>
+        /// 获取配置信息的句柄
+        /// </summary>
+        private readonly IOptionsMonitor<FunctionModuleConfig> OptionsMonitor;
+        /// <summary>
         /// 模块配置信息
         /// </summary>
-        FunctionModuleConfig ModuleConfig;
-        IHostingEnvironment _host;
-        readonly ILogger<FunctionService> _Logger;
+        private FunctionModuleConfig ModuleConfig;
+        private readonly IHostingEnvironment _host;
+        private readonly ILogger<FunctionService> _Logger;
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="dal"></param>
         /// <param name="logger"></param>
-        /// <param name="configuration"></param>
         /// <param name="host"></param>
-        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger,
-            IConfiguration configuration,
-            IHostingEnvironment host)
-            : base(dal)
+        public FunctionService(FunctionDAL dal, ILogger<FunctionService> logger, IHostingEnvironment host) : base(dal)
         {
-            ModuleConfig = new FunctionModuleConfig() { ModuleDict = new Dictionary<string, string>() };
+            OptionsMonitor = TianCheng.Model.ServiceLoader.GetService<IOptionsMonitor<FunctionModuleConfig>>();
+            OptionsMonitor.OnChange(_ => ModuleConfig = _);
+            ModuleConfig = OptionsMonitor.CurrentValue;
 
-            for (int i = 0; true; i++)
-            {
-                string code = configuration.GetSection($"FunctionModule:ModuleDict:{i}:Code").Value;
-                if (String.IsNullOrWhiteSpace(code))
-                {
-                    break;
-                }
-                string name = configuration.GetSection($"FunctionModule:ModuleDict:{i}:Name").Value;
-                ModuleConfig.ModuleDict.Add(code, name);
-            }
-
-
-
-            //if (moduleConfig.Value != null)
-            //{
-            //    ModuleConfig = moduleConfig.Value;
-            //}
             _host = host;
             _Logger = logger;
         }
@@ -77,22 +55,18 @@ namespace TianCheng.SystemCommon.Services
             //初始化功能模块
             Dictionary<string, FunctionModuleInfo> moduleDict = new Dictionary<string, FunctionModuleInfo>();
             int moduleIndex = 1;
-            foreach (string key in ModuleConfig.ModuleDict.Keys)
+            foreach (var item in ModuleConfig.ModuleDict)
             {
-                if (moduleDict.ContainsKey(key))
+                if (moduleDict.ContainsKey(item.Code) || string.IsNullOrEmpty(item.Code) || string.IsNullOrEmpty(item.Name))
                 {
                     continue;
                 }
-                FunctionModuleInfo module = new FunctionModuleInfo()
+                moduleDict.Add(item.Code, new FunctionModuleInfo()
                 {
                     Index = moduleIndex++,
-                    Name = ModuleConfig.ModuleDict[key],
-                    Code = key
-                };
-                if (!String.IsNullOrEmpty(module.Code) && !moduleDict.ContainsKey(module.Code))
-                {
-                    moduleDict.Add(module.Code, module);
-                }
+                    Name = item.Name,
+                    Code = item.Code,
+                });
             }
 
             //初始化功能分组
@@ -111,11 +85,11 @@ namespace TianCheng.SystemCommon.Services
                         Name = GetSummary($"T:{type.FullName}"),
                         ModeuleCode = type.FullName.Replace("." + type.Name, "")
                     };
-                    if (String.IsNullOrWhiteSpace(group.Name))
+                    if (string.IsNullOrWhiteSpace(group.Name))
                     {
                         group.Name = type.FullName;
                     }
-                    if (!String.IsNullOrEmpty(group.Name) && !groupDict.ContainsKey(group.Name))
+                    if (!string.IsNullOrEmpty(group.Name) && !groupDict.ContainsKey(group.Name))
                     {
                         groupDict.Add(group.Name, group);
                     }
@@ -147,7 +121,7 @@ namespace TianCheng.SystemCommon.Services
                             ModeuleCode = type.FullName.Replace("." + type.Name, "")
                         };
                         fun.Name = GetSummary($"M:{ type.FullName}.{ method.Name}(");
-                        if (String.IsNullOrEmpty(fun.Name))
+                        if (string.IsNullOrEmpty(fun.Name))
                         {
                             fun.Name = GetSummary($"M:{ type.FullName}.{ method.Name}");
                         }
@@ -155,7 +129,7 @@ namespace TianCheng.SystemCommon.Services
                         {
                             fun.Name = fun.Name.Split(' ')[0];
                         }
-                        if (String.IsNullOrWhiteSpace(fun.GroupCode))
+                        if (string.IsNullOrWhiteSpace(fun.GroupCode))
                         {
                             fun.GroupCode = type.FullName;
                         }
@@ -248,15 +222,15 @@ namespace TianCheng.SystemCommon.Services
                             if (assembly != null)
                             {
                                 string assemblyPath = System.IO.Path.GetDirectoryName(assembly.Location);
-                                if (!String.IsNullOrWhiteSpace(assemblyPath))
+                                if (!string.IsNullOrWhiteSpace(assemblyPath))
                                 {
                                     foreach (string file in System.IO.Directory.GetFiles(assemblyPath, "*.xml"))
                                     {
-                                        
+
                                         docList.Add(XDocument.Load(file));
                                     }
                                 }
-                                if(docList.Count == 0)
+                                if (docList.Count == 0)
                                 {
                                     string libraryPath = System.IO.Path.Combine(assemblyPath, "LibraryComments");
                                     foreach (string file in System.IO.Directory.GetFiles(libraryPath, "*.xml"))
@@ -270,7 +244,7 @@ namespace TianCheng.SystemCommon.Services
                         {
                             //程序集无法反射时跳过
                         }
-                    }                    
+                    }
                 }
                 return docList;
             }
@@ -299,8 +273,8 @@ namespace TianCheng.SystemCommon.Services
                     }
                 }
 
-            TianCheng.Model.CommonLog.Logger.LogWarning($"{method}对应的说明文本没有找到");
-            return String.Empty;
+            TianCheng.Model.CommonLog.Logger.Warning($"{method}对应的说明文本没有找到");
+            return string.Empty;
         }
         #endregion
         #endregion

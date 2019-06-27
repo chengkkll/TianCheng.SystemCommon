@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TianCheng.SystemCommon.Model
 {
     /// <summary>
     /// 功能点分组
     /// </summary>
-    public class FunctionGroupInfo 
+    public class FunctionGroupInfo
     {
         /// <summary>
         /// 功能点分类序号

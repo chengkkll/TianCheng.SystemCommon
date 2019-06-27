@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TianCheng.BaseService;
-using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
 
@@ -59,7 +56,7 @@ namespace TianCheng.SystemCommon.Services
             // 按定时器名称模糊查询
             if (!string.IsNullOrWhiteSpace(input.Name))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
+                query = query.Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
             }
             #endregion
 

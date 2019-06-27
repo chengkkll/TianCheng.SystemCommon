@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TianCheng.SystemCommon.Model
+﻿namespace TianCheng.SystemCommon.Model
 {
     /// <summary>
     /// 下拉列表查看员工的数据

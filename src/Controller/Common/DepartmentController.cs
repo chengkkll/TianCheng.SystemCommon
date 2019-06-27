@@ -1,17 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
-using TianCheng.BaseService.Services;
-using System.Diagnostics;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -24,25 +18,22 @@ namespace TianCheng.SystemCommon.Controller
     {
         #region 构造方法
         private readonly DepartmentService _Service;
-        private readonly ILogger<DepartmentController> _logger;
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="service"></param>
-        /// <param name="logger"></param>        
-        public DepartmentController(DepartmentService service, ILogger<DepartmentController> logger)
+        public DepartmentController(DepartmentService service)
         {
             _Service = service;
-            _logger = logger;
         }
         #endregion
 
         #region 新增修改数据
         /// <summary>
-        /// 新增一个组织机构
+        /// 新增
         /// </summary>
-        /// <param name="view">请求体中放置新增对象的信息</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Create")]
+        /// <param name="view">请求体中放置新增部门的信息</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Create")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
         [HttpPost("")]
         public ResultView Create([FromBody]DepartmentView view)
@@ -51,10 +42,10 @@ namespace TianCheng.SystemCommon.Controller
         }
 
         /// <summary>
-        /// 修改一个组织机构
+        /// 修改
         /// </summary>
-        /// <param name="view">请求体中带入修改对象的信息</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Update")]
+        /// <param name="view">请求体中带入修改部门的信息</param>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Update")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
         [HttpPut("")]
         public ResultView Update([FromBody]DepartmentView view)
@@ -66,28 +57,40 @@ namespace TianCheng.SystemCommon.Controller
 
         #region 数据删除
         /// <summary>
-        /// 删除一个组织机构
+        /// 逻辑删除数据
         /// </summary>
-        /// <param name="id">要删除的对象id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Delete")]
+        /// <param name="id">要删除的部门id</param>
+        /// <power>删除</power>       
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Delete")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("Delete/{id}")]
-        [HttpDelete]
+        [HttpDelete("Delete/{id}")]
         public ResultView Delete(string id)
         {
             return _Service.Delete(id, LogonInfo);
+        }
+        /// <summary>
+        /// 物理删除数据
+        /// </summary>
+        /// <param name="id">要删除的部门id</param>
+        /// <power>粉碎数据</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Remove")]
+        [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
+        [HttpDelete("Remove/{id}")]
+        public ResultView Remove(string id)
+        {
+            return _Service.Remove(id, LogonInfo);
         }
         #endregion
 
         #region 数据查询
         /// <summary>
-        /// 根据ID获取一个组织机构信息            
+        /// 根据ID获取组织机构详情            
         /// </summary>
+        /// <power>详情</power>
         /// <param name="id">组织机构ID</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.SearchById")]
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Single")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("{id}")]
-        [HttpGet]
+        [HttpGet("{id}")]
         public DepartmentView SearchById(string id)
         {
             return _Service.SearchById(id);
@@ -99,20 +102,18 @@ namespace TianCheng.SystemCommon.Controller
         /// <remarks> 
         ///     排序规则包含： 
         /// 
-        ///         name            : 按名称排序          
-        ///         code            : 按编码排序          
-        ///         parent          : 按上级部门名称排序          
-        ///         index           : 按序号排序          
-        ///         date            : 按最后更新时间排序   
+        ///         name         : 按名称排列
+        ///         code         : 按编码排列
+        ///         parent       : 按上级部门名称排列
+        ///         index        : 按部门序号排列
+        ///         date         : 按最后更新时间排列   为默认排序
         ///         
-        ///     默认查询条件：最后更新时间倒序
-        ///     
         /// </remarks> 
         /// <param name="queryInfo">查询信息。（包含分页信息、查询条件、排序条件）</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.SearchPage")]
+        /// <power>查询</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Search")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("Search")]
-        [HttpPost]
+        [HttpPost("Search")]
         public PagedResult<DepartmentView> SearchPage([FromBody]DepartmentQuery queryInfo)
         {
             return _Service.FilterPage(queryInfo);
@@ -124,46 +125,71 @@ namespace TianCheng.SystemCommon.Controller
         /// <remarks> 
         ///     排序规则包含： 
         /// 
-        ///         name            : 按名称排序          
-        ///         code            : 按编码排序          
-        ///         parent          : 按上级部门名称排序          
-        ///         index           : 按序号排序          
-        ///         date            : 按最后更新时间排序 
-        ///     
-        ///     默认查询条件：最后更新时间倒序
+        ///         name         : 按名称排列
+        ///         code         : 按编码排列
+        ///         parent       : 按上级部门名称排列
+        ///         index        : 按部门序号排列
+        ///         date         : 按最后更新时间排列   为默认排序
         ///         
         /// </remarks> 
         /// <param name="queryInfo">查询信息。（包含查询条件、排序条件）</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.SearchFilter")]
+        /// <power>查询</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Search")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("SearchALL")]
-        [HttpPost]
+        [HttpPost("SearchALL")]
         public List<DepartmentView> SearchFilter([FromBody]DepartmentQuery queryInfo)
         {
             return _Service.Filter(queryInfo);
         }
 
         /// <summary>
-        /// 为下拉列表提供数据 - 获取所有的组织机构列表
-        /// </summary>        
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Select")]
+        /// 获取所有的组织机构列表
+        /// </summary>
+        /// <remarks> 返回的下级对象结构为SelectView，适合用作下拉列表中的显示</remarks>
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("Select")]
-        [HttpGet]
+        [HttpGet("Select")]
         public List<SelectView> Select()
         {
             DepartmentQuery query = new DepartmentQuery();
             return _Service.Select(query);
         }
+        /// <summary>
+        /// 获取根部门
+        /// </summary>
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Select")]
+        [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
+        [HttpGet("Root")]
+        public DepartmentView Root()
+        {
+            var info = _Service.SearchQueryable().Where(e => string.IsNullOrEmpty(e.ParentId)).FirstOrDefault();
+            return AutoMapper.Mapper.Map<DepartmentView>(info);
+        }
+
+        ///// <summary>
+        ///// 获取根部门
+        ///// </summary>
+        ///// <returns></returns>
+        ///// <power>列表选择</power>
+        //[Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Select")]
+        //[SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
+        //[HttpGet("Root/Multiple")]
+        //public List<SelectView> GetMultipleRoot()
+        //{
+        //    return AutoMapper.Mapper.Map<List<SelectView>>(_Service.GetRoot());
+        //}
 
         /// <summary>
         /// 查询指定机构下的子机构
         /// </summary>
         /// <param name="id">机构管理id</param>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Sub")]
+        /// <remarks> 返回的下级对象结构为SelectView，适合用作下拉列表中的显示</remarks>
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("{id}/Sub")]
-        [HttpGet]
+        [HttpGet("{id}/Sub")]
         public List<SelectView> Sub(string id)
         {
             DepartmentQuery query = new DepartmentQuery() { ParentId = id };
@@ -171,36 +197,23 @@ namespace TianCheng.SystemCommon.Controller
         }
 
         /// <summary>
-        /// 查询当前用户的所有下级部门 下拉列表显示
+        /// 查询当前用户的所有下级部门
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.DepartmentController.Sub")]
+        /// <remarks> 返回的下级对象结构为SelectView，适合用作下拉列表中的显示</remarks>
+        /// <power>列表选择</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Department.Select")]
         [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [Route("My/Sub")]
-        [HttpGet]
+        [HttpGet("My/Sub")]
         public List<SelectView> MySub()
         {
-            if (String.IsNullOrWhiteSpace(LogonInfo.DepartmentId))
+            if (string.IsNullOrWhiteSpace(LogonInfo.DepartmentId))
             {
                 ApiException.ThrowBadRequest("您需要先有所属部门才可执行此操作");
             }
 
             DepartmentQuery query = new DepartmentQuery() { ParentId = LogonInfo.DepartmentId };
             List<SelectView> subList = _Service.Select(query);
-            // subList.Insert(0, new SelectView() { Id = LogonInfo.DepartmentId, Name = LogonInfo.DepartmentName });
             return subList;
-        }
-
-        /// <summary>
-        /// 获取根部门
-        /// </summary>
-        /// <returns></returns>
-        [SwaggerOperation(Tags = new[] { "系统管理-组织机构管理" })]
-        [HttpGet("Root")]
-        public List<SelectView> GetRoot()
-        {
-            List<DepartmentInfo> depList = _Service.GetRoot();
-
-            return AutoMapper.Mapper.Map<List<SelectView>>(depList);
         }
         #endregion
 

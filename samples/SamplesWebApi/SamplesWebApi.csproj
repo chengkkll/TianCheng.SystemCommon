@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TianCheng.SystemCommon" Version="1.2.0" />
+    <ProjectReference Include="..\..\src\TianCheng.SystemCommon.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TianCheng.Model;
 
 namespace TianCheng.SystemCommon.Model
@@ -34,7 +30,7 @@ namespace TianCheng.SystemCommon.Model
         /// 包含功能点列表
         /// </summary>
         [JsonProperty("functions")]
-        public List<FunctionView> FunctionPower { get; set; }
+        public List<FunctionView> FunctionPower { get; set; } = new List<FunctionView>();
 
         /// <summary>
         /// 最后更新时间

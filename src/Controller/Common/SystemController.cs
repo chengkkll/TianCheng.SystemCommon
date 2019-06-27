@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using TianCheng.BaseService;
 using TianCheng.Model;
-using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Diagnostics;
 
 namespace TianCheng.SystemCommon.Controller
 {
@@ -24,7 +18,6 @@ namespace TianCheng.SystemCommon.Controller
         private readonly FunctionService _FunctionService;
         private readonly MenuService _MenuService;
         private readonly RoleService _RoleService;
-        private readonly ILogger<SystemController> _logger;
         /// <summary>
         /// 构造方法
         /// </summary>
@@ -32,25 +25,22 @@ namespace TianCheng.SystemCommon.Controller
         /// <param name="functionService"></param>
         /// <param name="menuService"></param>
         /// <param name="roleService"></param>
-        /// <param name="logger"></param>        
-        public SystemController(EmployeeService employeeService, FunctionService functionService,
-            MenuService menuService, RoleService roleService, ILogger<SystemController> logger)
+        public SystemController(EmployeeService employeeService, FunctionService functionService, MenuService menuService, RoleService roleService)
         {
             _EmployeeService = employeeService;
             _FunctionService = functionService;
             _MenuService = menuService;
             _RoleService = roleService;
-            _logger = logger;
         }
         #endregion
 
         /// <summary>
-        /// 初始化系统数据
+        /// 重置数据库
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.SystemController.Init")]
+        /// <remarks>清除已有数据，初始成默认数据。/r/n初始化数据包括：菜单、功能点、角色、用户</remarks>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.System.Init")]
         [SwaggerOperation(Tags = new[] { "系统管理-系统设置" })]
-        [Route("Init")]
-        [HttpPost]
+        [HttpPost("InitDB")]
         public void Init()
         {
             //初始化系统菜单
@@ -64,17 +54,17 @@ namespace TianCheng.SystemCommon.Controller
         }
 
         /// <summary>
-        /// 根据密码初始化系统数据
+        /// 初始化数据库
         /// </summary>
-        /// <param name="updatePwd"></param>
+        /// <remarks>无需登录的初始化数据库，必须系统中无用户信息时才可执行</remarks>
         [SwaggerOperation(Tags = new[] { "系统管理-系统设置" })]
-        [Route("UpdateAdmin/{updatePwd}")]
-        [HttpGet]
-        public void UpdateAdmin(string updatePwd)
+        [HttpPost("Init")]
+        public void UpdateAdmin()
         {
-            if (updatePwd != "ua_`12")
+            var employeeService = ServiceLoader.GetService<EmployeeService>();
+            if (employeeService.SearchQueryable().Count() > 0)
             {
-                return;
+                ApiException.ThrowBadRequest("系统中拥有用户信息，无密码初始化失败。您可以通过管理员账号登陆后再初始化");
             }
             Init();
         }
@@ -87,7 +77,6 @@ namespace TianCheng.SystemCommon.Controller
         //public void MongoDBBak()
         //{
         //    var psi = new ProcessStartInfo("shell\\BakMongoDB.bat");
-
         //    //启动
         //    var proc = Process.Start(psi);
         //}

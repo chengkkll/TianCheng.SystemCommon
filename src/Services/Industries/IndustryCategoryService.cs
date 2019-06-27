@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
@@ -45,7 +43,7 @@ namespace TianCheng.SystemCommon.Services
             // 按名称的模糊查询
             if (!string.IsNullOrWhiteSpace(input.Name))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name) ||
+                query = query.Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name) ||
                                          e.Industries != null && e.Industries.Any(i => e.Name.Contains(input.Name)));
             }
             #endregion
@@ -75,13 +73,13 @@ namespace TianCheng.SystemCommon.Services
         protected override void SavingCheck(IndustryCategoryInfo info, TokenLogonInfo logonInfo)
         {
             //数据验证
-            if (String.IsNullOrWhiteSpace(info.Name))
+            if (string.IsNullOrWhiteSpace(info.Name))
             {
                 throw ApiException.BadRequest("行业分类名称不能为空");
             }
 
             //检查行业名称不能重复
-            var query = _Dal.Queryable().Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Equals(info.Name) && e.IsDelete == false);
+            var query = _Dal.Queryable().Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Equals(info.Name) && e.IsDelete == false);
 
             if (info.IsEmpty)
             {

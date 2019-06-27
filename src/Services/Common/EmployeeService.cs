@@ -3,10 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using TianCheng.BaseService;
-using TianCheng.BaseService.Services;
-using TianCheng.DAL.MongoDB;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
@@ -73,23 +70,28 @@ namespace TianCheng.SystemCommon.Services
             {
                 query = query.Where(e => e.IsDelete);
             }
+            // 根据查询的关键字查询
+            if (!string.IsNullOrWhiteSpace(input.Key))
+            {
+                query = query.Where(e => (!string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Key)) ||
+                                         (e.Role != null && !string.IsNullOrEmpty(e.Role.Name) && e.Role.Name.Contains(input.Key)) ||
+                                         (e.Department != null && !string.IsNullOrEmpty(e.Department.Name) && e.Department.Name.Contains(input.Key)) ||
+                                         (!string.IsNullOrEmpty(e.LogonAccount) && e.LogonAccount.Contains(input.Key)));
+            }
 
             // 按名称的模糊查询
             if (!string.IsNullOrWhiteSpace(input.Name))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
+                query = query.Where(e => !string.IsNullOrEmpty(e.Name) && e.Name.Contains(input.Name));
             }
             // 按部门ID查询
             if (!string.IsNullOrWhiteSpace(input.DepartmentId))
             {
-                query = query.Where(e => !String.IsNullOrEmpty(e.Department.Id) && e.Department.Id == input.DepartmentId);
+                query = query.Where(e => !string.IsNullOrEmpty(e.Department.Id) && e.Department.Id == input.DepartmentId);
             }
             //根据根节点查询部门
             if (!string.IsNullOrWhiteSpace(input.RootDepartment))
             {
-                //List<string> depIds = GetSubDepartment(input.RootDepartment);
-                //depIds.Add(input.RootDepartment);
-                //query = query.Where(e => e.Department != null && !String.IsNullOrEmpty(e.Department.Id) && depIds.Contains(e.Department.Id));
                 query = query.Where(e => e.ParentDepartment != null && e.ParentDepartment.Ids != null && e.ParentDepartment.Ids.Contains(input.RootDepartment));
             }
             // 按角色ID查询
@@ -108,21 +110,6 @@ namespace TianCheng.SystemCommon.Services
             #endregion
 
             #region 设置排序规则
-            //设置排序方式
-            //switch (input.OrderBy)
-            //{
-            //    case "nameAsc": { query = query.OrderBy(e => e.Name); break; }
-            //    case "nameDesc": { query = query.OrderByDescending(e => e.Name); break; }
-            //    case "depNameAsc": { query = query.OrderBy(e => e.Department.Name); break; }
-            //    case "depNameDesc": { query = query.OrderByDescending(e => e.Department.Name); break; }
-            //    case "roleNameAsc": { query = query.OrderBy(e => e.Role.Name); break; }
-            //    case "roleNameDesc": { query = query.OrderByDescending(e => e.Role.Name); break; }
-            //    case "stateAsc": { query = query.OrderBy(e => e.State); break; }
-            //    case "stateDesc": { query = query.OrderByDescending(e => e.State); break; }
-            //    case "dateAsc": { query = query.OrderBy(e => e.UpdateDate); break; }
-            //    case "dateDesc": { query = query.OrderByDescending(e => e.UpdateDate); break; }
-            //    default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
-            //}
             switch (input.Sort.Property)
             {
                 case "name": { query = input.Sort.IsAsc ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name); break; }
@@ -132,8 +119,6 @@ namespace TianCheng.SystemCommon.Services
                 case "updateDate": { query = input.Sort.IsAsc ? query.OrderBy(e => e.UpdateDate) : query.OrderByDescending(e => e.UpdateDate); break; }
                 default: { query = query.OrderByDescending(e => e.UpdateDate); break; }
             }
-
-
             #endregion
 
             //返回查询结果
@@ -156,18 +141,41 @@ namespace TianCheng.SystemCommon.Services
         //    }
         //    return subIds;
         //}
+
+        /// <summary>
+        /// 获取所有可用的员工列表，按部门分组
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeeGroupByDepartment> GetEmployeeByDepartment()
+        {
+            var employeeList = _Dal.Queryable().Where(e => e.IsDelete == false).ToList();
+            var depList = ServiceLoader.GetService<DepartmentService>().SearchQueryable().ToList();
+            List<EmployeeGroupByDepartment> result = new List<EmployeeGroupByDepartment>();
+            foreach (var item in employeeList.GroupBy(e => e.Department.Id))
+            {
+                var dep = depList.Where(e => e.IdString == item.Key).FirstOrDefault();
+                result.Add(new EmployeeGroupByDepartment()
+                {
+                    Id = item.Key,
+                    Name = dep.Name,
+                    Employees = AutoMapper.Mapper.Map<List<SelectView>>(item.ToList())
+                });
+            }
+
+            return result;
+        }
         #endregion
 
         #region 新增 / 修改方法
         /// <summary>
         /// 设置角色是否必填
         /// </summary>
-        public static bool RequiredRole { get; } = true;
+        public static bool RequiredRole { get; set; } = true;
 
         /// <summary>
         /// 设置部门是否必填
         /// </summary>
-        public static bool RequiredDepartment { get; } = true;
+        public static bool RequiredDepartment { get; set; } = true;
 
         /// <summary>
         /// 保存的校验
@@ -228,10 +236,10 @@ namespace TianCheng.SystemCommon.Services
 
             //完善数据
             //1、完善部门信息
-            if (info.Department != null && !String.IsNullOrWhiteSpace(info.Department.Id))
+            if (info.Department != null && !string.IsNullOrWhiteSpace(info.Department.Id))
             {
                 string depId = info.Department.Id;
-                if (!String.IsNullOrWhiteSpace(depId))
+                if (!string.IsNullOrWhiteSpace(depId))
                 {
                     DepartmentInfo depInfo = _DepDal.SearchById(depId);
                     if (depInfo == null)
@@ -246,10 +254,10 @@ namespace TianCheng.SystemCommon.Services
             }
 
             //2、完善角色信息
-            if (info.Role != null && !String.IsNullOrWhiteSpace(info.Role.Id))
+            if (info.Role != null && !string.IsNullOrWhiteSpace(info.Role.Id))
             {
                 string roleId = info.Role.Id;
-                if (!String.IsNullOrWhiteSpace(roleId))
+                if (!string.IsNullOrWhiteSpace(roleId))
                 {
                     RoleInfo role = _RoleDal.SearchById(roleId);
                     if (role == null)
@@ -408,7 +416,7 @@ namespace TianCheng.SystemCommon.Services
         public ResultView UpdatePassword(string id, string oldPwd, string newPwd)
         {
 
-            if (String.IsNullOrWhiteSpace(newPwd.Trim()))
+            if (string.IsNullOrWhiteSpace(newPwd.Trim()))
             {
                 throw ApiException.BadRequest("请输入新密码");
             }
@@ -474,7 +482,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         internal int CountByRoleId(string roleId)
         {
-            return _Dal.Queryable().Where(e => e.Role != null && String.IsNullOrEmpty(e.Role.Id) && e.Role.Id == roleId && e.IsDelete == false && e.State == UserState.Enable).Count();
+            return _Dal.Queryable().Where(e => e.Role != null && string.IsNullOrEmpty(e.Role.Id) && e.Role.Id == roleId && e.IsDelete == false && e.State == UserState.Enable).Count();
         }
         /// <summary>
         /// 查看某部门下的可用员工的个数
@@ -483,7 +491,7 @@ namespace TianCheng.SystemCommon.Services
         /// <returns></returns>
         internal int CountByDepartmentId(string departmentId)
         {
-            return _Dal.Queryable().Where(e => e.Department != null && String.IsNullOrEmpty(e.Department.Id) && e.Department.Id == departmentId && e.IsDelete == false && e.State == UserState.Enable).Count();
+            return _Dal.Queryable().Where(e => e.Department != null && string.IsNullOrEmpty(e.Department.Id) && e.Department.Id == departmentId && e.IsDelete == false && e.State == UserState.Enable).Count();
         }
         #endregion
 
@@ -495,7 +503,7 @@ namespace TianCheng.SystemCommon.Services
         {
             foreach (var employee in _Dal.Queryable())
             {
-                employee.LogonPassword = String.IsNullOrWhiteSpace(password) ? Guid.NewGuid().ToString("N").Substring(0, 8) : password;
+                employee.LogonPassword = string.IsNullOrWhiteSpace(password) ? Guid.NewGuid().ToString("N").Substring(0, 8) : password;
                 _Dal.UpdateObject(employee);
             }
         }

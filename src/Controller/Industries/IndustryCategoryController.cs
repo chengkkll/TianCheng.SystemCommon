@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
 using TianCheng.SystemCommon.Services;
-using System.Linq;
 
 namespace TianCheng.SystemCommon.Controller
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TianCheng.SystemCommon.Services
+﻿namespace TianCheng.SystemCommon.Services
 {
     /// <summary>
     /// 登录验证配制

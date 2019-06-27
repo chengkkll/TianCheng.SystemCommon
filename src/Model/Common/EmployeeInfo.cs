@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TianCheng.DAL.MongoDB;
 using TianCheng.Model;
 
 namespace TianCheng.SystemCommon.Model
@@ -81,6 +76,10 @@ namespace TianCheng.SystemCommon.Model
         /// 锁定账号不允许登录
         /// </summary>
         public bool LogonLock { get; set; }
+        /// <summary>
+        /// 登录类型
+        /// </summary>
+        public LoginVerifierType LoginType { get; set; }
         #endregion
 
         #region 登录令牌信息
@@ -134,11 +133,10 @@ namespace TianCheng.SystemCommon.Model
         /// <summary>
         /// 角色信息
         /// </summary>
-        private SelectView _Role = new SelectView();
         /// <summary>
         /// 角色信息
         /// </summary>
-        public SelectView Role { get { return _Role; } set { _Role = value; } }
+        public SelectView Role { get; set; } = new SelectView();
 
         #endregion
 
@@ -194,7 +192,7 @@ namespace TianCheng.SystemCommon.Model
             {
                 if (this == null)
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
 
                 switch (State)
@@ -202,7 +200,7 @@ namespace TianCheng.SystemCommon.Model
                     case UserState.Disable: return "禁用";
                     case UserState.Enable: return "正常";
                     case UserState.LogonLock: return "登录已锁";
-                    default: return String.Empty;
+                    default: return string.Empty;
                 }
             }
         }

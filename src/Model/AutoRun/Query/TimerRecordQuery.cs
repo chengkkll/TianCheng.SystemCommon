@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TianCheng.Model;
+﻿using TianCheng.Model;
 
 namespace TianCheng.SystemCommon.Model
 {

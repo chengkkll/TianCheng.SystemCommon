@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoMapper;
+﻿using AutoMapper;
 using TianCheng.Model;
 
 namespace TianCheng.SystemCommon.Model
@@ -59,7 +56,7 @@ namespace TianCheng.SystemCommon.Model
             CreateMap<AreaView, AreaInfo>();
             CreateMap<AreaInfo, AreaView>();
             CreateMap<AreaInfo, SelectView>();
-            
+
         }
     }
 }

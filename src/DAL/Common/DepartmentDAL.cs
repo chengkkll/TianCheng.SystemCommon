@@ -1,10 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TianCheng.DAL;
 using TianCheng.DAL.MongoDB;
 using TianCheng.SystemCommon.Model;
@@ -14,7 +9,7 @@ namespace TianCheng.SystemCommon.DAL
     /// <summary>
     /// 部门信息 [数据持久化]
     /// </summary>
-    [DBMapping("System_DepartmentInfo")]
+    [DBMapping("system_department")]
     public class DepartmentDAL : MongoOperation<DepartmentInfo>
     {
         ///// <summary>
@@ -59,16 +54,16 @@ namespace TianCheng.SystemCommon.DAL
             UpdateDefinition<DepartmentInfo> ud = Builders<DepartmentInfo>.Update.Set("ParentName", departmentInfo.Name);
             try
             {
-                UpdateResult result = _mongoCollection.UpdateMany(filter, ud);
+                UpdateResult result = MongoCollection.UpdateMany(filter, ud);
             }
             catch (System.TimeoutException te)
             {
-                DBLog.Logger.LogWarning(te, "数据库链接超时。链接字符串：" + _options.ConnectionOptions.ConnectionString());
+                DBLog.Logger.Warning(te, "数据库链接超时。链接字符串：" + Provider.Connection.ConnectionString());
                 throw;
             }
             catch (Exception ex)
             {
-                DBLog.Logger.LogWarning(ex, "操作异常终止。");
+                DBLog.Logger.Warning(ex, "操作异常终止。");
                 throw;
             }
         }

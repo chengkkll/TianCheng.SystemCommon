@@ -1,9 +1,9 @@
 .git
 .vs
-src/bin
-src/obj
+.vscode
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+
 *.log
 *.user
-samples/SamplesWebApi/bin
-samples/SamplesWebApi/obj
-samples/SamplesWebApi/Logs

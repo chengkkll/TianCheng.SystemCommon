@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using TianCheng.Model;
 using TianCheng.BaseService;
-using TianCheng.DAL.MongoDB;
+using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
 
@@ -124,7 +122,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="logonInfo"></param>
         protected override void SavingCheck(MenuMainInfo info, TokenLogonInfo logonInfo)
         {
-            if (String.IsNullOrWhiteSpace(info.Name))
+            if (string.IsNullOrWhiteSpace(info.Name))
             {
                 ApiException.ThrowBadRequest("主菜单名称不能为空");
             }
@@ -139,11 +137,11 @@ namespace TianCheng.SystemCommon.Services
 
             foreach (var sub in info.SubMenu)
             {
-                if (String.IsNullOrWhiteSpace(sub.Name))
+                if (string.IsNullOrWhiteSpace(sub.Name))
                 {
                     ApiException.ThrowBadRequest("子菜单名称不能为空");
                 }
-                if (String.IsNullOrWhiteSpace(sub.Link))
+                if (string.IsNullOrWhiteSpace(sub.Link))
                 {
                     ApiException.ThrowBadRequest("子菜单的地址不能为空");
                 }
@@ -177,7 +175,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="parentName"></param>
         public void SaveSubMenu(MenuSubInfo subMenu, string parentName)
         {
-            if (String.IsNullOrEmpty(subMenu.Link))
+            if (string.IsNullOrEmpty(subMenu.Link))
             {
                 TianCheng.Model.ApiException.ThrowBadRequest("菜单地址不能为空");
             }
@@ -209,7 +207,7 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="parentName"></param>
         public void RemoveSubMenu(string subName, string parentName)
         {
-            if (String.IsNullOrEmpty(subName) || String.IsNullOrEmpty(parentName))
+            if (string.IsNullOrEmpty(subName) || string.IsNullOrEmpty(parentName))
             {
                 TianCheng.Model.ApiException.ThrowBadRequest("菜单名称不能为空");
             }
@@ -244,7 +242,7 @@ namespace TianCheng.SystemCommon.Services
                 Name = name,
                 Index = 10,
                 Type = DefaultMenuType,
-                Link = String.Empty,
+                Link = string.Empty,
                 CreateDate = DateTime.Now,
                 UpdateDate = DateTime.Now
             };
@@ -277,9 +275,9 @@ namespace TianCheng.SystemCommon.Services
         /// <param name="mainInfo"></param>
         public void SaveMainMenu(MenuMainInfo mainInfo)
         {
-            if (String.IsNullOrEmpty(mainInfo.Name))
+            if (string.IsNullOrEmpty(mainInfo.Name))
             {
-                TianCheng.Model.ApiException.ThrowBadRequest("菜单名称不能为空");
+                ApiException.ThrowBadRequest("菜单名称不能为空");
             }
 
             var main = GetMainByName(mainInfo.Name);

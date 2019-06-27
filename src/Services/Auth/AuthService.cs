@@ -1,18 +1,14 @@
-﻿using AutoMapper.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using TianCheng.BaseService;
 using TianCheng.BaseService.PlugIn;
 using TianCheng.Model;
 using TianCheng.SystemCommon.DAL;
 using TianCheng.SystemCommon.Model;
-using Microsoft.Extensions.Configuration;
 
 namespace TianCheng.SystemCommon.Services
 {
@@ -174,12 +170,13 @@ namespace TianCheng.SystemCommon.Services
                 new Claim("name", employee.Name ?? ""),
                 new Claim("roleId",employee.Role?.Id ?? ""),
                 new Claim("depId",employee.Department?.Id ?? ""),
-                new Claim("depName",employee.Department?.Name ?? "")
+                new Claim("depName",employee.Department?.Name ?? ""),
+                new Claim("type","AuthService")
             };
 
 
             var identity = new ClaimsIdentity(new GenericIdentity(account, "Token"), claims);
-            string token = Jwt.GenerateJwtToken(employee.Id.ToString(), identity, _tokenOptions);
+            string token = Jwt.GenerateJwtToken(account, identity, _tokenOptions);
             return token;
         }
 

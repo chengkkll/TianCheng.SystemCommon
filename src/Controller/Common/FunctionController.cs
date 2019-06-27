@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using TianCheng.BaseService;
 using TianCheng.Model;
 using TianCheng.SystemCommon.Model;
@@ -21,27 +17,25 @@ namespace TianCheng.SystemCommon.Controller
     {
         #region 构造方法
         private readonly FunctionService _Service;
-        private readonly ILogger<FunctionController> _logger;
         /// <summary>
         /// 构造方法
         /// </summary>
         /// <param name="service"></param>
-        /// <param name="logger"></param>        
-        public FunctionController(FunctionService service, ILogger<FunctionController> logger)
+        public FunctionController(FunctionService service)
         {
             _Service = service;
-            _logger = logger;
         }
         #endregion
 
         #region 数据查询
         /// <summary>
-        /// 查询所有的功能点信息，以树形结构显示，无分页信息      
+        /// 查询功能点
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.FunctionController.Search")]
+        /// <remarks>查询所有的功能点信息，以树形结构显示结果，无分页信息</remarks>
+        /// <power>查询</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Function.Search")]
         [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
-        [Route("")]
-        [HttpGet]
+        [HttpGet("")]
         public List<FunctionModuleView> Search()
         {
             return _Service.LoadTree();
@@ -50,9 +44,11 @@ namespace TianCheng.SystemCommon.Controller
 
         #region 初始化
         /// <summary>
-        /// 初始化功能点   清除已有功能点，重新设置默认功能点
+        /// 初始化
         /// </summary>
-        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.FunctionController.Init")]
+        /// <remarks>初始化功能点。   清除已有功能点，分析引用项目的注释信息来重置功能点</remarks>
+        /// <power>初始化</power>
+        [Microsoft.AspNetCore.Authorization.Authorize(Policy = "SystemManage.Function.Init")]
         [SwaggerOperation(Tags = new[] { "系统管理-权限管理" })]
         [Route("Init")]
         [HttpPost]
